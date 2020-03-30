@@ -1,6 +1,13 @@
+import Nav from "./component/nav"
+
 const Index = () => (
-  <div>
-    <p>Hello Next.js</p>
+  <div className="page">
+    <Nav />
+    <style jsx>{`
+      .page {
+        display: flex;
+      }
+    `}</style>
   </div>
 )
 
