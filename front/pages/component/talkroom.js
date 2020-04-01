@@ -1,7 +1,7 @@
 import { Component } from "react";
 import request from 'superagent';
 
-export default class talkRoom extends Component {
+export default class TalkRoom extends Component {
   constructor(props){
     super(props);
     this.state = {
