@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddUserRefAndRoomRefToMessages < ActiveRecord::Migration[6.0]
   def change
     add_reference :messages, :user, null: false, foreign_key: true
