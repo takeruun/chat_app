@@ -2,11 +2,8 @@
 
 class UsersController < ApplicationController
   def index
-    if @current_user
-      render json: { user: @current_user }
-    else
-      render json: { text: 'userなし' }
-    end
+    @users = User.all
+    render json: @users
   end
 
   def login
@@ -35,8 +32,16 @@ class UsersController < ApplicationController
   end
 
   def logout
-    session[:user_id]  = nil
+    session[:user_id] = nil
     render json: { text: 'ログアウトしました' }
+  end
+
+  def user
+    if @current_user
+      render json: { user: @current_user }
+    else
+      render json: { text: 'userなし' }
+    end
   end
 
 end
