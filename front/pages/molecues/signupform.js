@@ -14,7 +14,7 @@ export default class SignUpForm extends Component{
 
   apiSignUpUser(){
     request
-      .post('api/users')
+      .post('/api/signup')
       .send({
         email: this.state.email,
         password: this.state.password,
@@ -25,17 +25,16 @@ export default class SignUpForm extends Component{
           console.log(err);
         }
         console.log(res)
-        if(res.body.token) {
-          localStorage.setItem('token', res.body.token);
+        if(res.body.text == 'user作成しました') {
+          localStorage.setItem('token', res.body.user.token);
           let token = localStorage.getItem('token');
           console.log(token);
           Router.push('/');
         }
         else{
           alert(res.body.text);
-          
+          this.setState({email: '', password: '', username:''})
         }
-
       })
   }
 
@@ -61,9 +60,11 @@ export default class SignUpForm extends Component{
               display: block;
             }
             input {
+              padding-left: 10px;
               width: 100%;
               height: 32px;
               margin-bottom: 40px;
+              font-size: 15px;
             }
             button {
               display: block;

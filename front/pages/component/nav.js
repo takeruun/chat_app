@@ -3,24 +3,43 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt, faHome, faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import React, {Component} from 'react'
 import Router from 'next/router'
+import request from 'superagent';
 export default class Nav extends Component {
     constructor (props) {
       super(props)
-      this.state = { auth: false}
+      this.state = { 
+        user_id: ''
+      }
     }
 
-    componentDidMount() {
-      let token = localStorage.getItem('token')
-      if (token) {
-          this.setState({auth: true})
-          return
-      }
-      this.setState({auth: false})
-    }
+    componentDidMount(){
+    this.apiCurrentUser();
+  }
+
+  apiCurrentUser(){
+    request
+      .get('/api/users')
+      .withCredentials()
+      .end((err, res)=> {
+        if(err){
+          console.log(err);
+        }
+        console.log(res);
+        if(res.body.user){
+          this.setState({user_id: res.body.user.id});
+        }
+      })
+  }
     
     logout() {
-      localStorage.clear()
-      Router.push('/signin');
+      request
+        .post('/api/logout')
+        .end((err, res) => {
+          if(err){
+            console.log(err);
+          }
+          console.log(res.body.text);
+        })
     }
 
     render () {
@@ -29,7 +48,7 @@ export default class Nav extends Component {
       <nav className='nav'>
         <ul>
           <li>
-            <Link href="/signin">
+            <Link href="/login">
               <span><FontAwesomeIcon icon={ faSignInAlt } /></span>
             </Link>
           </li>
@@ -39,7 +58,7 @@ export default class Nav extends Component {
             </Link>
           </li>
           {(()=> {
-            if (auth){
+            if (this.state.user_id){
               return(
               <li onClick={e　=> this.logout()}>
                 <span><FontAwesomeIcon icon={ faSignOutAlt } /></span>

@@ -26,16 +26,26 @@ module Chat
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins "http://localhost:3000"
+        resource "*",
+          headers: :any,
+          methods: [:get, :post, :options, :head],
+          credentials: true
+      end
+    end
+
     config.generators do |g|
       g.test_framework false
     end
 
     config.generators do |g|
       g.test_framework :rspec,
-                       fixtures: false,
-                       view_specs: false,
-                       helper_specs: false,
-                       routing_specs: false
+                      fixtures: false,
+                      view_specs: false,
+                      helper_specs: false,
+                      routing_specs: false
     end
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
@@ -45,6 +55,6 @@ module Chat
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
-    config.api_only = true
+    config.api_only = false
   end
 end

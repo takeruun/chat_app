@@ -15,6 +15,29 @@ export default class TalkRoom extends Component {
       change_talk: false
     }
   };
-}
 
-apiGet
+  componentDidMount(){
+    this.apiCurrentUser();
+  }
+
+  apiCurrentUser(){
+    request
+      .get('/api/users')
+      .withCredentials()
+      .end((err, res)=> {
+        if(err){
+          console.log(err);
+        }
+        console.log(res);
+        if(res.body.user){
+          this.setState({user_id: res.body.user.id});
+        }
+      })
+  }
+
+  render(){
+    return(
+    <div>{this.state.user_id}</div>
+    )
+  }
+}
