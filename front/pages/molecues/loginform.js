@@ -10,6 +10,7 @@ export default class  LogInForm extends Component{
       password: ''
     }
   }
+
   apiSignInUser(){
     request
       .get('/api/login')
@@ -21,10 +22,18 @@ export default class  LogInForm extends Component{
         if(err){
           console.log(err);
         }
-        console.log(res);
-        Router.push('/')
+        console.log(res)
+        if(res.body.user){
+          Router.push('/');
+        }
+        else{
+          console.log(res.body.text);
+          alert(res.body.text)
+          this.setState({email: '', password: ''})
+        }
       })
   }
+
   render(){
     const changed = (name, e) => this.setState({[name]: e.target.value})
     return(

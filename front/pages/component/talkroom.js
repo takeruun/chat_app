@@ -8,36 +8,25 @@ export default class TalkRoom extends Component {
       currentChatMessage: '',
       chatLogs: [],
       users: [],
-      user_id: '',
-      partner_id: '',
-      room_name: '',
-      room_id: '',
-      change_talk: false
+      userId: '',
+      partnerId: '',
+      roomName: '',
+      roomId: '',
+      changeTalk: false
     }
   };
 
   componentDidMount(){
-    this.apiCurrentUser();
+    
   }
 
-  apiCurrentUser(){
-    request
-      .get('/api/users')
-      .withCredentials()
-      .end((err, res)=> {
-        if(err){
-          console.log(err);
-        }
-        console.log(res);
-        if(res.body.user){
-          this.setState({user_id: res.body.user.id});
-        }
-      })
+  componentDidUpdate(){
+    
   }
 
   render(){
     return(
-    <div>{this.state.user_id}</div>
+    <div></div>
     )
   }
 }

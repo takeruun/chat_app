@@ -14,6 +14,8 @@ class UsersController < ApplicationController
     if @user && @user.authenticate(params[:password])
       session[:user_id] = @user.id
       render json: { user: @user, text: 'ログインしました' }
+    else
+      render json: { text: 'メールアドレス or パスワードが間違っています' }
     end
   end
 
