@@ -1,4 +1,4 @@
-import { Component, useReducer } from "react";
+import { Component } from "react";
 import request from 'superagent';
 
 export default class TalkRoom extends Component {
@@ -18,35 +18,47 @@ export default class TalkRoom extends Component {
 
   componentDidMount(){
     this.apiGetUsers();
+    this.apiGetCurrentUser(this.createSocketAppear.bind(this));
   }
 
   componentDidUpdate(){
     if(this.state.changeTalk){
       this.setState({changeTalk: false});
-      this.apiGetRoom(this.creatSocket.bind(this));
+      this.apiGetRoom(this.createSocketCable.bind(this));
     }
   }
 
-  apiGetUsers(){
-    request
-      .get('/api/users')
-      .end((err, res) => {
-        if(err){
-          console.log(err);
+  createSocketAppear(){
+    var Cable = require('actioncable');
+    let appearcable = Cable.createConsumer('wss:localhost/api/cable');
+    this.appear = appearcable.subscriptions.create({
+      channel: 'AppearanceChannel',
+      user_id: this.state.userId
+    },{
+      connected: () => {},
+      received: (data) => {
+        console.log(data);
+        if(data.user.is_login == true){
+          var element = document.getElementById(`loginUser_${data.user.id - 1}`)
+          if(this.state.userId == data.user.id)
+            element.style.backgroundColor = 'red';
+          else
+            element.style.backgroundColor = 'green';
         }
-        console.log(res);
-        if(res.body){
-          this.setState({users: res.body});
+        else{
+          var element = document.getElementById(`loginUser_${data.user.id - 1}`)
+          element.style.backgroundColor = 'white';
         }
-      });
+      }
+    });
   }
 
-  creatSocket(){
-    console.log('userID:' + this.state.userId + ' partnerID:' + this.state.partnerId + 'とsocket作成')
-    console.log('roomID:' + this.state.roomId + ' roomName:' + this.state.roomName)
-    var Cable = require('actioncable')
-    let cable = Cable.createConsumer('wss:localhost/api/cable')
-    console.log(cable)
+  createSocketCable(){
+    console.log('userID:' + this.state.userId + ' partnerID:' + this.state.partnerId + 'とsocket作成');
+    console.log('roomID:' + this.state.roomId + ' roomName:' + this.state.roomName);
+    var Cable = require('actioncable');
+    let cable = Cable.createConsumer('wss:localhost/api/cable');
+    console.log(cable);
     this.chats = cable.subscriptions.create({　
       channel: 'ChatChannel',
       room_id: this.state.roomId
@@ -69,7 +81,36 @@ export default class TalkRoom extends Component {
         cable.subscriptions.consumer.disconnect();
         console.log(this.state.roomName + 'から出ます');
       }
-    })
+    });
+  }
+
+  apiGetCurrentUser(callback){
+    request
+      .get('/api/user')
+      .withCredentials()
+      .end((err, res) => {
+        if(err){
+          console.log(err);
+        }
+        if(res.body.user){
+          this.setState({ userId: res.body.user.id });
+        }
+        callback();
+      });
+  }
+
+  apiGetUsers(){
+    request
+      .get('/api/users')
+      .end((err, res) => {
+        if(err){
+          console.log(err);
+        }
+        console.log(res);
+        if(res.body){
+          this.setState({users: res.body});
+        }
+      });
   }
 
   apiGetRoom(callback){
@@ -93,12 +134,11 @@ export default class TalkRoom extends Component {
   }
 
   changeTalkRoom(parID){
-    this.setState({userId: this.props.userId})
     if(this.chats){
       this.chats.disconnected();
     }
     this.setState({partnerId: parID});
-    let n = this.props.userId;
+    let n = this.state.userId;
     let m = parID;
     console.log('partnerID:'+m+' userID:'+n);
     
@@ -216,7 +256,7 @@ export default class TalkRoom extends Component {
           </div>
           <div className="loginStatusBodyItemName">{user.name}</div>
           <div className="loginStatusBodyItemStaus">
-            <span></span>
+            <span id={`loginUser_${index}`}></span>
           </div>
           <style>{`
           .loginStatusBodyItem {
@@ -253,12 +293,12 @@ export default class TalkRoom extends Component {
             width: 10px;
             height: 10px;
             border-radius: 10px;
-            color: green;
           }
           `}</style>
         </li>
       );
     });
+    
   }
 
   render(){
