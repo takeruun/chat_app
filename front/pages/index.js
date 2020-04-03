@@ -18,7 +18,7 @@ export default class Index extends Component{
 
   apiCurrentUser(){
     request
-      .get('/api/users')
+      .get('/api/user')
       .withCredentials()
       .end((err, res)=> {
         if(err){
