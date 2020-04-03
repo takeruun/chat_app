@@ -11,4 +11,5 @@ Rails.application.routes.draw do
     resources :messages
     resources :rooms
   end
+  mount  ActionCable.server => '/api/cable'
 end
