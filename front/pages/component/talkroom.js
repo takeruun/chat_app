@@ -1,8 +1,8 @@
-import { Component } from "react";
+import { Component } from 'react';
 import request from 'superagent';
 
 export default class TalkRoom extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       currentChatMessage: '',
@@ -12,182 +12,210 @@ export default class TalkRoom extends Component {
       partnerId: '',
       roomName: '',
       roomId: '',
-      changeTalk: false
-    }
-  };
+      changeTalk: false,
+    };
+  }
 
-  componentDidMount(){
+  componentDidMount() {
     this.apiGetUsers();
     this.apiGetCurrentUser(this.createSocketAppear.bind(this));
   }
 
-  componentDidUpdate(){
-    if(this.state.changeTalk){
-      this.setState({changeTalk: false});
+  componentDidUpdate() {
+    if (this.state.changeTalk) {
+      this.setState({ changeTalk: false });
       this.apiGetRoom(this.createSocketCable.bind(this));
+    }
+    if (this.state.currentChatMessage == '') {
+      this.toBottom();
     }
   }
 
-  createSocketAppear(){
+  createSocketAppear() {
     var Cable = require('actioncable');
     let appearcable = Cable.createConsumer('wss:localhost/api/cable');
-    this.appear = appearcable.subscriptions.create({
-      channel: 'AppearanceChannel',
-      user_id: this.state.userId
-    },{
-      connected: () => {},
-      received: (data) => {
-        console.log(data);
-        if(data.user.is_login == true){
-          var element = document.getElementById(`loginUser_${data.user.id - 1}`)
-          if(this.state.userId == data.user.id)
-            element.style.backgroundColor = 'red';
-          else
-            element.style.backgroundColor = 'green';
-        }
-        else{
-          var element = document.getElementById(`loginUser_${data.user.id - 1}`)
-          element.style.backgroundColor = 'white';
-        }
+    this.appear = appearcable.subscriptions.create(
+      {
+        channel: 'AppearanceChannel',
+        user_id: this.state.userId,
+      },
+      {
+        connected: () => {},
+        received: (data) => {
+          console.log(data);
+          for (var i = 0; i < data.user.length; i++) {
+            if (data.user[i].is_login == true) {
+              var element = document.getElementById(
+                `loginUser_${data.user[i].id - 1}`
+              );
+              if (this.state.userId == data.user[i].id)
+                element.style.backgroundColor = 'red';
+              else element.style.backgroundColor = 'green';
+            } else {
+              var element = document.getElementById(
+                `loginUser_${data.user[i].id - 1}`
+              );
+              element.style.backgroundColor = 'white';
+            }
+          }
+        },
       }
-    });
+    );
   }
 
-  createSocketCable(){
-    console.log('userID:' + this.state.userId + ' partnerID:' + this.state.partnerId + 'とsocket作成');
-    console.log('roomID:' + this.state.roomId + ' roomName:' + this.state.roomName);
+  createSocketCable() {
+    console.log(
+      'userID:' +
+        this.state.userId +
+        ' partnerID:' +
+        this.state.partnerId +
+        'とsocket作成'
+    );
+    console.log(
+      'roomID:' + this.state.roomId + ' roomName:' + this.state.roomName
+    );
     var Cable = require('actioncable');
     let cable = Cable.createConsumer('wss:localhost/api/cable');
     console.log(cable);
-    this.chats = cable.subscriptions.create({　
-      channel: 'ChatChannel',
-      room_id: this.state.roomId
-    },{
-      conneted: () => {},
-      received: (data) => {
-        let chatLogs = this.state.chatLogs;
-        console.log(data);
-        chatLogs.push(data);
-        console.log(chatLogs);
-        this.setState({ chatLogs: chatLogs});
+    this.chats = cable.subscriptions.create(
+      {
+        channel: 'ChatChannel',
+        room_id: this.state.roomId,
       },
-      create: function(chatContent, id){ //this.chats.createの引数がchatContent
-        this.perform('create', {
-        user_id: id,
-        body: chatContent
-        });
-      },
-      disconnected: () => {
-        cable.subscriptions.consumer.disconnect();
-        console.log(this.state.roomName + 'から出ます');
+      {
+        conneted: () => {},
+        received: (data) => {
+          let chatLogs = this.state.chatLogs;
+          console.log(data);
+          chatLogs.push(data);
+          console.log(chatLogs);
+          this.setState({ chatLogs: chatLogs });
+        },
+        create: function (chatContent, id) {
+          //this.chats.createの引数がchatContent
+          this.perform('create', {
+            user_id: id,
+            body: chatContent,
+          });
+        },
+        disconnected: () => {
+          cable.subscriptions.consumer.disconnect();
+          console.log(this.state.roomName + 'から出ます');
+        },
       }
-    });
+    );
   }
 
-  apiGetCurrentUser(callback){
+  apiGetCurrentUser(callback) {
     request
       .get('/api/user')
       .withCredentials()
       .end((err, res) => {
-        if(err){
+        if (err) {
           console.log(err);
         }
-        if(res.body.user){
+        if (res.body.user) {
           this.setState({ userId: res.body.user.id });
         }
         callback();
       });
   }
 
-  apiGetUsers(){
-    request
-      .get('/api/users')
-      .end((err, res) => {
-        if(err){
-          console.log(err);
-        }
-        console.log(res);
-        if(res.body){
-          this.setState({users: res.body});
-        }
-      });
+  apiGetUsers() {
+    request.get('/api/users').end((err, res) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log(res);
+      if (res.body) {
+        this.setState({ users: res.body });
+      }
+    });
   }
 
-  apiGetRoom(callback){
+  apiGetRoom(callback) {
     request
       .get('/api/rooms')
-      .query({roomName: this.state.roomName})
+      .query({ roomName: this.state.roomName })
       .end((err, res) => {
-        if(err){
+        if (err) {
           console.log(err);
         }
         console.log(res);
-        if(res.body){
-          console.log('--room情報取得--')
-          console.log(res.body.chatdata)
-          console.log(res.body.room_id)
-          console.log('---------------')
-          this.setState({chatLogs: res.body.chatdata, roomId: res.body.room_id});
+        if (res.body) {
+          console.log('--room情報取得--');
+          console.log(res.body.chatdata);
+          console.log(res.body.room_id);
+          console.log('---------------');
+          this.setState({
+            chatLogs: res.body.chatdata,
+            roomId: res.body.room_id,
+          });
         }
         callback();
       });
   }
 
-  changeTalkRoom(parID){
-    if(this.chats){
+  changeTalkRoom(parID) {
+    if (this.chats) {
       this.chats.disconnected();
     }
-    this.setState({partnerId: parID});
+    this.setState({ partnerId: parID });
     let n = this.state.userId;
     let m = parID;
-    console.log('partnerID:'+m+' userID:'+n);
-    
+    console.log('partnerID:' + m + ' userID:' + n);
+
     let roomName = 'room_';
-    if(n > m){
+    if (n > m) {
       roomName += String(`${m}${n}`);
       console.log(roomName);
-    }
-    else{
+    } else {
       roomName += String(`${n}${m}`);
       console.log(roomName);
     }
-    this.setState({roomName: roomName});
-    this.setState({changeTalk: true});
+    this.setState({ roomName: roomName });
+    this.setState({ changeTalk: true });
   }
 
-  updateCurrentChatMessage(e){
-    this.setState({currentChatMessage: e.target.value});
+  updateCurrentChatMessage(e) {
+    this.setState({ currentChatMessage: e.target.value });
   }
 
-  handleChatInputKeyPress(e){
-    if(e.key === 'Enter'){
+  handleChatInputKeyPress(e) {
+    if (e.key === 'Enter') {
       this.handleSendEvent(e);
     }
   }
 
-  handleSendEvent(e){
+  handleSendEvent(e) {
     e.preventDefault();
     this.chats.create(this.state.currentChatMessage, this.state.userId);
-    this.setState({currentChatMessage: ''});
+    this.setState({ currentChatMessage: '' });
   }
 
-  renderChatLog(){
+  toBottom() {
+    var elem = document.getElementById('chatLogs');
+    console.log(elem.scrollHeight);
+    elem.scroll(0, elem.scrollHeight);
+    return elem.scrollHeight;
+  }
+
+  renderChatLog() {
     return this.state.chatLogs.map((el) => {
-      return(
+      return (
         <li key={`chat_${el.id}`}>
           {(() => {
-            if(el.user_id == this.state.userId){
-              return(
+            if (el.user_id == this.state.userId) {
+              return (
                 <div className="chatBox">
-                  <img className="meImage" src="/images/a.jpg"/>
+                  <img className="meImage" src="/images/a.jpg" />
                   <p className="meChatMessage">{el.body}</p>
                 </div>
               );
-            }
-            else{
-              return(
+            } else {
+              return (
                 <div className="chatBox">
-                  <img className="partnerImage" src="/images/a.jpg"/>
+                  <img className="partnerImage" src="/images/a.jpg" />
                   <p className="partnerChatMessage">{el.body}</p>
                 </div>
               );
@@ -247,12 +275,15 @@ export default class TalkRoom extends Component {
     });
   }
 
-  renderUsers(){
+  renderUsers() {
     return this.state.users.map((user, index) => {
-      return(
+      return (
         <li className="loginStatusBodyItem" key={`user_${index}`}>
           <div className="loginStatusBodyItemImage">
-            <img src="/images/blue.jpg" onClick={(e) => this.changeTalkRoom(user.id)}/>
+            <img
+              src="/images/blue.jpg"
+              onClick={(e) => this.changeTalkRoom(user.id)}
+            />
           </div>
           <div className="loginStatusBodyItemName">{user.name}</div>
           <div className="loginStatusBodyItemStaus">
@@ -298,42 +329,38 @@ export default class TalkRoom extends Component {
         </li>
       );
     });
-    
   }
 
-  render(){
-    return(
-    <div className="talkRoom">
-      <div className="loginStatus">
-        <div className="loginStatusHeader">
-          <p>ユーザーログイン状況</p>
+  render() {
+    return (
+      <div className="talkRoom">
+        <div className="loginStatus">
+          <div className="loginStatusHeader">
+            <p>ユーザーログイン状況</p>
+          </div>
+          <ul className="loginStatusBody">{this.renderUsers()}</ul>
         </div>
-        <ul className="loginStatusBody">
-          {this.renderUsers()}
-        </ul>
-      </div>
-      <div className="chat">
-        <div className="roomName">
-          <p>チャットルーム:{this.state.roomName}</p>
-        </div>
-        <img className="backgroundImage" src="/images/blue.jpg"/>
-        <ul className="chatLogs">
-          {this.renderChatLog()}
-        </ul>
-        <input 
-          type="text"
-          onKeyPress={ (e) => this.handleChatInputKeyPress(e) } //Enter key でも button 効果
-          value={ this.state.currentChatMessage }
-          onChange={ (e) => this.updateCurrentChatMessage(e) } 
-          placeholder="メッセージどうぞ！" 
-          className="chatInput"/>
-        <button
-          className="btnSend"
-          onClick={(e) => this.handleSendEvent(e)}>
+        <div className="chat">
+          <div className="roomName">
+            <p>チャットルーム:{this.state.roomName}</p>
+          </div>
+          <img className="backgroundImage" src="/images/blue.jpg" />
+          <ul className="chatLogs" id="chatLogs">
+            {this.renderChatLog()}
+          </ul>
+          <input
+            type="text"
+            onKeyPress={(e) => this.handleChatInputKeyPress(e)} //Enter key でも button 効果
+            value={this.state.currentChatMessage}
+            onChange={(e) => this.updateCurrentChatMessage(e)}
+            placeholder="メッセージどうぞ！"
+            className="chatInput"
+          />
+          <button className="btnSend" onClick={(e) => this.handleSendEvent(e)}>
             Send
-        </button>
-      </div>
-      <style>{`
+          </button>
+        </div>
+        <style>{`
         p {
           padding: 0;
           margin: 0;
@@ -352,14 +379,13 @@ export default class TalkRoom extends Component {
         .loginStatusBody {
           padding: 20px;
         }
-        ul {
+        .chatLogs {
           height: calc(100vh - 270px);
           overflow: auto;
-          scrollBottom: 0;
         }
         .chat {
           min-width: 880px;
-          width: calc(100vw - 280px);
+          width: calc(100vw - 360px);
           height: 100vh;
           position: relative;
         }
@@ -372,7 +398,7 @@ export default class TalkRoom extends Component {
           z-index: -1;
         }
         .roomName {
-          background-color: gray;
+          background-color: rgb(199, 192, 192);
           padding-left: 60px;
         }
         .roomName p {
@@ -380,7 +406,7 @@ export default class TalkRoom extends Component {
           padding-bottom: 20px;
         }
       `}</style>
-    </div>
+      </div>
     );
   }
 }

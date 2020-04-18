@@ -2,10 +2,11 @@ class AppearanceBroadcastJob < ApplicationJob
   queue_as :default
 
   def perform(user)
+    users = User.all
     ActionCable
       .server
       .broadcast("appearance_channel", 
-      user: user
+      user: users
       )
   end
 
