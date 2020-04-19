@@ -1,50 +1,53 @@
-import Nav from "./component/nav"
-import TalkRoom from "./component/talkroom"
-import { Component } from "react"
-import request from "superagent"
+import Nav from './component/nav';
+import TalkRoom from './component/talkroom';
+import { Component } from 'react';
+import request from 'superagent';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import reducer from '../src/reducers';
 
-export default class Index extends Component{
-  constructor(props){
+const store = createStore(reducer);
+export default class Index extends Component {
+  constructor(props) {
     super(props);
     this.state = {
       userName: '',
-      userId: ''
-    }
+      userId: '',
+    };
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.apiCurrentUser();
   }
 
-  apiCurrentUser(){
-    request
-      .get('/api/user')
-      .withCredentials()
-      .end((err, res)=> {
-        if(err){
-          console.log(err);
-        }
-        console.log(res);
-        if(res.body.user){
-          this.setState({
-            userName: res.body.user.name,
-            userId: res.body.user.id
-          });
-        }
-      })
+  apiCurrentUser() {
+    request.get('/api/user').end((err, res) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log(res);
+      if (res.body.user) {
+        this.setState({
+          userName: res.body.user.name,
+          userId: res.body.user.id,
+        });
+      }
+    });
   }
 
-  render(){
-    return(
+  render() {
+    return (
       <div className="page">
-        <Nav userId={this.state.userId}/>
-        <TalkRoom userName={this.state.userName} userId={this.state.userId}/>
+        <Provider store={store}>
+          <Nav userId={this.state.userId} />
+          <TalkRoom />
+        </Provider>
         <style jsx>{`
           .page {
             display: flex;
           }
         `}</style>
       </div>
-    )
+    );
   }
 }
