@@ -18,7 +18,9 @@
     "next": "^9.3.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-redux": "^7.2.0",
     "react-scroll": "^1.7.16",
+    "redux": "^4.0.5",
     "superagent": "^5.2.2"
   },
   "devDependencies": {}
