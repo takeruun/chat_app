@@ -26,7 +26,7 @@ export default class TalkRoom extends Component {
       this.setState({ changeTalk: false });
       this.apiGetRoom(this.createSocketCable.bind(this));
     }
-    if (this.state.currentChatMessage == '') {
+    if (this.state.currentChatMessage == '' && this.state.chatLogs.length > 0) {
       this.toBottom();
     }
   }
