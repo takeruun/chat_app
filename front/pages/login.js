@@ -1,9 +1,9 @@
-import LogInForm from "./molecues/loginform";
+import LogInForm from './molecues/loginform';
 
-export default  ()  =>  (
+export default () => (
   <div className="page">
     <div className="ImageArea">
-      <img src="/images/blue.jpg"/>
+      <img src="/images/blue.jpg" />
       <p>チャットしていく？</p>
     </div>
     <div className="SignInArea">
@@ -34,11 +34,11 @@ export default  ()  =>  (
         font-size: 4vw;
       }
       .SignInArea {
-        background-color: #262F42;
+        background-color: #262f42;
         color: #fff;
         padding: 30px;
         width: 30%;
       }
-      `}</style>
+    `}</style>
   </div>
-)
+);
