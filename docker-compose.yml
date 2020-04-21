@@ -2,18 +2,18 @@ version: '3'
 services:
   back:
     build: back
-    volumes: 
+    volumes:
       - ./back:/chat
       - bundle:/usr/local/bundle
     command: bash -c "rm -f /app/tmp/pids/server.pid && rails s -p 8000 -b 0.0.0.0"
-    depends_on: 
+    depends_on:
       - db
     ports:
       - 8000:8000
 
   front:
     build: front
-    volumes: 
+    volumes:
       - ./front:/app
     command: npm run dev
     ports:
@@ -22,7 +22,7 @@ services:
   db:
     image: mysql:8.0.16
     command: mysqld --default-authentication-plugin=mysql_native_password
-    environment: 
+    environment:
       MYSQL_USER: root
       MYSQL_ROOT_PASSWORD: password
     volumes:
@@ -30,15 +30,15 @@ services:
 
   server:
     build: server
-    volumes: 
+    volumes:
       - ./server/nginx.conf:/etc/nginx/conf.d/nginx.conf #buildしなくいいように
       - ./server/ssl:/etc/nginx/ssl
-    depends_on: 
+    depends_on:
       - back
       - front
     ports:
       - 443:443
 
-volumes: 
+volumes:
   bundle:
   mysql-data:
