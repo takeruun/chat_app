@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.html",
   "scripts": {
     "dev": "next",
     "build": "next build",
@@ -15,12 +15,15 @@
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fortawesome/react-fontawesome": "^0.1.9",
     "actioncable": "^5.2.4-2",
+    "connected-react-router": "^6.8.0",
     "next": "^9.3.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
+    "react-router-dom": "^5.1.2",
     "react-scroll": "^1.7.16",
     "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
     "superagent": "^5.2.2"
   },
   "devDependencies": {}
