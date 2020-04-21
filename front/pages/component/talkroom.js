@@ -1,7 +1,9 @@
 import { Component } from 'react';
 import request from 'superagent';
+import { connect } from 'react-redux';
+import { getCurrentUser } from '../../src/actions/user';
 
-export default class TalkRoom extends Component {
+class TalkRoom extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -410,3 +412,21 @@ export default class TalkRoom extends Component {
     );
   }
 }
+
+// reducreのreturn (結果を受け取る)
+function mapStateToProps(state) {
+  return {
+    userId: state.userId,
+    userName: state.userName,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    onClick() {
+      dispatch(getCurrentUser());
+    }, //Action Createrの呼び出し　actionのlogin
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TalkRoom);

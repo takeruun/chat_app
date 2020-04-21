@@ -1,51 +1,58 @@
-import { Component } from "react";
-import request from "superagent";
-import Router from "next/router";
+import { Component } from 'react';
+import request from 'superagent';
+import Router from 'next/router';
 
-export default class  LogInForm extends Component{
-  constructor(props){
+class LogInForm extends Component {
+  constructor(props) {
     super(props);
     this.state = {
       email: '',
-      password: ''
-    }
+      password: '',
+    };
   }
 
-  apiSignInUser(){
+  apiSignInUser() {
     request
       .get('/api/login')
       .query({
-          email: this.state.email,
-          password: this.state.password
-          })
+        email: this.state.email,
+        password: this.state.password,
+      })
       .end((err, res) => {
-        if(err){
+        if (err) {
           console.log(err);
         }
-        console.log(res)
-        if(res.body.user){
+        console.log(res);
+        if (res.body.user) {
           Router.push('/');
-        }
-        else{
+        } else {
           console.log(res.body.text);
-          alert(res.body.text)
-          this.setState({email: '', password: ''})
+          alert(res.body.text);
+          this.setState({ email: '', password: '' });
         }
-      })
+      });
   }
 
-  render(){
-    const changed = (name, e) => this.setState({[name]: e.target.value})
-    return(
+  render() {
+    const changed = (name, e) => this.setState({ [name]: e.target.value });
+    return (
       <div>
         <div>
           <span>メールアドレス</span>
-          <input value={this.state.email}
-              onChange={e => changed('email', e)} /><br />
+          <input
+            value={this.state.email}
+            onChange={(e) => changed('email', e)}
+          />
+          <br />
           <span>パスワード</span>
-          <input type='password' value={this.state.password}
-              onChange={e => changed('password' , e)} /><br />
-          <button onClick={e　=> this.apiSignInUser()}>ログイン</button><br />
+          <input
+            type="password"
+            value={this.state.password}
+            onChange={(e) => changed('password', e)}
+          />
+          <br />
+          <button onClick={(e) => this.apiSignInUser()}>ログイン</button>
+          <br />
         </div>
         <style jsx>{`
           span {
@@ -66,6 +73,8 @@ export default class  LogInForm extends Component{
           }
         `}</style>
       </div>
-    )
+    );
   }
 }
+
+export default LogInForm;
