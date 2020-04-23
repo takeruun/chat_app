@@ -1,12 +1,8 @@
 import request from 'superagent';
-export const LOGOUT = 'LOGOUT';
-export const GET_USERS = 'GET_USERS';
 export const API_REQUEST = 'API_REQUEST';
 export const API_SUCCESS = 'API_SUCCESS';
 export const API_FAILUER = 'API_FAILUER';
 export const API_USERS = 'API_USERS';
-export const CHANGE = 'CHANGE';
-export const CHANGE1 = 'CHANGE1';
 
 export function login(email, password) {
   return (dispatch) => {
@@ -88,10 +84,23 @@ export function getUsers() {
   };
 }
 
-export function changeTalkRoom(n) {
-  return {
-    type: CHANGE,
-    id: n,
-    flag: true,
+export function signUp(data) {
+  console.log(data);
+  return (dispatch) => {
+    dispatch(apiRequest());
+    request
+      .post('/api/signup')
+      .send({
+        email: data.email,
+        password: data.password,
+        username: data.name,
+      })
+      .end((err, res) => {
+        if (!err && res.body.user) {
+          dispatch(apiSuccess(res.body.user));
+        } else {
+          dispatch(apiFailuer(err));
+        }
+      });
   };
 }

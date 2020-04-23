@@ -35,12 +35,6 @@ export default (state = initialState, action) => {
         users: action.data,
       });
 
-    case 'CHANGE':
-      return Object.assign({}, state, {
-        id: action.id,
-        flag: action.flag,
-      });
-
     default:
       return state;
   }

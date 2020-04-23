@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getUsers, changeTalkRoom } from '../../src/actions/user';
+import { getUsers } from '../../src/actions/user';
 
 class LoginStatus extends Component {
   constructor(props) {
@@ -120,9 +120,10 @@ function mapDispatchToProps(dispatch) {
     getUsersDispatch() {
       dispatch(getUsers());
     },
+    /*
     changeTalkRoomDispatch(user_id) {
       dispatch(changeTalkRoom(user_id));
-    },
+    },*/
   };
 }
 

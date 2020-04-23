@@ -18,12 +18,23 @@ ReactDOM.render(
     <Provider store={store}>
       <BrowserRouter>
         <Switch>
-          <Route exact path="/" component={Home}></Route>
-          <Route exact path="/login" component={Login}></Route>
-          <Route exact path="/signup" component={SignUp}></Route>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route exact path="/login">
+            <Login />
+          </Route>
+          <Route exact path="/signup">
+            <SignUp />
+          </Route>
         </Switch>
       </BrowserRouter>
     </Provider>
+    <style jsx>{`
+      body {
+        margin: 0;
+      }
+    `}</style>
   </React.StrictMode>,
   document.getElementById('root')
 );

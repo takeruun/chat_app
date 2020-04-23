@@ -1,71 +1,69 @@
 import React, { Component } from 'react';
-import Router from 'next/router';
-import request from 'superagent';
+import { Field, reduxForm } from 'redux-form';
+import { connect } from 'react-redux';
+import { Link, withRouter } from 'react-router-dom';
+import { signUp } from '../actions/user';
 
-export default class SignUpForm extends Component {
+class SignUpForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      email: '',
-      password: '',
-      username: '',
-    };
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
-  apiSignUpUser() {
-    request
-      .post('/api/signup')
-      .send({
-        email: this.state.email,
-        password: this.state.password,
-        username: this.state.username,
-      })
-      .end((err, res) => {
-        if (err) {
-          console.log(err);
-        }
-        console.log(res);
-        if (res.body.text == 'user作成しました') {
-          localStorage.setItem('token', res.body.user.token);
-          let token = localStorage.getItem('token');
-          console.log(token);
-          Router.push('/');
-        } else {
-          alert(res.body.text);
-          this.setState({ email: '', password: '', username: '' });
-        }
-      });
+  renderField(field) {
+    const {
+      input,
+      label,
+      type,
+      meta: { touched, error },
+    } = field;
+    return (
+      <div>
+        {touched && error && <span>{error}</span>}
+        <input {...input} placeholder={label} type={type} />
+      </div>
+    );
+  }
+
+  async onSubmit(values) {
+    await this.props.signUp(values);
+    this.props.history.push('/');
   }
 
   render() {
-    const changed = (name, e) => this.setState({ [name]: e.target.value });
+    const { handleSubmit } = this.props;
     return (
       <div>
-        <div className="form">
-          <span>メールアドレス</span>
-          <input
-            type="email"
-            value={this.state.email}
-            onChange={(e) => changed('email', e)}
-          />
-          <br />
-          <span>パスワード</span>
-          <input
-            type="password"
-            value={this.state.password}
-            onChange={(e) => changed('password', e)}
-          />
-          <br />
-          <span>ユーザーネーム</span>
-          <input
-            value={this.state.username}
-            onChange={(e) => changed('username', e)}
-          />
-          <br />
-          <button onClick={(e) => this.apiSignUpUser()}>登録</button>
-          <br />
-          <p>{this.state.msg}</p>
-        </div>
+        <form onSubmit={handleSubmit(this.onSubmit)}>
+          <div>
+            <Field
+              label="メールアドレス"
+              name="email"
+              type="email"
+              component={this.renderField}
+            />
+          </div>
+          <div>
+            <Field
+              label="パスワード"
+              name="password"
+              type="password"
+              component={this.renderField}
+            />
+          </div>
+          <div>
+            <Field
+              label="名前"
+              name="name"
+              type="text"
+              component={this.renderField}
+            />
+          </div>
+          <div>
+            <input type="submit" value="登録" disabled={false} />
+            <Link to="/">戻る</Link>
+          </div>
+        </form>
         <style jsx>{`
           span {
             display: block;
@@ -88,3 +86,20 @@ export default class SignUpForm extends Component {
     );
   }
 }
+
+const validate = (values) => {
+  const erros = {};
+
+  if (!values.email) erros.email = 'Enter a email, please';
+  if (!values.password) erros.password = 'Enter a password, please';
+  if (!values.name) erros.name = 'Enter a name, please';
+
+  return erros;
+};
+
+const mapDispatchToProps = { signUp };
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(reduxForm({ validate, form: 'signUpForm' })(withRouter(SignUpForm)));
