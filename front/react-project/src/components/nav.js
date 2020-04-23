@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSignInAlt,
@@ -7,24 +7,12 @@ import {
   faSignOutAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import React, { Component } from 'react';
-import request from 'superagent';
-export default class Nav extends Component {
-  constructor(props) {
-    super(props);
-  }
+import { connect } from 'react-redux';
+import { logout } from '../../src/actions/user';
 
-  componentDidMount() {}
-
-  logout() {
-    request.post('/api/logout').end((err, res) => {
-      if (err) {
-        console.log(err);
-      }
-      if (res.body) {
-        console.log(res.body.text);
-        window.location.reload();
-      }
-    });
+class Nav extends Component {
+  logoutClick() {
+    this.props.logoutDispatch();
   }
 
   render() {
@@ -32,14 +20,14 @@ export default class Nav extends Component {
       <nav className="nav">
         <ul>
           <li>
-            <Link href="/login">
+            <Link to="/login">
               <span>
                 <FontAwesomeIcon icon={faSignInAlt} />
               </span>
             </Link>
           </li>
           <li>
-            <Link href="/">
+            <Link to="/">
               <span>
                 <FontAwesomeIcon icon={faHome} />
               </span>
@@ -48,7 +36,7 @@ export default class Nav extends Component {
           {(() => {
             if (this.props.userId) {
               return (
-                <li onClick={(e) => this.logout()}>
+                <li onClick={() => this.logoutClick()}>
                   <span>
                     <FontAwesomeIcon icon={faSignOutAlt} />
                   </span>
@@ -57,7 +45,7 @@ export default class Nav extends Component {
             } else {
               return (
                 <li>
-                  <Link href="/user">
+                  <Link to="/user">
                     <span>
                       <FontAwesomeIcon icon={faUser} />
                     </span>
@@ -105,3 +93,17 @@ export default class Nav extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return { userId: state.user.result.id };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    logoutDispatch() {
+      dispatch(logout());
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Nav);

@@ -1,7 +1,7 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import request from 'superagent';
 import { connect } from 'react-redux';
-import { getCurrentUser } from '../../src/actions/user';
+import LoginStatus from '../molecues/loginstatus';
 
 class TalkRoom extends Component {
   constructor(props) {
@@ -9,66 +9,29 @@ class TalkRoom extends Component {
     this.state = {
       currentChatMessage: '',
       chatLogs: [],
-      users: [],
       userId: '',
       partnerId: '',
       roomName: '',
       roomId: '',
-      changeTalk: false,
+      changeTalk: true,
     };
   }
 
-  componentDidMount() {
-    this.apiGetUsers();
-    this.apiGetCurrentUser(this.createSocketAppear.bind(this));
-  }
-
   componentDidUpdate() {
-    if (this.state.changeTalk) {
+    if (this.state.changeTalk && this.props.roomId) {
       this.setState({ changeTalk: false });
       this.apiGetRoom(this.createSocketCable.bind(this));
+      console.log('change');
     }
     if (this.state.currentChatMessage == '' && this.state.chatLogs.length > 0) {
       this.toBottom();
     }
   }
 
-  createSocketAppear() {
-    var Cable = require('actioncable');
-    let appearcable = Cable.createConsumer('wss:localhost/api/cable');
-    this.appear = appearcable.subscriptions.create(
-      {
-        channel: 'AppearanceChannel',
-        user_id: this.state.userId,
-      },
-      {
-        connected: () => {},
-        received: (data) => {
-          console.log(data);
-          for (var i = 0; i < data.user.length; i++) {
-            if (data.user[i].is_login == true) {
-              var element = document.getElementById(
-                `loginUser_${data.user[i].id - 1}`
-              );
-              if (this.state.userId == data.user[i].id)
-                element.style.backgroundColor = 'red';
-              else element.style.backgroundColor = 'green';
-            } else {
-              var element = document.getElementById(
-                `loginUser_${data.user[i].id - 1}`
-              );
-              element.style.backgroundColor = 'white';
-            }
-          }
-        },
-      }
-    );
-  }
-
   createSocketCable() {
     console.log(
       'userID:' +
-        this.state.userId +
+        this.props.userId +
         ' partnerID:' +
         this.state.partnerId +
         'とsocket作成'
@@ -106,33 +69,6 @@ class TalkRoom extends Component {
         },
       }
     );
-  }
-
-  apiGetCurrentUser(callback) {
-    request
-      .get('/api/user')
-      .withCredentials()
-      .end((err, res) => {
-        if (err) {
-          console.log(err);
-        }
-        if (res.body.user) {
-          this.setState({ userId: res.body.user.id });
-        }
-        callback();
-      });
-  }
-
-  apiGetUsers() {
-    request.get('/api/users').end((err, res) => {
-      if (err) {
-        console.log(err);
-      }
-      console.log(res);
-      if (res.body) {
-        this.setState({ users: res.body });
-      }
-    });
   }
 
   apiGetRoom(callback) {
@@ -277,92 +213,42 @@ class TalkRoom extends Component {
     });
   }
 
-  renderUsers() {
-    return this.state.users.map((user, index) => {
-      return (
-        <li className="loginStatusBodyItem" key={`user_${index}`}>
-          <div className="loginStatusBodyItemImage">
-            <img
-              src="/images/blue.jpg"
-              onClick={(e) => this.changeTalkRoom(user.id)}
-            />
-          </div>
-          <div className="loginStatusBodyItemName">{user.name}</div>
-          <div className="loginStatusBodyItemStaus">
-            <span id={`loginUser_${index}`}></span>
-          </div>
-          <style>{`
-          .loginStatusBodyItem {
-            display: flex;
-            margin-bottom: 20px;
-          }
-          .loginStatusBodyItemImage {
-            width: 40px;
-            height: 40px;
-            padding-right: 10px;
-          }
-          .loginStatusBodyItemImage :hover {
-            cursor: pointer;
-          }
-          .loginStatusBodyItemImage img {
-            width: 100%;
-            height: 100%;
-            obect-fit: cover;
-            border-radius: 100px;
-          }
-          .loginStatusBodyItemName {
-            display: flex;
-            align-items: center;
-            width: 170px;
-          }
-          .loginStatusBodyItemStaus {
-            width: 20px;
-            display: flex;
-            align-items: center;
-          }
-          .loginStatusBodyItemStaus span{
-            display: block;
-            border: 1px solid #ccc;
-            width: 10px;
-            height: 10px;
-            border-radius: 10px;
-          }
-          `}</style>
-        </li>
-      );
-    });
-  }
-
   render() {
     return (
-      <div className="talkRoom">
-        <div className="loginStatus">
-          <div className="loginStatusHeader">
-            <p>ユーザーログイン状況</p>
+      <React.Fragment>
+        <div className="talkRoom">
+          <div className="loginStatus">
+            <div className="loginStatusHeader">
+              <p>ユーザーログイン状況</p>
+            </div>
+            <ul className="loginStatusBody">
+              <LoginStatus />
+            </ul>
           </div>
-          <ul className="loginStatusBody">{this.renderUsers()}</ul>
-        </div>
-        <div className="chat">
-          <div className="roomName">
-            <p>チャットルーム:{this.state.roomName}</p>
+          <div className="chat">
+            <div className="roomName">
+              <p>チャットルーム:{this.state.roomName}</p>
+            </div>
+            <img className="backgroundImage" src="/images/blue.jpg" />
+            <ul className="chatLogs" id="chatLogs">
+              {this.renderChatLog()}
+            </ul>
+            <input
+              type="text"
+              onKeyPress={(e) => this.handleChatInputKeyPress(e)} //Enter key でも button 効果
+              value={this.state.currentChatMessage}
+              onChange={(e) => this.updateCurrentChatMessage(e)}
+              placeholder="メッセージどうぞ！"
+              className="chatInput"
+            />
+            <button
+              className="btnSend"
+              onClick={(e) => this.handleSendEvent(e)}
+            >
+              Send
+            </button>
           </div>
-          <img className="backgroundImage" src="/images/blue.jpg" />
-          <ul className="chatLogs" id="chatLogs">
-            {this.renderChatLog()}
-          </ul>
-          <input
-            type="text"
-            onKeyPress={(e) => this.handleChatInputKeyPress(e)} //Enter key でも button 効果
-            value={this.state.currentChatMessage}
-            onChange={(e) => this.updateCurrentChatMessage(e)}
-            placeholder="メッセージどうぞ！"
-            className="chatInput"
-          />
-          <button className="btnSend" onClick={(e) => this.handleSendEvent(e)}>
-            Send
-          </button>
-        </div>
-        <style>{`
+          <style>{`
         p {
           padding: 0;
           margin: 0;
@@ -408,25 +294,19 @@ class TalkRoom extends Component {
           padding-bottom: 20px;
         }
       `}</style>
-      </div>
+        </div>
+      </React.Fragment>
     );
   }
 }
 
-// reducreのreturn (結果を受け取る)
 function mapStateToProps(state) {
   return {
-    userId: state.userId,
-    userName: state.userName,
+    userId: state.user.result.id,
+    userName: state.user.result.name,
+    roomId: state.user.id,
+    changeTalk: state.user.flag,
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    onClick() {
-      dispatch(getCurrentUser());
-    }, //Action Createrの呼び出し　actionのlogin
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TalkRoom);
+export default connect(mapStateToProps)(TalkRoom);

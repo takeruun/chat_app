@@ -1,10 +1,12 @@
+import request from 'superagent';
 export const LOGOUT = 'LOGOUT';
 export const GET_USERS = 'GET_USERS';
 export const API_REQUEST = 'API_REQUEST';
 export const API_SUCCESS = 'API_SUCCESS';
 export const API_FAILUER = 'API_FAILUER';
-
-import request from 'superagent';
+export const API_USERS = 'API_USERS';
+export const CHANGE = 'CHANGE';
+export const CHANGE1 = 'CHANGE1';
 
 export function login(email, password) {
   return (dispatch) => {
@@ -40,6 +42,19 @@ export function getCurrentUser() {
   };
 }
 
+export function logout() {
+  return (dispatch) => {
+    dispatch(apiRequest());
+    request.post('/api/logout').end((err, res) => {
+      if (!err && res.body.text) {
+        dispatch(apiSuccess(res.body.text));
+      } else {
+        dispatch(apiFailuer());
+      }
+    });
+  };
+}
+
 const apiRequest = () => ({
   type: API_REQUEST,
 });
@@ -55,10 +70,28 @@ const apiFailuer = (err) => ({
   err,
 });
 
-export const logout = () => ({
-  type: LOGOUT,
+const apiUsers = (data) => ({
+  type: API_USERS,
+  data,
 });
 
-export const getUsers = () => ({
-  type: GET_USERS,
-});
+export function getUsers() {
+  return (dispatch) => {
+    dispatch(apiRequest());
+    request.get('/api/users').end((err, res) => {
+      if (!err && res.body) {
+        dispatch(apiUsers(res.body));
+      } else {
+        dispatch(apiFailuer(err));
+      }
+    });
+  };
+}
+
+export function changeTalkRoom(n) {
+  return {
+    type: CHANGE,
+    id: n,
+    flag: true,
+  };
+}

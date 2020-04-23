@@ -15,9 +15,11 @@ services:
     build: front
     volumes:
       - ./front:/app
-    command: npm run dev
+    working_dir: /app/react-project
+    command: yarn start
     ports:
       - 3000:3000
+    tty: true
 
   db:
     image: mysql:8.0.16
@@ -31,7 +33,7 @@ services:
   server:
     build: server
     volumes:
-      - ./server/nginx.conf:/etc/nginx/conf.d/nginx.conf #buildしなくいいように
+      #- ./server/nginx.conf:/etc/nginx/conf.d/nginx.conf #buildしなくいいように
       - ./server/ssl:/etc/nginx/ssl
     depends_on:
       - back
