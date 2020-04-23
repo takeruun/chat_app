@@ -1,34 +1,38 @@
-import { Component } from 'react';
-import request from 'superagent';
+import React, { Component } from 'react';
 import Router from 'next/router';
+import request from 'superagent';
 
-class LogInForm extends Component {
+export default class SignUpForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
       email: '',
       password: '',
+      username: '',
     };
   }
 
-  apiSignInUser() {
+  apiSignUpUser() {
     request
-      .get('/api/login')
-      .query({
+      .post('/api/signup')
+      .send({
         email: this.state.email,
         password: this.state.password,
+        username: this.state.username,
       })
       .end((err, res) => {
         if (err) {
           console.log(err);
         }
         console.log(res);
-        if (res.body.user) {
+        if (res.body.text == 'user作成しました') {
+          localStorage.setItem('token', res.body.user.token);
+          let token = localStorage.getItem('token');
+          console.log(token);
           Router.push('/');
         } else {
-          console.log(res.body.text);
           alert(res.body.text);
-          this.setState({ email: '', password: '' });
+          this.setState({ email: '', password: '', username: '' });
         }
       });
   }
@@ -37,9 +41,10 @@ class LogInForm extends Component {
     const changed = (name, e) => this.setState({ [name]: e.target.value });
     return (
       <div>
-        <div>
+        <div className="form">
           <span>メールアドレス</span>
           <input
+            type="email"
             value={this.state.email}
             onChange={(e) => changed('email', e)}
           />
@@ -51,8 +56,15 @@ class LogInForm extends Component {
             onChange={(e) => changed('password', e)}
           />
           <br />
-          <button onClick={(e) => this.apiSignInUser()}>ログイン</button>
+          <span>ユーザーネーム</span>
+          <input
+            value={this.state.username}
+            onChange={(e) => changed('username', e)}
+          />
           <br />
+          <button onClick={(e) => this.apiSignUpUser()}>登録</button>
+          <br />
+          <p>{this.state.msg}</p>
         </div>
         <style jsx>{`
           span {
@@ -76,5 +88,3 @@ class LogInForm extends Component {
     );
   }
 }
-
-export default LogInForm;

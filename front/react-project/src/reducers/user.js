@@ -1,47 +1,45 @@
-import {
-  LOGOUT,
-  GET_USERS,
-  API_REQUEST,
-  API_SUCCESS,
-  API_FAILUER,
-} from '../actions';
-
 const initialState = {
-  userId: '',
-  userName: '',
   users: [],
   requesting: false,
   requested: false,
-  saveResult: false,
+  result: false,
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case API_REQUEST:
+    case 'API_REQUEST':
       return Object.assign({}, state, {
         requesting: true,
         requested: false,
-        saveResult: false,
+        result: false,
       });
 
-    case API_SUCCESS:
+    case 'API_SUCCESS':
       return Object.assign({}, state, {
-        userId: action.id,
-        userName: action.name,
         requesting: false,
         requested: true,
-        savaResult: true,
+        result: action,
       }); //ActionCreater の id, name が action.id, action.name になっている
 
-    case API_FAILUER:
+    case 'API_FAILUER':
       return Object.assign({}, state, {
         requesting: false,
         requested: false,
-        saveResult: action.err,
+        result: action.err,
       });
 
-    case LOGOUT:
-      return Object.assign({}, state, { userId: '', userName: '' });
+    case 'API_USERS':
+      return Object.assign({}, state, {
+        requesting: false,
+        requested: true,
+        users: action.data,
+      });
+
+    case 'CHANGE':
+      return Object.assign({}, state, {
+        id: action.id,
+        flag: action.flag,
+      });
 
     default:
       return state;
