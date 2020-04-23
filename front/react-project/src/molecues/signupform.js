@@ -31,7 +31,7 @@ class SignUpForm extends Component {
   }
 
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, pristine, submitting } = this.props;
     return (
       <div>
         <form onSubmit={handleSubmit(this.onSubmit)}>
@@ -60,7 +60,11 @@ class SignUpForm extends Component {
             />
           </div>
           <div>
-            <input type="submit" value="登録" disabled={false} />
+            <input
+              type="submit"
+              value="登録"
+              disabled={pristine || submitting}
+            />
             <Link to="/">戻る</Link>
           </div>
         </form>
