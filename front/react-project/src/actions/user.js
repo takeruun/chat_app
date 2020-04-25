@@ -4,14 +4,14 @@ export const API_SUCCESS = 'API_SUCCESS';
 export const API_FAILUER = 'API_FAILUER';
 export const API_USERS = 'API_USERS';
 
-export function login(email, password) {
+export function login(data) {
   return (dispatch) => {
     dispatch(apiRequest());
     request
       .get('/api/login')
       .query({
-        email: email,
-        password: password,
+        email: data.email,
+        password: data.password,
       })
       .end((err, res) => {
         if (!err && res.body.user) {
