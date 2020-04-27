@@ -3,19 +3,21 @@ export const API_REQUEST = 'API_REQUEST';
 export const API_SUCCESS = 'API_SUCCESS';
 export const API_FAILUER = 'API_FAILUER';
 export const API_USERS = 'API_USERS';
+export const APPEAR_USERS = 'APPEAR_USERS';
 
-export function login(email, password) {
+export function login(data) {
   return (dispatch) => {
     dispatch(apiRequest());
     request
       .get('/api/login')
       .query({
-        email: email,
-        password: password,
+        email: data.email,
+        password: data.password,
       })
       .end((err, res) => {
         if (!err && res.body.user) {
           dispatch(apiSuccess(res.body.user));
+          createSocketAppear(dispatch, res.body.user.id);
         } else if (!err) {
           dispatch(apiFailuer(res));
         } else {
@@ -85,7 +87,6 @@ export function getUsers() {
 }
 
 export function signUp(data) {
-  console.log(data);
   return (dispatch) => {
     dispatch(apiRequest());
     request
@@ -98,9 +99,33 @@ export function signUp(data) {
       .end((err, res) => {
         if (!err && res.body.user) {
           dispatch(apiSuccess(res.body.user));
+          createSocketAppear(dispatch, res.body.user.id);
         } else {
           dispatch(apiFailuer(err));
         }
       });
   };
 }
+
+function createSocketAppear(dispatch, id) {
+  var Cable = require('actioncable');
+  let appearcable = Cable.createConsumer('wss:localhost/api/cable');
+
+  var appear = appearcable.subscriptions.create(
+    {
+      channel: 'AppearanceChannel',
+      user_id: id,
+    },
+    {
+      connected: () => {},
+      received: (data) => {
+        dispatch(appearUsers(data.user));
+      },
+    }
+  );
+}
+
+const appearUsers = (data) => ({
+  type: APPEAR_USERS,
+  data,
+});

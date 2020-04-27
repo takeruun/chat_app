@@ -1,58 +1,65 @@
 import React, { Component } from 'react';
-import request from 'superagent';
+import { Field, reduxForm } from 'redux-form';
+import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { login } from '../actions/user';
 
 class LogInForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      email: '',
-      password: '',
-    };
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
-  apiSignInUser() {
-    request
-      .get('/api/login')
-      .query({
-        email: this.state.email,
-        password: this.state.password,
-      })
-      .end((err, res) => {
-        if (err) {
-          console.log(err);
-        }
-        console.log(res);
-        if (res.body.user) {
-        } else {
-          console.log(res.body.text);
-          alert(res.body.text);
-          this.setState({ email: '', password: '' });
-        }
-      });
+  renderField(field) {
+    const {
+      input,
+      label,
+      type,
+      meta: { touched, error },
+    } = field;
+    return (
+      <div>
+        {touched && error && <span>{error}</span>}
+        <input {...input} placeholder={label} type={type} />
+      </div>
+    );
+  }
+
+  async onSubmit(values) {
+    await this.props.login(values);
+    this.props.history.push('/');
   }
 
   render() {
-    const changed = (name, e) => this.setState({ [name]: e.target.value });
+    const { handleSubmit, pristine, submitting } = this.props;
     return (
       <div>
-        <div>
-          <span>メールアドレス</span>
-          <input
-            value={this.state.email}
-            onChange={(e) => changed('email', e)}
-          />
-          <br />
-          <span>パスワード</span>
-          <input
-            type="password"
-            value={this.state.password}
-            onChange={(e) => changed('password', e)}
-          />
-          <br />
-          <button onClick={(e) => this.apiSignInUser()}>ログイン</button>
-          <br />
-        </div>
+        <form onSubmit={handleSubmit(this.onSubmit)}>
+          <div>
+            <Field
+              label="メールアドレス"
+              name="email"
+              type="email"
+              component={this.renderField}
+            />
+          </div>
+          <div>
+            <Field
+              label="パスワード"
+              name="password"
+              type="password"
+              component={this.renderField}
+            />
+          </div>
+          <div>
+            <input
+              type="submit"
+              value="ログイン"
+              disabled={pristine || submitting}
+            />
+            <Link to="/">戻る</Link>
+          </div>
+        </form>
         <style jsx>{`
           span {
             display: block;
@@ -76,8 +83,18 @@ class LogInForm extends Component {
   }
 }
 
-function matStateToProps(state) {
-  return {};
-}
+const validate = (values) => {
+  const erros = {};
 
-export default connect(matStateToProps)(LogInForm);
+  if (!values.email) erros.email = 'Enter a email, please';
+  if (!values.password) erros.password = 'Enter a password, please';
+
+  return erros;
+};
+
+const mapDispatchToProps = { login };
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(reduxForm({ validate, form: 'loginForm' })(withRouter(LogInForm)));
