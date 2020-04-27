@@ -1,60 +1,36 @@
 import React, { Component } from 'react';
+import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getUsers } from '../../src/actions/user';
 
 class LoginStatus extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      firstSocket: true,
-    };
-  }
   componentDidMount() {
     this.props.getUsersDispatch();
   }
 
   componentDidUpdate() {
-    if (this.props.userId && this.props.users && this.state.firstSocket) {
-      this.createSocketAppear();
-      this.setState({ firstSocket: false });
-    }
-  }
-
-  createSocketAppear() {
-    var Cable = require('actioncable');
-    let appearcable = Cable.createConsumer('wss:localhost/api/cable');
-    this.appear = appearcable.subscriptions.create(
-      {
-        channel: 'AppearanceChannel',
-        user_id: this.props.userId,
-      },
-      {
-        connected: () => {},
-        received: (data) => {
-          for (var i = 0; i < data.user.length; i++) {
-            if (data.user[i].is_login == true) {
-              var element = document.getElementById(
-                `loginUser_${data.user[i].id - 1}`
-              );
-              if (this.props.userId == data.user[i].id)
-                element.style.backgroundColor = 'red';
-              else element.style.backgroundColor = 'green';
-            } else {
-              var element = document.getElementById(
-                `loginUser_${data.user[i].id - 1}`
-              );
-              element.style.backgroundColor = 'white';
-            }
+    console.log(this.props.appearUsers);
+    if (this.props.appearUsers && this.props.users) {
+      const data = this.props.appearUsers;
+      for (var i = 0; i < data.length; i++) {
+        var element = document.getElementById(`loginUser_${data[i].id}`);
+        if (data[i].is_login === true) {
+          if (this.props.userId === data[i].id) {
+            element.style.backgroundColor = 'red';
+          } else {
+            element.style.backgroundColor = 'green';
           }
-        },
+        } else {
+          element.style.backgroundColor = 'white';
+        }
       }
-    );
+    }
   }
 
   render() {
     return this.props.users.map((user, index) => {
       return (
-        <li className="loginStatusBodyItem" key={`user_${index}`}>
+        <li className="loginStatusBodyItem" key={`user_${user.id}`}>
           <div className="loginStatusBodyItemImage">
             <img
               src="/images/blue.jpg"
@@ -63,7 +39,7 @@ class LoginStatus extends Component {
           </div>
           <div className="loginStatusBodyItemName">{user.name}</div>
           <div className="loginStatusBodyItemStaus">
-            <span id={`loginUser_${index}`}></span>
+            <span id={`loginUser_${user.id}`}></span>
           </div>
           <style>{`
           .loginStatusBodyItem {
@@ -108,10 +84,16 @@ class LoginStatus extends Component {
   }
 }
 
+LoginStatus.propTypes = {
+  userId: propTypes.number.isRequired,
+  users: propTypes.object.isRequired,
+  appearUsers: propTypes.object.isRequired,
+};
 function mapStateToProps(state) {
   return {
     userId: state.user.result.id,
     users: state.user.users,
+    appearUsers: state.user.appearUsers,
   };
 }
 

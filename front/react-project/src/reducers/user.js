@@ -35,6 +35,11 @@ export default (state = initialState, action) => {
         users: action.data,
       });
 
+    case 'APPEAR_USERS':
+      return Object.assign({}, state, {
+        appearUsers: action.data,
+      });
+
     default:
       return state;
   }
