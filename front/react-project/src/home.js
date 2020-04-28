@@ -6,6 +6,10 @@ import { connect } from 'react-redux';
 import { getCurrentUser } from './actions/user';
 
 class Home extends Component {
+  componentDidMount() {
+    this.props.getCurrentUserDispatch();
+  }
+
   render() {
     return (
       <div className="page">
@@ -22,10 +26,17 @@ class Home extends Component {
 }
 
 function mapStateToProps(state) {
-  return {};
+  console.log(state);
+  return { userId: state.user.id };
 }
 
 //Action Createrの呼び出し　actionのgetCurrentUser method
-const mapDispatchToProps = { getCurrentUser };
+function mapDispatchToProps(dispatch) {
+  return {
+    getCurrentUserDispatch() {
+      dispatch(getCurrentUser());
+    },
+  };
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

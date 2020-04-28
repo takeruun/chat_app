@@ -95,7 +95,7 @@ class Nav extends Component {
 }
 
 function mapStateToProps(state) {
-  return { userId: state.user.result.id };
+  return { userId: state.user.id };
 }
 
 function mapDispatchToProps(dispatch) {

@@ -302,10 +302,8 @@ class TalkRoom extends Component {
 
 function mapStateToProps(state) {
   return {
-    userId: state.user.result.id,
-    userName: state.user.result.name,
-    roomId: state.user.id,
-    changeTalk: state.user.flag,
+    userId: state.user.id,
+    userName: state.user.name,
   };
 }
 

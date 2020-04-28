@@ -9,7 +9,6 @@ class LoginStatus extends Component {
   }
 
   componentDidUpdate() {
-    console.log(this.props.appearUsers);
     if (this.props.appearUsers && this.props.users) {
       const data = this.props.appearUsers;
       for (var i = 0; i < data.length; i++) {
@@ -89,9 +88,10 @@ LoginStatus.propTypes = {
   users: propTypes.object.isRequired,
   appearUsers: propTypes.object.isRequired,
 };
+
 function mapStateToProps(state) {
   return {
-    userId: state.user.result.id,
+    userId: state.user.id,
     users: state.user.users,
     appearUsers: state.user.appearUsers,
   };

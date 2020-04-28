@@ -1,8 +1,9 @@
 import request from 'superagent';
 export const API_REQUEST = 'API_REQUEST';
-export const API_SUCCESS = 'API_SUCCESS';
 export const API_FAILUER = 'API_FAILUER';
+export const CURRENT_USER = 'CURRENT_USER';
 export const API_USERS = 'API_USERS';
+export const API_LOGOUT = 'API_LOGOUT';
 export const APPEAR_USERS = 'APPEAR_USERS';
 
 export function login(data) {
@@ -16,8 +17,9 @@ export function login(data) {
       })
       .end((err, res) => {
         if (!err && res.body.user) {
-          dispatch(apiSuccess(res.body.user));
-          createSocketAppear(dispatch, res.body.user.id);
+          dispatch(currentUser(res.body.user));
+          localStorage.setItem('token', res.body.token);
+          dispatch(createSocketAppear(res.body.user.id));
         } else if (!err) {
           dispatch(apiFailuer(res));
         } else {
@@ -30,13 +32,18 @@ export function login(data) {
 export function getCurrentUser() {
   return (dispatch) => {
     dispatch(apiRequest());
-    request.get('/api/user').end((err, res) => {
-      if (!err && res.body.user) {
-        dispatch(apiSuccess(res.body.user));
-      } else {
-        dispatch(apiFailuer(err));
-      }
-    });
+    request
+      .get('/api/user')
+      .query({ token: localStorage.getItem('token') })
+      //.set('Authorization', localStorage.getItem('token'))
+      .end((err, res) => {
+        if (!err && res.body.user) {
+          dispatch(currentUser(res.body.user));
+          dispatch(createSocketAppear(res.body.user.id));
+        } else {
+          dispatch(apiFailuer(err));
+        }
+      });
   };
 }
 
@@ -45,7 +52,8 @@ export function logout() {
     dispatch(apiRequest());
     request.post('/api/logout').end((err, res) => {
       if (!err && res.body.text) {
-        dispatch(apiSuccess(res.body.text));
+        dispatch(apiLogout(res.body.text));
+        localStorage.setItem('token', '');
       } else {
         dispatch(apiFailuer());
       }
@@ -57,10 +65,9 @@ const apiRequest = () => ({
   type: API_REQUEST,
 });
 
-const apiSuccess = (data) => ({
-  type: API_SUCCESS,
-  id: data.id,
-  name: data.name,
+const currentUser = (data) => ({
+  type: CURRENT_USER,
+  data,
 });
 
 const apiFailuer = (err) => ({
@@ -71,6 +78,11 @@ const apiFailuer = (err) => ({
 const apiUsers = (data) => ({
   type: API_USERS,
   data,
+});
+
+const apiLogout = (data) => ({
+  type: API_LOGOUT,
+  msg: data,
 });
 
 export function getUsers() {
@@ -98,8 +110,8 @@ export function signUp(data) {
       })
       .end((err, res) => {
         if (!err && res.body.user) {
-          dispatch(apiSuccess(res.body.user));
-          createSocketAppear(dispatch, res.body.user.id);
+          dispatch(currentUser(res.body.user));
+          dispatch(createSocketAppear(res.body.user.id));
         } else {
           dispatch(apiFailuer(err));
         }
@@ -107,22 +119,24 @@ export function signUp(data) {
   };
 }
 
-function createSocketAppear(dispatch, id) {
-  var Cable = require('actioncable');
-  let appearcable = Cable.createConsumer('wss:localhost/api/cable');
+export function createSocketAppear(id) {
+  return (dispatch) => {
+    var Cable = require('actioncable');
+    let appearcable = Cable.createConsumer('wss:localhost/api/cable');
 
-  var appear = appearcable.subscriptions.create(
-    {
-      channel: 'AppearanceChannel',
-      user_id: id,
-    },
-    {
-      connected: () => {},
-      received: (data) => {
-        dispatch(appearUsers(data.user));
+    var appear = appearcable.subscriptions.create(
+      {
+        channel: 'AppearanceChannel',
+        user_id: id,
       },
-    }
-  );
+      {
+        connected: () => {},
+        received: (data) => {
+          dispatch(appearUsers(data.user));
+        },
+      }
+    );
+  };
 }
 
 const appearUsers = (data) => ({
