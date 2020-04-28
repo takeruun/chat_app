@@ -33,7 +33,7 @@ services:
   server:
     build: server
     volumes:
-      #- ./server/nginx.conf:/etc/nginx/conf.d/nginx.conf #buildしなくいいように
+      - ./server/nginx.conf:/etc/nginx/conf.d/nginx.conf #buildしなくいいように
       - ./server/ssl:/etc/nginx/ssl
     depends_on:
       - back
