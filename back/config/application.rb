@@ -26,16 +26,6 @@ module Chat
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
-    config.middleware.insert_before 0, Rack::Cors do
-      allow do
-        origins "http://localhost:3000"
-        resource "*",
-          headers: :any,
-          methods: [:get, :post, :options, :head],
-          credentials: true
-      end
-    end
-
     config.generators do |g|
       g.test_framework false
     end
