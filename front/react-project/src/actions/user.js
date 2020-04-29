@@ -20,7 +20,7 @@ export function createSocketAppear(id) {
       {
         connected: () => {},
         received: (data) => {
-          dispatch(appearUsers(data.user));
+          dispatch(appearUsers(data.user, true));
         },
         disconnected: () => {},
       }
@@ -80,6 +80,7 @@ export function logout(appear) {
       if (!err && res.body.text) {
         appear.unsubscribe();
         dispatch(apiLogout(res.body.text));
+        dispatch(appearUsers(1, false));
         localStorage.setItem('token', '');
       } else {
         dispatch(apiFailuer());
@@ -148,7 +149,8 @@ const appearSocket = (data) => ({
   data,
 });
 
-const appearUsers = (data) => ({
+const appearUsers = (data, flag) => ({
   type: APPEAR_USERS,
   data,
+  flag,
 });

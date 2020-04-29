@@ -44,9 +44,15 @@ export default (state = initialState, action) => {
       });
 
     case 'APPEAR_USERS':
-      return Object.assign({}, state, {
-        appearUsers: action.data,
-      });
+      if (action.flag) {
+        return Object.assign({}, state, {
+          appearUsers: action.data,
+        });
+      } else {
+        return Object.assign({}, state, {
+          appearUsers: '',
+        });
+      }
 
     case 'APPEAR_SOCKET':
       return Object.assign({}, state, {

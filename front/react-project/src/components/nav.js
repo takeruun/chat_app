@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSignInAlt,
@@ -12,7 +12,7 @@ import { logout } from '../../src/actions/user';
 
 class Nav extends Component {
   logoutClick() {
-    this.props.logoutDispatch();
+    this.props.logoutDispatch(this.props.appearSocket, this.props.history);
   }
 
   render() {
@@ -95,15 +95,19 @@ class Nav extends Component {
 }
 
 function mapStateToProps(state) {
-  return { appearSocket: state.user.appearSocket, userId: state.user.id };
+  return {
+    appearSocket: state.user.appearSocket,
+    userId: state.user.id,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    logoutDispatch() {
-      dispatch(logout());
+    logoutDispatch(userId, history) {
+      history.push('login');
+      dispatch(logout(userId));
     },
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Nav);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Nav));
