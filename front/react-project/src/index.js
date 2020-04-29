@@ -30,11 +30,6 @@ ReactDOM.render(
         </Switch>
       </BrowserRouter>
     </Provider>
-    <style jsx>{`
-      body {
-        margin: 0;
-      }
-    `}</style>
   </React.StrictMode>,
   document.getElementById('root')
 );

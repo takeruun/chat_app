@@ -42,42 +42,42 @@ class LoginStatus extends Component {
             <span id={`loginUser_${user.id}`}></span>
           </div>
           <style>{`
-          .loginStatusBodyItem {
-            display: flex;
-            margin-bottom: 20px;
-          }
-          .loginStatusBodyItemImage {
-            width: 40px;
-            height: 40px;
-            padding-right: 10px;
-          }
-          .loginStatusBodyItemImage :hover {
-            cursor: pointer;
-          }
-          .loginStatusBodyItemImage img {
-            width: 100%;
-            height: 100%;
-            obect-fit: cover;
-            border-radius: 100px;
-          }
-          .loginStatusBodyItemName {
-            display: flex;
-            align-items: center;
-            width: 170px;
-          }
-          .loginStatusBodyItemStaus {
-            width: 20px;
-            display: flex;
-            align-items: center;
-          }
-          .loginStatusBodyItemStaus span{
-            display: block;
-            border: 1px solid #ccc;
-            width: 10px;
-            height: 10px;
-            border-radius: 10px;
-            background-color: white;
-          }
+            .loginStatusBodyItem {
+              display: flex;
+              margin-bottom: 20px;
+            }
+            .loginStatusBodyItemImage {
+              width: 40px;
+              height: 40px;
+              padding-right: 10px;
+            }
+            .loginStatusBodyItemImage :hover {
+              cursor: pointer;
+            }
+            .loginStatusBodyItemImage img {
+              width: 100%;
+              height: 100%;
+              obect-fit: cover;
+              border-radius: 100px;
+            }
+            .loginStatusBodyItemName {
+              display: flex;
+              align-items: center;
+              width: 170px;
+            }
+            .loginStatusBodyItemStaus {
+              width: 20px;
+              display: flex;
+              align-items: center;
+            }
+            .loginStatusBodyItemStaus span {
+              display: block;
+              border: 1px solid #ccc;
+              width: 10px;
+              height: 10px;
+              border-radius: 10px;
+              background-color: white;
+            }
           `}</style>
         </li>
       );
@@ -86,9 +86,8 @@ class LoginStatus extends Component {
 }
 
 LoginStatus.propTypes = {
-  userId: propTypes.number.isRequired,
-  users: propTypes.object.isRequired,
-  appearUsers: propTypes.object.isRequired,
+  userId: propTypes.string.isRequired,
+  users: propTypes.array.isRequired,
 };
 
 function mapStateToProps(state) {

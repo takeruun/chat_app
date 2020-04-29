@@ -15,7 +15,7 @@ class Home extends Component {
       <div className="page">
         <Nav />
         <TalkRoom />
-        <style jsx>{`
+        <style>{`
           .page {
             display: flex;
           }
