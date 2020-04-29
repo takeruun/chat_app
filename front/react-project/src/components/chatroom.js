@@ -3,7 +3,7 @@ import request from 'superagent';
 import { connect } from 'react-redux';
 import LoginStatus from '../molecues/loginstatus';
 
-class TalkRoom extends Component {
+class ChatRoom extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -322,4 +322,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(TalkRoom);
+export default connect(mapStateToProps)(ChatRoom);
