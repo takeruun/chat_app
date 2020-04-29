@@ -17,7 +17,7 @@ class Nav extends Component {
 
   render() {
     return (
-      <nav className="nav">
+      <div className="nav">
         <ul>
           {(() => {
             if (this.props.userId) {
@@ -55,8 +55,8 @@ class Nav extends Component {
             </Link>
           </li>
         </ul>
-        <style jsx>{`
-          nav {
+        <style>{`
+          .nav {
             padding: 16px;
             background-color: #262f42;
             width: 80px;
@@ -89,7 +89,7 @@ class Nav extends Component {
             background-color: #ecf0f4;
           }
         `}</style>
-      </nav>
+      </div>
     );
   }
 }

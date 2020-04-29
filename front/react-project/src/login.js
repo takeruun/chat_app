@@ -5,7 +5,7 @@ const Login = () => {
   return (
     <div className="page">
       <div className="ImageArea">
-        <img src="/images/blue.jpg" />
+        <img src="/images/blue.jpg" alt="背景" />
         <p>チャットしていく？</p>
       </div>
       <div className="SignInArea">

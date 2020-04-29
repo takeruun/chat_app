@@ -23,7 +23,10 @@ class TalkRoom extends Component {
       this.apiGetRoom(this.createSocketCable.bind(this));
       console.log('change');
     }
-    if (this.state.currentChatMessage == '' && this.state.chatLogs.length > 0) {
+    if (
+      this.state.currentChatMessage === '' &&
+      this.state.chatLogs.length > 0
+    ) {
       this.toBottom();
     }
   }
@@ -143,70 +146,78 @@ class TalkRoom extends Component {
       return (
         <li key={`chat_${el.id}`}>
           {(() => {
-            if (el.user_id == this.state.userId) {
+            if (el.user_id === this.state.userId) {
               return (
                 <div className="chatBox">
-                  <img className="meImage" src="/images/a.jpg" />
+                  <img
+                    className="meImage"
+                    src="/images/a.jpg"
+                    alt={`user_id:${el.user_id}の画像`}
+                  />
                   <p className="meChatMessage">{el.body}</p>
                 </div>
               );
             } else {
               return (
                 <div className="chatBox">
-                  <img className="partnerImage" src="/images/a.jpg" />
+                  <img
+                    className="partnerImage"
+                    src="/images/a.jpg"
+                    alt={`user_id:${el.user_id}の画像`}
+                  />
                   <p className="partnerChatMessage">{el.body}</p>
                 </div>
               );
             }
           })()}
           <style>{`
-          li {
-            list-style: none;
-          }
-          p{
-            padding: 0px;
-            margin: 0px;
-          }
-          .chatBox{
-            margin: auto;
-            width: 760px;
-          }
-          .meImage{
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            float: left;
-          }
-          .partnerImage{
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            float: right;
-          }
-          .meChatMessage{
-            background-color: white;
-            width: 350px;
-            height: 80px;
-            border-radius: 15px;
-            padding-top: 5px;
-            padding-left: 15px;
-            margin-left: 40px;
-            margin-bottom: 50px;
-            font-size: 18px;
-            display: inline-block;
-          }
-          .partnerChatMessage{
-            background-color: white;
-            width: 350px;
-            height: 80px;
-            border-radius: 15px;
-            padding-top: 5px;
-            padding-left: 15px;
-            margin-left: 300px;
-            margin-bottom: 50px;
-            font-size: 18px;
-            display: inline-block;
-          }
+            li {
+              list-style: none;
+            }
+            p {
+              padding: 0px;
+              margin: 0px;
+            }
+            .chatBox {
+              margin: auto;
+              width: 760px;
+            }
+            .meImage {
+              width: 48px;
+              height: 48px;
+              border-radius: 50%;
+              float: left;
+            }
+            .partnerImage {
+              width: 48px;
+              height: 48px;
+              border-radius: 50%;
+              float: right;
+            }
+            .meChatMessage {
+              background-color: white;
+              width: 350px;
+              height: 80px;
+              border-radius: 15px;
+              padding-top: 5px;
+              padding-left: 15px;
+              margin-left: 40px;
+              margin-bottom: 50px;
+              font-size: 18px;
+              display: inline-block;
+            }
+            .partnerChatMessage {
+              background-color: white;
+              width: 350px;
+              height: 80px;
+              border-radius: 15px;
+              padding-top: 5px;
+              padding-left: 15px;
+              margin-left: 300px;
+              margin-bottom: 50px;
+              font-size: 18px;
+              display: inline-block;
+            }
           `}</style>
         </li>
       );
@@ -229,7 +240,11 @@ class TalkRoom extends Component {
             <div className="roomName">
               <p>チャットルーム:{this.state.roomName}</p>
             </div>
-            <img className="backgroundImage" src="/images/blue.jpg" />
+            <img
+              className="backgroundImage"
+              src="/images/blue.jpg"
+              alt="背景"
+            />
             <ul className="chatLogs" id="chatLogs">
               {this.renderChatLog()}
             </ul>
@@ -249,51 +264,51 @@ class TalkRoom extends Component {
             </button>
           </div>
           <style>{`
-        p {
-          padding: 0;
-          margin: 0;
-        }
-        .talkRoom {
-          display: flex;
-        }
-        .loginStatus {
-          width: 280px;
-        }
-        .loginStatusHeader {
-          padding: 20px;
-          text-align: center;
-          border-bottom: 1px solid #ccc;
-        }
-        .loginStatusBody {
-          padding: 20px;
-        }
-        .chatLogs {
-          height: calc(100vh - 270px);
-          overflow: auto;
-        }
-        .chat {
-          min-width: 880px;
-          width: calc(100vw - 360px);
-          height: 100vh;
-          position: relative;
-        }
-        .backgroundImage {
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          position: absolute;
-          z-index: -1;
-        }
-        .roomName {
-          background-color: rgb(199, 192, 192);
-          padding-left: 60px;
-        }
-        .roomName p {
-          padding-top: 20px;
-          padding-bottom: 20px;
-        }
-      `}</style>
+            p {
+              padding: 0;
+              margin: 0;
+            }
+            .talkRoom {
+              display: flex;
+            }
+            .loginStatus {
+              width: 280px;
+            }
+            .loginStatusHeader {
+              padding: 20px;
+              text-align: center;
+              border-bottom: 1px solid #ccc;
+            }
+            .loginStatusBody {
+              padding: 20px;
+            }
+            .chatLogs {
+              height: calc(100vh - 270px);
+              overflow: auto;
+            }
+            .chat {
+              min-width: 880px;
+              width: calc(100vw - 360px);
+              height: 100vh;
+              position: relative;
+            }
+            .backgroundImage {
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              z-index: -1;
+            }
+            .roomName {
+              background-color: rgb(199, 192, 192);
+              padding-left: 60px;
+            }
+            .roomName p {
+              padding-top: 20px;
+              padding-bottom: 20px;
+            }
+          `}</style>
         </div>
       </React.Fragment>
     );
