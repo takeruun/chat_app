@@ -34,6 +34,7 @@ class LoginStatus extends Component {
             <img
               src="/images/blue.jpg"
               onClick={(e) => this.props.changeTalkRoomDispatch(user.id)}
+              alt={`user_id:${user.id}の画像`}
             />
           </div>
           <div className="loginStatusBodyItemName">{user.name}</div>

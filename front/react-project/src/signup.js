@@ -4,7 +4,7 @@ import SignUpForm from './molecues/signupform';
 const SignUp = () => (
   <div className="page">
     <div className="imageArea">
-      <img src="/images/blue.jpg" />
+      <img src="/images/blue.jpg" alt="背景" />
       <p>アカウント作ってく？？</p>
     </div>
     <div className="signUpArea">

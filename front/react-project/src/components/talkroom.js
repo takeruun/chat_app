@@ -23,7 +23,10 @@ class TalkRoom extends Component {
       this.apiGetRoom(this.createSocketCable.bind(this));
       console.log('change');
     }
-    if (this.state.currentChatMessage == '' && this.state.chatLogs.length > 0) {
+    if (
+      this.state.currentChatMessage === '' &&
+      this.state.chatLogs.length > 0
+    ) {
       this.toBottom();
     }
   }
@@ -143,17 +146,25 @@ class TalkRoom extends Component {
       return (
         <li key={`chat_${el.id}`}>
           {(() => {
-            if (el.user_id == this.state.userId) {
+            if (el.user_id === this.state.userId) {
               return (
                 <div className="chatBox">
-                  <img className="meImage" src="/images/a.jpg" />
+                  <img
+                    className="meImage"
+                    src="/images/a.jpg"
+                    alt={`user_id:${el.user_id}の画像`}
+                  />
                   <p className="meChatMessage">{el.body}</p>
                 </div>
               );
             } else {
               return (
                 <div className="chatBox">
-                  <img className="partnerImage" src="/images/a.jpg" />
+                  <img
+                    className="partnerImage"
+                    src="/images/a.jpg"
+                    alt={`user_id:${el.user_id}の画像`}
+                  />
                   <p className="partnerChatMessage">{el.body}</p>
                 </div>
               );
@@ -229,7 +240,11 @@ class TalkRoom extends Component {
             <div className="roomName">
               <p>チャットルーム:{this.state.roomName}</p>
             </div>
-            <img className="backgroundImage" src="/images/blue.jpg" />
+            <img
+              className="backgroundImage"
+              src="/images/blue.jpg"
+              alt="背景"
+            />
             <ul className="chatLogs" id="chatLogs">
               {this.renderChatLog()}
             </ul>
