@@ -39,12 +39,24 @@ export default (state = initialState, action) => {
 
     case 'API_LOGOUT':
       return Object.assign({}, state, {
+        id: '',
         msg: action.msg,
       });
 
     case 'APPEAR_USERS':
+      if (action.flag) {
+        return Object.assign({}, state, {
+          appearUsers: action.data,
+        });
+      } else {
+        return Object.assign({}, state, {
+          appearUsers: '',
+        });
+      }
+
+    case 'APPEAR_SOCKET':
       return Object.assign({}, state, {
-        appearUsers: action.data,
+        appearSocket: action.data,
       });
 
     default:
