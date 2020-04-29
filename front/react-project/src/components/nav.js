@@ -19,20 +19,6 @@ class Nav extends Component {
     return (
       <nav className="nav">
         <ul>
-          <li>
-            <Link to="/login">
-              <span>
-                <FontAwesomeIcon icon={faSignInAlt} />
-              </span>
-            </Link>
-          </li>
-          <li>
-            <Link to="/">
-              <span>
-                <FontAwesomeIcon icon={faHome} />
-              </span>
-            </Link>
-          </li>
           {(() => {
             if (this.props.userId) {
               return (
@@ -45,15 +31,29 @@ class Nav extends Component {
             } else {
               return (
                 <li>
-                  <Link to="/user">
+                  <Link to="/login">
                     <span>
-                      <FontAwesomeIcon icon={faUser} />
+                      <FontAwesomeIcon icon={faSignInAlt} />
                     </span>
                   </Link>
                 </li>
               );
             }
           })()}
+          <li>
+            <Link to="/">
+              <span>
+                <FontAwesomeIcon icon={faHome} />
+              </span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/user">
+              <span>
+                <FontAwesomeIcon icon={faUser} />
+              </span>
+            </Link>
+          </li>
         </ul>
         <style jsx>{`
           nav {
@@ -82,7 +82,7 @@ class Nav extends Component {
             align-items: center;
             justify-content: center;
           }
-          span :hover {
+          li :hover {
             cursor: pointer;
           }
           svg {
@@ -95,7 +95,7 @@ class Nav extends Component {
 }
 
 function mapStateToProps(state) {
-  return { userId: state.user.id };
+  return { appearSocket: state.user.appearSocket, userId: state.user.id };
 }
 
 function mapDispatchToProps(dispatch) {

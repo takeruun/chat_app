@@ -26,7 +26,6 @@ class Home extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state);
   return { userId: state.user.id };
 }
 
