@@ -65,7 +65,12 @@ class SignUpForm extends Component {
               value="登録"
               disabled={pristine || submitting}
             />
-            <Link to="/">戻る</Link>
+            <Link to="/" className="back">
+              戻る
+            </Link>
+            <Link to="/login" className="linkToLogin">
+              ログインはこちら
+            </Link>
           </div>
         </form>
         <style jsx>{`
@@ -84,6 +89,13 @@ class SignUpForm extends Component {
             width: 60px;
             height: 32px;
             margin-left: auto;
+          }
+          .back {
+            color: white;
+            margin-right: 20px;
+          }
+          .linkToLogin {
+            color: white;
           }
         `}</style>
       </div>

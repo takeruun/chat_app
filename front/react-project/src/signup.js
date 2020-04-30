@@ -11,7 +11,7 @@ const SignUp = () => (
       <h1>新規アカウント作成</h1>
       <SignUpForm />
     </div>
-    <style jsx>{`
+    <style>{`
       .page {
         width: 100%;
         height: 100vh;
