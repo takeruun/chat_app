@@ -1,6 +1,6 @@
 import React from 'react';
 import Nav from './components/nav';
-import TalkRoom from './components/talkroom';
+import ChatRoom from './components/chatroom';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { getCurrentUser } from './actions/user';
@@ -14,7 +14,7 @@ class Home extends Component {
     return (
       <div className="page">
         <Nav />
-        <TalkRoom />
+        <ChatRoom />
         <style>{`
           .page {
             display: flex;

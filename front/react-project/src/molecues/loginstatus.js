@@ -1,9 +1,19 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getUsers } from '../../src/actions/user';
+import { getUsers } from '../actions/user';
+import { changeChatRoom } from '../actions/chat';
 
 class LoginStatus extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      changedRoom: false,
+    };
+
+    this.changeRoomhandle = this.changeRoomhandle.bind(this);
+  }
+
   componentDidMount() {
     this.props.getUsersDispatch();
   }
@@ -26,6 +36,12 @@ class LoginStatus extends Component {
     }
   }
 
+  changeRoomhandle(partnerId) {
+    if (this.state.changedRoom) this.props.chatSocket.disconnected();
+    this.props.changeChatRoomDispatch(this.props.userId, partnerId);
+    this.setState({ changedRoom: true });
+  }
+
   render() {
     return this.props.users.map((user, index) => {
       return (
@@ -33,7 +49,7 @@ class LoginStatus extends Component {
           <div className="loginStatusBodyItemImage">
             <img
               src="/images/blue.jpg"
-              onClick={(e) => this.props.changeTalkRoomDispatch(user.id)}
+              onClick={(e) => this.changeRoomhandle(user.id)}
               alt={`user_id:${user.id}の画像`}
             />
           </div>
@@ -95,6 +111,7 @@ function mapStateToProps(state) {
     userId: state.user.id,
     users: state.user.users,
     appearUsers: state.user.appearUsers,
+    chatSocket: state.chat.chatSocket,
   };
 }
 
@@ -103,10 +120,9 @@ function mapDispatchToProps(dispatch) {
     getUsersDispatch() {
       dispatch(getUsers());
     },
-    /*
-    changeTalkRoomDispatch(user_id) {
-      dispatch(changeTalkRoom(user_id));
-    },*/
+    changeChatRoomDispatch(myId, partnerId) {
+      dispatch(changeChatRoom(myId, partnerId));
+    },
   };
 }
 
