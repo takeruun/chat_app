@@ -73,7 +73,7 @@ class SignUpForm extends Component {
             </Link>
           </div>
         </form>
-        <style jsx>{`
+        <style>{`
           span {
             display: block;
           }

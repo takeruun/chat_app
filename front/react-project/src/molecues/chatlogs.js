@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 class ChatLogs extends Component {
   componentDidUpdate() {
-    console.log(this.props.chatLogs);
     if (this.props.chatLogs.length > 0) {
       this.toBottom();
     }
