@@ -12,7 +12,7 @@ const Login = () => {
         <h1>ログイン</h1>
         <LogInForm />
       </div>
-      <style jsx>{`
+      <style>{`
         .page {
           width: 100%;
           height: 100vh;
