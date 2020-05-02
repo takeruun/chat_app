@@ -23,7 +23,7 @@ class Nav extends Component {
             if (this.props.userId) {
               return (
                 <li onClick={() => this.logoutClick()}>
-                  <span>
+                  <span className="icon">
                     <FontAwesomeIcon icon={faSignOutAlt} />
                   </span>
                 </li>
@@ -32,7 +32,7 @@ class Nav extends Component {
               return (
                 <li>
                   <Link to="/login">
-                    <span>
+                    <span className="icon">
                       <FontAwesomeIcon icon={faSignInAlt} />
                     </span>
                   </Link>
@@ -42,53 +42,19 @@ class Nav extends Component {
           })()}
           <li>
             <Link to="/">
-              <span>
+              <span className="icon">
                 <FontAwesomeIcon icon={faHome} />
               </span>
             </Link>
           </li>
           <li>
             <Link to="/user">
-              <span>
+              <span className="icon">
                 <FontAwesomeIcon icon={faUser} />
               </span>
             </Link>
           </li>
         </ul>
-        <style>{`
-          .nav {
-            padding: 16px;
-            background-color: #262f42;
-            width: 80px;
-            height: 100vh;
-          }
-          ul {
-            liststyletype: none;
-            margin: 0;
-            padding: 0;
-          }
-          li {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            margin-bottom: 40px;
-          }
-          span {
-            width: 40px;
-            height: 40px;
-            background-color: #ecf0f4;
-            border-radius: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-          li :hover {
-            cursor: pointer;
-          }
-          svg {
-            background-color: #ecf0f4;
-          }
-        `}</style>
       </div>
     );
   }

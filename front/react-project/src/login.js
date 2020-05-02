@@ -1,47 +1,18 @@
 import React from 'react';
 import LogInForm from './molecues/loginform';
+import './style/login.scss';
 
 const Login = () => {
   return (
-    <div className="page">
-      <div className="ImageArea">
+    <div className="login_page">
+      <div className="background">
         <img src="/images/blue.jpg" alt="背景" />
-        <p>チャットしていく？</p>
+        <p className="comment">チャットしていく？</p>
       </div>
-      <div className="SignInArea">
-        <h1>ログイン</h1>
+      <div className="login_area">
+        <h1 className="msg">ログイン</h1>
         <LogInForm />
       </div>
-      <style>{`
-        .page {
-          width: 100%;
-          height: 100vh;
-          display: flex;
-        }
-        .ImageArea {
-          position: relative;
-          width: 70%;
-        }
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-        p {
-          position: absolute;
-          top: 20%;
-          left: 20%;
-          color: #fff;
-          font-weight: bold;
-          font-size: 4vw;
-        }
-        .SignInArea {
-          background-color: #262f42;
-          color: #fff;
-          padding: 30px;
-          width: 30%;
-        }
-      `}</style>
     </div>
   );
 };

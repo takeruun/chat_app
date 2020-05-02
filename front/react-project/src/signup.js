@@ -1,46 +1,17 @@
 import React from 'react';
 import SignUpForm from './molecues/signupform';
+import './style/signup.scss';
 
 const SignUp = () => (
-  <div className="page">
-    <div className="imageArea">
+  <div className="signup_page">
+    <div className="background">
       <img src="/images/blue.jpg" alt="背景" />
-      <p>アカウント作ってく？？</p>
+      <p className="comment">アカウント作ってく？？</p>
     </div>
-    <div className="signUpArea">
-      <h1>新規アカウント作成</h1>
+    <div className="signup_area">
+      <h1 className="msg">新規アカウント作成</h1>
       <SignUpForm />
     </div>
-    <style>{`
-      .page {
-        width: 100%;
-        height: 100vh;
-        display: flex;
-      }
-      .imageArea {
-        position: relative;
-        width: 70%;
-      }
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-      p {
-        position: absolute;
-        top: 20%;
-        left: 20%;
-        color: #fff;
-        font-weight: bold;
-        font-size: 4vw;
-      }
-      .signUpArea {
-        background-color: #262f42;
-        color: #fff;
-        padding: 30px;
-        width: 30%;
-      }
-    `}</style>
   </div>
 );
 

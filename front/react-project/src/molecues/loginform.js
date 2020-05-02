@@ -13,14 +13,20 @@ class LogInForm extends Component {
   renderField(field) {
     const {
       input,
+      className,
       label,
       type,
       meta: { touched, error },
     } = field;
     return (
       <div>
-        {touched && error && <span>{error}</span>}
-        <input {...input} placeholder={label} type={type} />
+        {touched && error && <span className="msg-err">{error}</span>}
+        <input
+          {...input}
+          placeholder={label}
+          type={type}
+          className={className}
+        />
       </div>
     );
   }
@@ -34,13 +40,14 @@ class LogInForm extends Component {
     const { handleSubmit, pristine, submitting } = this.props;
     return (
       <div>
-        <form onSubmit={handleSubmit(this.onSubmit)}>
+        <form onSubmit={handleSubmit(this.onSubmit)} className="login_form">
           <div>
             <Field
               label="メールアドレス"
               name="email"
               type="email"
               component={this.renderField}
+              className="email"
             />
           </div>
           <div>
@@ -49,6 +56,7 @@ class LogInForm extends Component {
               name="password"
               type="password"
               component={this.renderField}
+              className="password"
             />
           </div>
           <div>
@@ -56,40 +64,16 @@ class LogInForm extends Component {
               type="submit"
               value="ログイン"
               disabled={pristine || submitting}
+              className="submit"
             />
-            <Link to="/" className="back">
-              戻る
-            </Link>
-            <Link to="/signup" className="linkToSignup">
-              新規登録はこちら
-            </Link>
           </div>
+          <Link to="/" className="back">
+            戻る
+          </Link>
+          <Link to="/signup" className="link_to_signup_page">
+            新規登録はこちら
+          </Link>
         </form>
-        <style>{`
-          span {
-            display: block;
-          }
-          input {
-            padding-left: 10px;
-            width: 100%;
-            height: 32px;
-            margin-bottom: 40px;
-            font-size: 15px;
-          }
-          button {
-            display: block;
-            width: 60px;
-            height: 32px;
-            margin-left: auto;
-          }
-          .back {
-            color:white;
-            margin-right: 20px;
-          }
-          .linkToSignup {
-            color: white;
-          }
-        `}</style>
       </div>
     );
   }

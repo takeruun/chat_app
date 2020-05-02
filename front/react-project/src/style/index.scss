@@ -1,0 +1,117 @@
+@import './login-status.scss';
+@import './chat-logs.scss';
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+ul,
+li {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+//home page
+.home {
+  display: flex;
+
+  //Nav
+  .nav {
+    padding: 16px;
+    background-color: #262f42;
+    width: 80px;
+    height: 100vh;
+
+    li {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .icon {
+    width: 40px;
+    height: 40px;
+    background-color: #ecf0f4;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  //chat rooom
+  .chat_room {
+    display: flex;
+
+    .login_status {
+      width: 280px;
+
+      .header {
+        padding: 20px;
+        text-align: center;
+        border-bottom: 1px solid #ccc;
+      }
+      .body {
+        padding: 20px;
+      }
+    }
+
+    .chat {
+      min-width: 880px;
+      width: calc(100vw - 360px);
+      height: 100vh;
+      position: relative;
+
+      .room_name {
+        background-color: rgb(199, 192, 192);
+        padding-left: 60px;
+
+        p {
+          padding-top: 20px;
+          padding-bottom: 20px;
+        }
+      }
+    }
+
+    .background_image {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      z-index: -1;
+    }
+
+    .chat_logs {
+      height: calc(100vh - 270px);
+      overflow: auto;
+    }
+  }
+}

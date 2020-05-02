@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import request from 'superagent';
 import { connect } from 'react-redux';
 import LoginStatus from '../molecues/loginstatus';
 import ChatLogs from '../molecues/chatlogs';
-
 class ChatRoom extends Component {
   constructor(props) {
     super(props);
@@ -11,8 +9,6 @@ class ChatRoom extends Component {
       currentChatMessage: '',
     };
   }
-
-  componentDidUpdate() {}
 
   updateCurrentChatMessage(e) {
     this.setState({ currentChatMessage: e.target.value });
@@ -36,21 +32,21 @@ class ChatRoom extends Component {
 
   render() {
     return (
-      <div className="talkRoom">
-        <div className="loginStatus">
-          <div className="loginStatusHeader">
+      <div className="chat_room">
+        <div className="login_status">
+          <div className="header">
             <p>ユーザーログイン状況</p>
           </div>
-          <ul className="loginStatusBody">
+          <ul className="body">
             <LoginStatus />
           </ul>
         </div>
         <div className="chat">
-          <div className="roomName">
+          <div className="room_name">
             <p>チャットルーム:{this.state.roomName}</p>
           </div>
-          <img className="backgroundImage" src="/images/blue.jpg" alt="背景" />
-          <ul className="chatLogs" id="chatLogs">
+          <img className="background_image" src="/images/blue.jpg" alt="背景" />
+          <ul className="chat_logs" id="chatLogs">
             <ChatLogs />
           </ul>
           <input
@@ -59,58 +55,12 @@ class ChatRoom extends Component {
             value={this.state.currentChatMessage}
             onChange={(e) => this.updateCurrentChatMessage(e)}
             placeholder="メッセージどうぞ！"
-            className="chatInput"
+            className="chat_input"
           />
-          <button className="btnSend" onClick={(e) => this.handleSendEvent(e)}>
+          <button className="btn_send" onClick={(e) => this.handleSendEvent(e)}>
             Send
           </button>
         </div>
-        <style>{`
-            p {
-              padding: 0;
-              margin: 0;
-            }
-            .talkRoom {
-              display: flex;
-            }
-            .loginStatus {
-              width: 280px;
-            }
-            .loginStatusHeader {
-              padding: 20px;
-              text-align: center;
-              border-bottom: 1px solid #ccc;
-            }
-            .loginStatusBody {
-              padding: 20px;
-            }
-            .chatLogs {
-              height: calc(100vh - 270px);
-              overflow: auto;
-            }
-            .chat {
-              min-width: 880px;
-              width: calc(100vw - 360px);
-              height: 100vh;
-              position: relative;
-            }
-            .backgroundImage {
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              position: absolute;
-              z-index: -1;
-            }
-            .roomName {
-              background-color: rgb(199, 192, 192);
-              padding-left: 60px;
-            }
-            .roomName p {
-              padding-top: 20px;
-              padding-bottom: 20px;
-            }
-          `}</style>
       </div>
     );
   }
