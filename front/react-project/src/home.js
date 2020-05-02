@@ -12,14 +12,9 @@ class Home extends Component {
 
   render() {
     return (
-      <div className="page">
+      <div className="home">
         <Nav />
         <ChatRoom />
-        <style>{`
-          .page {
-            display: flex;
-          }
-        `}</style>
       </div>
     );
   }

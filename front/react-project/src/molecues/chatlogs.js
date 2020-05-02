@@ -21,77 +21,28 @@ class ChatLogs extends Component {
           {(() => {
             if (el.user_id === this.props.userId) {
               return (
-                <div className="chatBox">
+                <div className="chat_box">
                   <img
-                    className="meImage"
+                    className="my_image"
                     src="/images/a.jpg"
                     alt={`user_id:${el.user_id}の画像`}
                   />
-                  <p className="meChatMessage">{el.body}</p>
+                  <p className="my_chat_message">{el.body}</p>
                 </div>
               );
             } else {
               return (
-                <div className="chatBox">
+                <div className="chat_box">
                   <img
-                    className="partnerImage"
+                    className="partner_image"
                     src="/images/a.jpg"
                     alt={`user_id:${el.user_id}の画像`}
                   />
-                  <p className="partnerChatMessage">{el.body}</p>
+                  <p className="partner_chat_message">{el.body}</p>
                 </div>
               );
             }
           })()}
-          <style>{`
-            li {
-              list-style: none;
-            }
-            p {
-              padding: 0px;
-              margin: 0px;
-            }
-            .chatBox {
-              margin: auto;
-              width: 760px;
-            }
-            .meImage {
-              width: 48px;
-              height: 48px;
-              border-radius: 50%;
-              float: left;
-            }
-            .partnerImage {
-              width: 48px;
-              height: 48px;
-              border-radius: 50%;
-              float: right;
-            }
-            .meChatMessage {
-              background-color: white;
-              width: 350px;
-              height: 80px;
-              border-radius: 15px;
-              padding-top: 5px;
-              padding-left: 15px;
-              margin-left: 40px;
-              margin-bottom: 50px;
-              font-size: 18px;
-              display: inline-block;
-            }
-            .partnerChatMessage {
-              background-color: white;
-              width: 350px;
-              height: 80px;
-              border-radius: 15px;
-              padding-top: 5px;
-              padding-left: 15px;
-              margin-left: 300px;
-              margin-bottom: 50px;
-              font-size: 18px;
-              display: inline-block;
-            }
-          `}</style>
         </li>
       );
     });

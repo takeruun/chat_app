@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './style/index.scss';
 import Home from './home';
 import Login from './login';
 import SignUp from './signup';

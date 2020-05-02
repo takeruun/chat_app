@@ -45,56 +45,18 @@ class LoginStatus extends Component {
   render() {
     return this.props.users.map((user, index) => {
       return (
-        <li className="loginStatusBodyItem" key={`user_${user.id}`}>
-          <div className="loginStatusBodyItemImage">
+        <li className="login_status_body_item" key={`user_${user.id}`}>
+          <div className="item_user_image">
             <img
               src="/images/blue.jpg"
               onClick={(e) => this.changeRoomhandle(user.id)}
               alt={`user_id:${user.id}の画像`}
             />
           </div>
-          <div className="loginStatusBodyItemName">{user.name}</div>
-          <div className="loginStatusBodyItemStaus">
-            <span id={`loginUser_${user.id}`}></span>
+          <div className="item_user_name">{user.name}</div>
+          <div className="item_user_status">
+            <span className="user_status" id={`loginUser_${user.id}`}></span>
           </div>
-          <style>{`
-            .loginStatusBodyItem {
-              display: flex;
-              margin-bottom: 20px;
-            }
-            .loginStatusBodyItemImage {
-              width: 40px;
-              height: 40px;
-              padding-right: 10px;
-            }
-            .loginStatusBodyItemImage :hover {
-              cursor: pointer;
-            }
-            .loginStatusBodyItemImage img {
-              width: 100%;
-              height: 100%;
-              obect-fit: cover;
-              border-radius: 100px;
-            }
-            .loginStatusBodyItemName {
-              display: flex;
-              align-items: center;
-              width: 170px;
-            }
-            .loginStatusBodyItemStaus {
-              width: 20px;
-              display: flex;
-              align-items: center;
-            }
-            .loginStatusBodyItemStaus span {
-              display: block;
-              border: 1px solid #ccc;
-              width: 10px;
-              height: 10px;
-              border-radius: 10px;
-              background-color: white;
-            }
-          `}</style>
         </li>
       );
     });
