@@ -64,13 +64,15 @@ class LoginStatus extends Component {
 }
 
 LoginStatus.propTypes = {
-  userId: propTypes.string.isRequired,
+  userId: propTypes.number.isRequired,
   users: propTypes.array.isRequired,
+  appearUsers: propTypes.array,
+  chatSocket: propTypes.object,
 };
 
 function mapStateToProps(state) {
   return {
-    userId: state.user.id,
+    userId: Number(state.user.id),
     users: state.user.users,
     appearUsers: state.user.appearUsers,
     chatSocket: state.chat.chatSocket,

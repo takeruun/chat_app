@@ -9,6 +9,7 @@ import {
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { logout } from '../../src/actions/user';
+import propTypes from 'prop-types';
 
 class Nav extends Component {
   logoutClick() {
@@ -60,10 +61,15 @@ class Nav extends Component {
   }
 }
 
+Nav.propTypes = {
+  appearSocket: propTypes.object,
+  userId: propTypes.number.isRequired,
+};
+
 function mapStateToProps(state) {
   return {
     appearSocket: state.user.appearSocket,
-    userId: state.user.id,
+    userId: Number(state.user.id),
   };
 }
 

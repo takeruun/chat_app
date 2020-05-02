@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import propTypes from 'prop-types';
 
 class ChatLogs extends Component {
   componentDidUpdate() {
@@ -49,9 +50,14 @@ class ChatLogs extends Component {
   }
 }
 
+ChatLogs.propTypes = {
+  userId: propTypes.number.isRequired,
+  chatLogs: propTypes.array.isRequired,
+};
+
 function mapStateToProps(state) {
   return {
-    userId: state.user.id,
+    userId: Number(state.user.id),
     chatLogs: state.chat.chatLogs,
   };
 }
