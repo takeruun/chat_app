@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import LoginStatus from '../molecues/loginstatus';
 import ChatLogs from '../molecues/chatlogs';
 import propTypes from 'prop-types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleDoubleUp } from '@fortawesome/free-solid-svg-icons';
 
 class ChatRoom extends Component {
   constructor(props) {
@@ -47,21 +49,26 @@ class ChatRoom extends Component {
           <div className="room_name">
             <p>チャットルーム:{this.state.roomName}</p>
           </div>
-          <img className="background_image" src="/images/blue.jpg" alt="背景" />
+
           <ul className="chat_logs" id="chatLogs">
             <ChatLogs />
           </ul>
-          <input
-            type="text"
-            onKeyPress={(e) => this.handleChatInputKeyPress(e)} //Enter key でも button 効果
-            value={this.state.currentChatMessage}
-            onChange={(e) => this.updateCurrentChatMessage(e)}
-            placeholder="メッセージどうぞ！"
-            className="chat_input"
-          />
-          <button className="btn_send" onClick={(e) => this.handleSendEvent(e)}>
-            Send
-          </button>
+          <div className="send_message">
+            <input
+              type="text"
+              onKeyPress={(e) => this.handleChatInputKeyPress(e)} //Enter key でも button 効果
+              value={this.state.currentChatMessage}
+              onChange={(e) => this.updateCurrentChatMessage(e)}
+              placeholder="メッセージどうぞ！"
+              className="chat_input"
+            />
+            <FontAwesomeIcon
+              icon={faAngleDoubleUp}
+              size="3x"
+              onClick={(e) => this.handleSendEvent(e)}
+              className="btn_send"
+            />
+          </div>
         </div>
       </div>
     );
