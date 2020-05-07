@@ -9,6 +9,7 @@ import {
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { logout } from '../../src/actions/user';
+import propTypes from 'prop-types';
 
 class Nav extends Component {
   logoutClick() {
@@ -18,7 +19,7 @@ class Nav extends Component {
   render() {
     return (
       <div className="nav">
-        <ul>
+        <ul className="list_pages">
           {(() => {
             if (this.props.userId) {
               return (
@@ -26,6 +27,7 @@ class Nav extends Component {
                   <span className="icon">
                     <FontAwesomeIcon icon={faSignOutAlt} />
                   </span>
+                  <p className="explanation">Logout</p>
                 </li>
               );
             } else {
@@ -36,6 +38,7 @@ class Nav extends Component {
                       <FontAwesomeIcon icon={faSignInAlt} />
                     </span>
                   </Link>
+                  <p className="explanation">Login</p>
                 </li>
               );
             }
@@ -46,6 +49,7 @@ class Nav extends Component {
                 <FontAwesomeIcon icon={faHome} />
               </span>
             </Link>
+            <p className="explanation">Chat</p>
           </li>
           <li>
             <Link to="/user">
@@ -53,6 +57,7 @@ class Nav extends Component {
                 <FontAwesomeIcon icon={faUser} />
               </span>
             </Link>
+            <p className="explanation">{this.props.userName}</p>
           </li>
         </ul>
       </div>
@@ -60,10 +65,17 @@ class Nav extends Component {
   }
 }
 
+Nav.propTypes = {
+  appearSocket: propTypes.object,
+  userId: propTypes.number.isRequired,
+  userName: propTypes.string.isRequired,
+};
+
 function mapStateToProps(state) {
   return {
     appearSocket: state.user.appearSocket,
-    userId: state.user.id,
+    userId: Number(state.user.id),
+    userName: state.user.name,
   };
 }
 

@@ -42,28 +42,33 @@ p {
   //Nav
   .nav {
     padding: 16px;
-    background-color: #262f42;
+    background-color: white;
     width: 80px;
     height: 100vh;
 
-    li {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 40px;
-      &:hover {
-        cursor: pointer;
+    .list_pages {
+      li {
+        text-align: center;
+        margin-bottom: 40px;
+        &:hover {
+          cursor: pointer;
+        }
+
+        .icon {
+          padding: 15px;
+          background-color: #edeff8;
+          color: grey;
+          border-radius: 10px;
+          display: block;
+        }
+
+        .explanation {
+          font-size: 12px;
+          color: grey;
+          padding: 5px 0px 5px 0px;
+        }
       }
     }
-  }
-
-  .icon {
-    width: 40px;
-    height: 40px;
-    background-color: #ecf0f4;
-    border-radius: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   //chat rooom
@@ -72,6 +77,7 @@ p {
 
     .login_status {
       width: 280px;
+      background-color: #aaadaf3d;
 
       .header {
         padding: 20px;
@@ -88,30 +94,47 @@ p {
       width: calc(100vw - 360px);
       height: 100vh;
       position: relative;
+      background-color: rgba(175, 173, 173, 0.404);
+      //background-image: url('images/blue.jpg');
+      //background-size: cover;
 
       .room_name {
-        background-color: rgb(199, 192, 192);
+        background-color: #1fca74;
         padding-left: 60px;
 
         p {
+          color: white;
           padding-top: 20px;
           padding-bottom: 20px;
         }
       }
     }
 
-    .background_image {
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      z-index: -1;
+    .chat_logs {
+      height: calc(100vh - 170px);
+      overflow: auto;
     }
 
-    .chat_logs {
-      height: calc(100vh - 270px);
-      overflow: auto;
+    .send_message {
+      padding-top: 20px;
+      text-align: center;
+
+      .chat_input {
+        width: 70%;
+        margin: 0;
+        font-size: 18px;
+        padding: 13px;
+        border-radius: 10px;
+        border: none;
+      }
+
+      .btn_send {
+        position: absolute;
+        color: green;
+        &:hover {
+          cursor: pointer;
+        }
+      }
     }
   }
 }
