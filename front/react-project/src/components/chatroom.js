@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import LoginStatus from '../molecues/loginstatus';
 import ChatLogs from '../molecues/chatlogs';
+import propTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDoubleUp } from '@fortawesome/free-solid-svg-icons';
 
@@ -74,9 +75,15 @@ class ChatRoom extends Component {
   }
 }
 
+ChatRoom.propTypes = {
+  userId: propTypes.number.isRequired,
+  userName: propTypes.string.isRequired,
+  chatSocket: propTypes.object,
+};
+
 function mapStateToProps(state) {
   return {
-    userId: state.user.id,
+    userId: Number(state.user.id),
     userName: state.user.name,
     chatSocket: state.chat.chatSocket,
   };
