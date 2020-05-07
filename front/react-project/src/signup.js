@@ -5,7 +5,6 @@ import './style/signup.scss';
 const SignUp = () => (
   <div className="signup_page">
     <div className="background">
-      <img src="/images/blue.jpg" alt="背景" />
       <p className="comment">アカウント作ってく？？</p>
     </div>
     <div className="signup_area">

@@ -4,7 +4,8 @@
   display: flex;
 
   .background {
-    position: relative;
+    background-image: url('images/blue.jpg');
+    background-size: cover;
     width: 70%;
 
     img {
