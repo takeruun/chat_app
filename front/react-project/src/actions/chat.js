@@ -1,6 +1,7 @@
 import request from 'superagent';
-export const API_CHAT_DATA = 'API_CHAT_DATA';
+export const CHAT_DATA = 'CHAT_DATA';
 export const CHAT_SOCKET = 'CHAT_SOCKET';
+export const PARTNER_NAME = 'PARTNER_NAME';
 
 export function changeChatRoom(myId, partnerId) {
   return (dispatch) => {
@@ -13,6 +14,7 @@ export function changeChatRoom(myId, partnerId) {
     } else {
       roomName += String(`${n}${m}`);
     }
+    dispatch(getPartnerName(partnerId));
     dispatch(getRoomId(roomName));
   };
 }
@@ -24,7 +26,7 @@ function getRoomId(roomName) {
       .query({ roomName: roomName })
       .end((err, res) => {
         if (!err && res.body) {
-          dispatch(apiChatData(res.body.chatdata));
+          dispatch(chatData(res.body.chatdata));
         } else {
         }
         dispatch(createSocketChat(res.body.room_id, res.body.chatdata));
@@ -45,8 +47,8 @@ function createSocketChat(roomId, chatLogs) {
         conneted: () => {},
         received: (data) => {
           //chatLogs.push(data);これでは再レンダリングされない
-          const newchatLogs = chatLogs.concat(data);
-          dispatch(apiChatData(newchatLogs));
+          chatLogs = chatLogs.concat(data);
+          dispatch(chatData(chatLogs));
         },
         create: function (chatContent, id) {
           //this.chats.createの引数がchatContent, id
@@ -64,12 +66,30 @@ function createSocketChat(roomId, chatLogs) {
   };
 }
 
-const apiChatData = (data) => ({
-  type: API_CHAT_DATA,
+function getPartnerName(partnerId) {
+  return (dispatch) => {
+    request
+      .get('/api/partner')
+      .query({ partner_id: partnerId })
+      .end((err, res) => {
+        if (!err && res.body) {
+          dispatch(partnerName(res.body.user_name));
+        }
+      });
+  };
+}
+
+const chatData = (data) => ({
+  type: CHAT_DATA,
   data,
 });
 
 const chatSocket = (data) => ({
   type: CHAT_SOCKET,
+  data,
+});
+
+const partnerName = (data) => ({
+  type: PARTNER_NAME,
   data,
 });

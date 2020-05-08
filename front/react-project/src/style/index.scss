@@ -38,13 +38,13 @@ p {
 //home page
 .home {
   display: flex;
+  height: 100vh;
 
   //Nav
   .nav {
     padding: 16px;
     background-color: white;
     width: 80px;
-    height: 100vh;
 
     .list_pages {
       li {
@@ -92,7 +92,7 @@ p {
     .chat {
       min-width: 880px;
       width: calc(100vw - 360px);
-      height: 100vh;
+
       position: relative;
       background-color: rgba(175, 173, 173, 0.404);
       //background-image: url('images/blue.jpg');
@@ -101,11 +101,13 @@ p {
       .room_name {
         background-color: #1fca74;
         padding-left: 60px;
+        height: 65px;
 
-        p {
+        .partner_name {
           color: white;
           padding-top: 20px;
           padding-bottom: 20px;
+          font-size: 20px;
         }
       }
     }

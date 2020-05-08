@@ -43,4 +43,9 @@ class UsersController < ApplicationController
     @current_user = User.find_by(id: payload['user_id'])
     render json: { user: @current_user }
   end
+
+  def partner
+    @user = User.find_by(id: params[:partner_id])
+    render json: {user_name: @user.name}
+  end
 end
