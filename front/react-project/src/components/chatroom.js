@@ -47,9 +47,8 @@ class ChatRoom extends Component {
         </div>
         <div className="chat">
           <div className="room_name">
-            <p>チャットルーム:{this.state.roomName}</p>
+            <p className="partner_name">{this.props.partnerName}</p>
           </div>
-
           <ul className="chat_logs" id="chatLogs">
             <ChatLogs />
           </ul>
@@ -59,7 +58,7 @@ class ChatRoom extends Component {
               onKeyPress={(e) => this.handleChatInputKeyPress(e)} //Enter key でも button 効果
               value={this.state.currentChatMessage}
               onChange={(e) => this.updateCurrentChatMessage(e)}
-              placeholder="メッセージどうぞ！"
+              placeholder="メッセージ"
               className="chat_input"
             />
             <FontAwesomeIcon
@@ -79,6 +78,7 @@ ChatRoom.propTypes = {
   userId: propTypes.number.isRequired,
   userName: propTypes.string.isRequired,
   chatSocket: propTypes.object,
+  partnerName: propTypes.string,
 };
 
 function mapStateToProps(state) {
@@ -86,6 +86,7 @@ function mapStateToProps(state) {
     userId: Number(state.user.id),
     userName: state.user.name,
     chatSocket: state.chat.chatSocket,
+    partnerName: state.chat.partnerName,
   };
 }
 

@@ -4,7 +4,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case 'API_CHAT_DATA':
+    case 'CHAT_DATA':
       return Object.assign({}, state, {
         chatLogs: action.data,
       });
@@ -17,6 +17,11 @@ export default (state = initialState, action) => {
     case 'CHAT_SOCKET':
       return Object.assign({}, state, {
         chatSocket: action.data,
+      });
+
+    case 'PARTNER_NAME':
+      return Object.assign({}, state, {
+        partnerName: action.data,
       });
 
     default:
