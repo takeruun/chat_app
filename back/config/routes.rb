@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     get 'login' => 'users#login'
     post 'logout' => 'users#logout'
     post 'signup' => 'users#signup'
+    get 'partner' => 'users#partner'
     resources :messages
     resources :rooms
   end
