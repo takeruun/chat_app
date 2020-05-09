@@ -60,6 +60,7 @@ ChatLogs.propTypes = {
 };
 
 function mapStateToProps(state) {
+  console.log(state.chat.chatLogs);
   return {
     userId: Number(state.user.id),
     chatLogs: state.chat.chatLogs,
