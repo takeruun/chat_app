@@ -42,9 +42,9 @@ p {
 
   //Nav
   .nav {
-    padding: 16px;
+    padding: 15px;
     background-color: white;
-    width: 80px;
+    width: 60px;
 
     .list_pages {
       li {
@@ -71,8 +71,8 @@ p {
     }
   }
 
-  //chat rooom
-  .chat_room {
+  //chat page
+  .chat_page {
     display: flex;
 
     .login_status {
@@ -90,8 +90,7 @@ p {
     }
 
     .chat {
-      min-width: 880px;
-      width: calc(100vw - 360px);
+      width: calc(100vw - 370px);
 
       position: relative;
       background-color: #59b2ee3d;
@@ -137,6 +136,30 @@ p {
           cursor: pointer;
         }
       }
+    }
+  }
+
+  //user page
+  .user_page {
+    width: calc(100vw - 80px);
+    background-color: #59b2ee3d;
+
+    .title {
+      background-color: #1fca74;
+      text-align: center;
+      height: 65px;
+    }
+  }
+
+  //friends page
+  .friends_page {
+    width: calc(100vw - 80px);
+    background-color: #59b2ee3d;
+
+    .title {
+      background-color: #1fca74;
+      text-align: center;
+      height: 65px;
     }
   }
 }

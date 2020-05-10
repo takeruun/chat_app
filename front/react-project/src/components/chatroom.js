@@ -36,7 +36,7 @@ class ChatRoom extends Component {
 
   render() {
     return (
-      <div className="chat_room">
+      <div className="chat_page">
         <div className="login_status">
           <div className="header">
             <p>ユーザーログイン状況</p>

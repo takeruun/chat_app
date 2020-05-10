@@ -4,6 +4,9 @@ import './style/index.scss';
 import Home from './home';
 import Login from './login';
 import SignUp from './signup';
+import ChatRoom from './components/chatroom';
+import Friends from './components/friends';
+import User from './components/user';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { createStore, applyMiddleware } from 'redux';
@@ -25,13 +28,19 @@ ReactDOM.render(
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
-            <Home />
+            <Home component={ChatRoom} />
           </Route>
           <Route exact path="/login">
             <Login />
           </Route>
           <Route exact path="/signup">
             <SignUp />
+          </Route>
+          <Route exact path="/friends">
+            <Home component={Friends} />
+          </Route>
+          <Route exact path="/user/:id">
+            <Home component={User} />
           </Route>
         </Switch>
       </BrowserRouter>

@@ -5,6 +5,7 @@ import {
   faHome,
   faUser,
   faSignOutAlt,
+  faUserFriends,
 } from '@fortawesome/free-solid-svg-icons';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -52,12 +53,20 @@ class Nav extends Component {
             <p className="explanation">Chat</p>
           </li>
           <li>
-            <Link to="/user">
+            <Link to={'/user/' + this.props.userId}>
               <span className="icon">
                 <FontAwesomeIcon icon={faUser} />
               </span>
             </Link>
             <p className="explanation">{this.props.userName}</p>
+          </li>
+          <li>
+            <Link to="/friends">
+              <span className="icon">
+                <FontAwesomeIcon icon={faUserFriends} />
+              </span>
+            </Link>
+            <p className="explanation">Friends</p>
           </li>
         </ul>
       </div>

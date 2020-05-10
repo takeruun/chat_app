@@ -12,7 +12,6 @@ class ChatLogs extends Component {
   toBottom() {
     var elem = document.getElementById('chatLogs');
     elem.scroll(0, elem.scrollHeight);
-    return elem.scrollHeight;
   }
 
   render() {
@@ -60,7 +59,6 @@ ChatLogs.propTypes = {
 };
 
 function mapStateToProps(state) {
-  console.log(state.chat.chatLogs);
   return {
     userId: Number(state.user.id),
     chatLogs: state.chat.chatLogs,
