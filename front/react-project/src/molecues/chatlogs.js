@@ -12,7 +12,6 @@ class ChatLogs extends Component {
   toBottom() {
     var elem = document.getElementById('chatLogs');
     elem.scroll(0, elem.scrollHeight);
-    return elem.scrollHeight;
   }
 
   render() {

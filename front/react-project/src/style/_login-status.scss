@@ -1,5 +1,7 @@
 .login_status_body_item {
   display: flex;
+  border-bottom: 1px solid rgb(197, 197, 197);
+  padding-bottom: 10px;
   margin-bottom: 20px;
 
   .item_user_image {
