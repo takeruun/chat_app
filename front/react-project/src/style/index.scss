@@ -42,7 +42,7 @@ p {
 
   //Nav
   .nav {
-    padding: 15px;
+    padding: 10px;
     background-color: white;
     width: 60px;
 
@@ -90,7 +90,7 @@ p {
     }
 
     .chat {
-      width: calc(100vw - 370px);
+      width: calc(100vw - 360px);
 
       position: relative;
       background-color: #59b2ee3d;
@@ -160,6 +160,64 @@ p {
       background-color: #1fca74;
       text-align: center;
       height: 65px;
+    }
+
+    .friends {
+      margin: auto;
+      margin-top: 20px;
+      width: calc(100vw - 250px);
+
+      .friend {
+        background-color: #fff;
+        box-shadow: 2px 4px 6px #c1ced7;
+        padding: 10px 10px 0 10px;
+        text-align: center;
+        display: inline-block;
+        height: 8rem;
+        width: 20%;
+        margin: 0px 10px 30px 10px;
+        animation-name: fedin;
+        animation-duration: 3s;
+        animation-timing-function: 1;
+
+        .left {
+          display: inline-block;
+          width: 50%;
+
+          .image {
+            width: 75%;
+            height: 75%;
+          }
+        }
+
+        .right {
+          display: inline-block;
+
+          .name {
+            margin-bottom: 10px;
+            border-bottom: solid 1px black;
+          }
+
+          .email {
+            margin-bottom: 10px;
+            border-bottom: solid 1px black;
+          }
+
+          .login_status {
+          }
+        }
+      }
+
+      @keyframes fedin {
+        from {
+          opacity: 0;
+          transform: translateY(15px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
     }
   }
 }
