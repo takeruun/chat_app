@@ -48,4 +48,13 @@ class UsersController < ApplicationController
     @user = User.find_by(id: params[:partner_id])
     render json: {user_name: @user.name}
   end
+
+  def show
+    @user = User.find_by(id: params[:user_id])
+    if @user
+      render json: {user: @user}
+    else
+      render json: {}
+    end
+  end
 end

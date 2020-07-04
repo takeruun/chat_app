@@ -4,21 +4,23 @@ import { connect } from 'react-redux';
 
 class User extends Component {
   render() {
+    const { user } = this.props;
     return (
-      <div className="user_page">
-        <h1 className="title">{this.props.userName}</h1>
+      <div>
+        <p>{user.name}</p>
+        <p>{user.email}</p>
       </div>
     );
   }
 }
 
 User.propTypes = {
-  userName: propTypes.string.isRequired,
+  user: propTypes.object.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
-    userName: state.user.name,
+    user: state.user.user,
   };
 }
 
