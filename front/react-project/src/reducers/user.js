@@ -37,6 +37,13 @@ export default (state = initialState, action) => {
         users: action.data,
       });
 
+    case 'API_USER':
+      return Object.assign({}, state, {
+        requesting: false,
+        requested: true,
+        user: action.data,
+      });
+
     case 'API_LOGOUT':
       return Object.assign({}, state, {
         id: '',

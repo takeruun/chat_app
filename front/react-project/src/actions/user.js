@@ -5,6 +5,7 @@ export const CURRENT_USER = 'CURRENT_USER';
 export const API_USERS = 'API_USERS';
 export const API_LOGOUT = 'API_LOGOUT';
 export const APPEAR_USERS = 'APPEAR_USERS';
+export const API_USER = 'API_USER';
 export const APPEAR_SOCKET = 'APPEAR_SOCKET';
 
 export function createSocketAppear(id) {
@@ -120,6 +121,22 @@ export function getUsers() {
   };
 }
 
+export function getUser(id) {
+  return (dispacth) => {
+    dispacth(apiRequest());
+    request
+      .get('/api/show')
+      .query({ user_id: id })
+      .end((err, res) => {
+        if (!err && res.body.user) {
+          dispacth(apiUser(res.body.user));
+        } else {
+          dispacth(apiFailuer());
+        }
+      });
+  };
+}
+
 const apiRequest = () => ({
   type: API_REQUEST,
 });
@@ -136,6 +153,11 @@ const currentUser = (data) => ({
 
 const apiUsers = (data) => ({
   type: API_USERS,
+  data,
+});
+
+const apiUser = (data) => ({
+  type: API_USER,
   data,
 });
 
