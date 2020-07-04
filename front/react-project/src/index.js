@@ -6,6 +6,7 @@ import Login from './login';
 import SignUp from './signup';
 import ChatRoom from './components/chatroom';
 import Friends from './components/friends';
+import MyUser from './components/myuser';
 import User from './components/user';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
@@ -40,6 +41,9 @@ ReactDOM.render(
             <Home component={Friends} />
           </Route>
           <Route exact path="/user/:id">
+            <Home component={MyUser} />
+          </Route>
+          <Route exact path="/users/:id">
             <Home component={User} />
           </Route>
         </Switch>

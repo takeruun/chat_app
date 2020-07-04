@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import '../style/index.scss';
 import { connect } from 'react-redux';
-import { getUsers } from '../actions/user';
+import { getUsers, getUser } from '../actions/user';
+import { Link, withRouter } from 'react-router-dom';
 
 class Friends extends Component {
   componentDidMount() {
-    this.props.getUsers();
+    this.props.getUsersDispatch();
   }
 
   renderFriends() {
@@ -30,6 +31,12 @@ class Friends extends Component {
                 return <div className="login_status">ログアウト中</div>;
               }
             })()}
+            <Link
+              to={'/users/' + user.id}
+              onClick={this.props.getUserDispatch(user.id)}
+            >
+              こちら
+            </Link>
           </div>
         </li>
       );
@@ -56,6 +63,18 @@ function matStateToProps(state) {
   };
 }
 
-const mapDispatchToProps = { getUsers };
+function mapDispatchToProps(dispatch) {
+  return {
+    getUserDispatch(id) {
+      dispatch(getUser(id));
+    },
+    getUsersDispatch() {
+      dispatch(getUsers());
+    },
+  };
+}
 
-export default connect(matStateToProps, mapDispatchToProps)(Friends);
+export default connect(
+  matStateToProps,
+  mapDispatchToProps
+)(withRouter(Friends));
