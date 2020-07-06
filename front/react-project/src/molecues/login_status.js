@@ -13,7 +13,6 @@ class LoginStatus extends Component {
     };
 
     this.changeRoomhandle = this.changeRoomhandle.bind(this);
-    this.test = this.test.bind(this);
   }
 
   componentDidMount() {
