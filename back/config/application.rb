@@ -32,10 +32,10 @@ module Chat
 
     config.generators do |g|
       g.test_framework :rspec,
-                      fixtures: false,
-                      view_specs: false,
-                      helper_specs: false,
-                      routing_specs: false
+                       fixtures: false,
+                       view_specs: false,
+                       helper_specs: false,
+                       routing_specs: false
     end
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
