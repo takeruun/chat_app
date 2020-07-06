@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import LoginStatus from '../molecues/loginstatus';
-import ChatLogs from '../molecues/chatlogs';
+import LoginStatus from '../molecues/login_status';
+import ChatLogs from '../molecues/chat_logs';
+import ChatRooms from '../molecues/chat_rooms';
 import propTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDoubleUp } from '@fortawesome/free-solid-svg-icons';
@@ -36,36 +37,39 @@ class ChatRoom extends Component {
 
   render() {
     return (
-      <div className="chat_page">
-        <div className="login_status">
-          <div className="header">
-            <p>ユーザーログイン状況</p>
+      <div className='chat_page'>
+        <div className='login_status'>
+          <div className='header'>
+            <p>ログイン状況</p>
           </div>
-          <ul className="body">
+          <ul className='body'>
             <LoginStatus />
           </ul>
         </div>
-        <div className="chat">
-          <div className="room_name">
-            <p className="partner_name">{this.props.partnerName}</p>
+        <div className='chat_rooms'>
+          <ChatRooms />
+        </div>
+        <div className='chat'>
+          <div className='room_name'>
+            <p className='partner_name'>{this.props.partnerName}</p>
           </div>
-          <ul className="chat_logs" id="chatLogs">
+          <ul className='chat_logs' id='chatLogs'>
             <ChatLogs />
           </ul>
-          <div className="send_message">
+          <div className='send_message'>
             <input
-              type="text"
+              type='text'
               onKeyPress={(e) => this.handleChatInputKeyPress(e)} //Enter key でも button 効果
               value={this.state.currentChatMessage}
               onChange={(e) => this.updateCurrentChatMessage(e)}
-              placeholder="メッセージ"
-              className="chat_input"
+              placeholder='メッセージ'
+              className='chat_input'
             />
             <FontAwesomeIcon
               icon={faAngleDoubleUp}
-              size="3x"
+              size='3x'
               onClick={(e) => this.handleSendEvent(e)}
-              className="btn_send"
+              className='btn_send'
             />
           </div>
         </div>

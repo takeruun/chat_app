@@ -76,7 +76,7 @@ p {
     display: flex;
 
     .login_status {
-      width: 280px;
+      width: 200px;
       background-color: #7ec9fc3d;
 
       .header {
@@ -86,6 +86,17 @@ p {
       }
       .body {
         padding: 20px;
+      }
+    }
+
+    .chat_rooms {
+      width: 250px;
+      background-color: #67aad63d;
+
+      .header {
+        padding: 20px;
+        text-align: center;
+        border-bottom: 1px solid #ccc;
       }
     }
 

@@ -4,9 +4,9 @@ import './style/index.scss';
 import Home from './home';
 import Login from './login';
 import SignUp from './signup';
-import ChatRoom from './components/chatroom';
+import ChatRoom from './components/chat_room';
 import Friends from './components/friends';
-import MyUser from './components/myuser';
+import MyUser from './components/my_user';
 import User from './components/user';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
@@ -28,22 +28,22 @@ ReactDOM.render(
     <Provider store={store}>
       <BrowserRouter>
         <Switch>
-          <Route exact path="/">
+          <Route exact path='/'>
             <Home component={ChatRoom} />
           </Route>
-          <Route exact path="/login">
+          <Route exact path='/login'>
             <Login />
           </Route>
-          <Route exact path="/signup">
+          <Route exact path='/signup'>
             <SignUp />
           </Route>
-          <Route exact path="/friends">
+          <Route exact path='/friends'>
             <Home component={Friends} />
           </Route>
-          <Route exact path="/user/:id">
+          <Route exact path='/user/:id'>
             <Home component={MyUser} />
           </Route>
-          <Route exact path="/users/:id">
+          <Route exact path='/users/:id'>
             <Home component={User} />
           </Route>
         </Switch>

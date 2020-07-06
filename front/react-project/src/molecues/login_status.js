@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getUsers } from '../actions/user';
-import { changeChatRoom } from '../actions/chat';
+import { createRoomId } from '../actions/chat';
+import request from 'superagent';
 
 class LoginStatus extends Component {
   constructor(props) {
@@ -45,17 +46,17 @@ class LoginStatus extends Component {
   render() {
     return this.props.users.map((user, index) => {
       return (
-        <li className="login_status_body_item" key={`user_${user.id}`}>
-          <div className="item_user_image">
+        <li className='login_status_body_item' key={`user_${user.id}`}>
+          <div className='item_user_image'>
             <img
-              src="/images/blue.jpg"
+              src='/images/blue.jpg'
               onClick={(e) => this.changeRoomhandle(user.id)}
               alt={`user_id:${user.id}の画像`}
             />
           </div>
-          <div className="item_user_name">{user.name}</div>
-          <div className="item_user_status">
-            <span className="user_status" id={`loginUser_${user.id}`}></span>
+          <div className='item_user_name'>{user.name}</div>
+          <div className='item_user_status'>
+            <span className='user_status' id={`loginUser_${user.id}`}></span>
           </div>
         </li>
       );
@@ -85,7 +86,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(getUsers());
     },
     changeChatRoomDispatch(myId, partnerId) {
-      dispatch(changeChatRoom(myId, partnerId));
+      dispatch(createRoomId(myId, partnerId));
     },
   };
 }
