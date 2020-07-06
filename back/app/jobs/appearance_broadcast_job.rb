@@ -8,7 +8,7 @@ class AppearanceBroadcastJob < ApplicationJob
     ActionCable
       .server
       .broadcast('appearance_channel',
-                user: users)
+                 user: users)
   end
 
   private
