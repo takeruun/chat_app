@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import LoginStatus from '../molecues/loginstatus';
-import ChatLogs from '../molecues/chatlogs';
+import LoginStatus from '../molecues/login_status';
+import ChatLogs from '../molecues/chat_logs';
 import ChatRooms from '../molecues/chat_rooms';
 import propTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
