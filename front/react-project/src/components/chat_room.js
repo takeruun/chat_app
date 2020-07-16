@@ -6,17 +6,29 @@ import ChatRooms from '../molecues/chat_rooms';
 import propTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDoubleUp } from '@fortawesome/free-solid-svg-icons';
+import { MentionsInput, Mention } from 'react-mentions';
 
 class ChatRoom extends Component {
   constructor(props) {
     super(props);
     this.state = {
       currentChatMessage: '',
+      testUsers: [
+        { display: 'AAA', id: '123' },
+        { display: 'BBB', id: '234' },
+        { display: 'CCC', id: '345' },
+      ],
     };
+    this.updateCurrentChatMessage = this.updateCurrentChatMessage.bind(this);
+    this.handleChatInputKeyPress = this.handleChatInputKeyPress.bind(this);
+    this.handleSendEvent = this.handleSendEvent.bind(this);
+    this.toMention = this.toMention.bind(this);
   }
 
   updateCurrentChatMessage(e) {
-    this.setState({ currentChatMessage: e.target.value });
+    this.setState({
+      currentChatMessage: e.target.value,
+    });
   }
 
   handleChatInputKeyPress(e) {
@@ -34,6 +46,8 @@ class ChatRoom extends Component {
     );
     this.setState({ currentChatMessage: '' });
   }
+
+  toMention(id) {}
 
   render() {
     return (
@@ -57,14 +71,20 @@ class ChatRoom extends Component {
             <ChatLogs />
           </ul>
           <div className='send_message'>
-            <input
-              type='text'
-              onKeyPress={(e) => this.handleChatInputKeyPress(e)} //Enter key でも button 効果
+            <MentionsInput
+              onChange={this.updateCurrentChatMessage}
               value={this.state.currentChatMessage}
-              onChange={(e) => this.updateCurrentChatMessage(e)}
-              placeholder='メッセージ'
-              className='chat_input'
-            />
+              placeholder='メッセージをどうぞ'
+              className='mentionedFriend'
+            >
+              <Mention
+                type='user'
+                trigger='@'
+                data={this.state.testUsers}
+                displayTransform={(id, display) => `@${display}`}
+                onAdd={(id) => this.toMention(id)}
+              />
+            </MentionsInput>
             <FontAwesomeIcon
               icon={faAngleDoubleUp}
               size='3x'
