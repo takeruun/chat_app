@@ -45,14 +45,11 @@ class ChatRoom extends Component {
 
   handleSendEvent(e) {
     e.preventDefault();
-    /*
-    this.chats.create(this.state.currentChatMessage, this.state.userId);
     this.props.chatSocket.create(
       this.state.currentChatMessage,
       this.props.userId
     );
     this.setState({ currentChatMessage: '' });
-    */
   }
 
   toMention(id) {}
@@ -130,7 +127,5 @@ function mapStateToProps(state) {
     users: state.user.users,
   };
 }
-
-function mapDispatchToProps(dispatch) {}
 
 export default connect(mapStateToProps)(ChatRoom);
