@@ -13,16 +13,13 @@ class ChatRoom extends Component {
     super(props);
     this.state = {
       currentChatMessage: '',
-      testUsers: [
-        { display: 'AAA', id: '123' },
-        { display: 'BBB', id: '234' },
-        { display: 'CCC', id: '345' },
-      ],
+      shiftKeyFlag: false,
     };
     this.updateCurrentChatMessage = this.updateCurrentChatMessage.bind(this);
     this.handleChatInputKeyPress = this.handleChatInputKeyPress.bind(this);
     this.handleSendEvent = this.handleSendEvent.bind(this);
     this.toMention = this.toMention.bind(this);
+    this.keyShiftFlag = this.keyShiftFlag.bind(this);
   }
 
   updateCurrentChatMessage(e) {
@@ -32,24 +29,40 @@ class ChatRoom extends Component {
   }
 
   handleChatInputKeyPress(e) {
-    if (e.key === 'Enter') {
+    var msg = e.target.value;
+    if (this.state.shiftKeyFlag && e.key === 'Enter') {
+      msg += '\n';
+    } else if (e.key === 'Enter') {
       this.handleSendEvent(e);
+      msg = '';
     }
+    this.setState({ currentChatMessage: msg, shiftKeyFlag: false });
+  }
+
+  keyShiftFlag(e) {
+    if (e.key === 'Shift') this.setState({ shiftKeyFlag: true });
   }
 
   handleSendEvent(e) {
     e.preventDefault();
-    //this.chats.create(this.state.currentChatMessage, this.state.userId);
+    /*
+    this.chats.create(this.state.currentChatMessage, this.state.userId);
     this.props.chatSocket.create(
       this.state.currentChatMessage,
       this.props.userId
     );
     this.setState({ currentChatMessage: '' });
+    */
   }
 
   toMention(id) {}
 
   render() {
+    var { users } = this.props;
+    users = users.map((user) => ({
+      id: user.id,
+      display: user.name,
+    }));
     return (
       <div className='chat_page'>
         <div className='login_status'>
@@ -75,12 +88,14 @@ class ChatRoom extends Component {
               onChange={this.updateCurrentChatMessage}
               value={this.state.currentChatMessage}
               placeholder='メッセージをどうぞ'
+              onKeyDown={this.keyShiftFlag}
               className='mentionedFriend'
+              onKeyPress={this.handleChatInputKeyPress}
             >
               <Mention
                 type='user'
                 trigger='@'
-                data={this.state.testUsers}
+                data={users}
                 displayTransform={(id, display) => `@${display}`}
                 onAdd={(id) => this.toMention(id)}
               />
@@ -103,6 +118,7 @@ ChatRoom.propTypes = {
   userName: propTypes.string.isRequired,
   chatSocket: propTypes.object,
   partnerName: propTypes.string,
+  users: propTypes.array.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -111,7 +127,10 @@ function mapStateToProps(state) {
     userName: state.user.name,
     chatSocket: state.chat.chatSocket,
     partnerName: state.chat.partnerName,
+    users: state.user.users,
   };
 }
+
+function mapDispatchToProps(dispatch) {}
 
 export default connect(mapStateToProps)(ChatRoom);
