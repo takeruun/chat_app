@@ -3,7 +3,7 @@ export const CHAT_DATA = 'CHAT_DATA';
 export const CHAT_SOCKET = 'CHAT_SOCKET';
 export const PARTNER_NAME = 'PARTNER_NAME';
 
-export function createRoomId() {
+export function createRoom() {
   return (dispatch) => {
     request
       .get('/api/rooms')
@@ -18,7 +18,7 @@ export function createRoomId() {
   };
 }
 
-function createSocketChat(roomId, chatLogs) {
+export function createSocketChat(roomId, chatLogs) {
   return (dispatch) => {
     var Cable = require('actioncable');
     let cable = Cable.createConsumer('wss:localhost/api/cable');
