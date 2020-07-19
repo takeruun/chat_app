@@ -3,27 +3,11 @@ export const CHAT_DATA = 'CHAT_DATA';
 export const CHAT_SOCKET = 'CHAT_SOCKET';
 export const PARTNER_NAME = 'PARTNER_NAME';
 
-export function changeChatRoom(myId, partnerId) {
-  return (dispatch) => {
-    let n = myId;
-    let m = partnerId;
-
-    let roomName = 'room_';
-    if (n > m) {
-      roomName += String(`${m}${n}`);
-    } else {
-      roomName += String(`${n}${m}`);
-    }
-    dispatch(getPartnerName(partnerId));
-    dispatch(getRoomId(roomName));
-  };
-}
-
-function getRoomId(roomName) {
+export function createRoom() {
   return (dispatch) => {
     request
       .get('/api/rooms')
-      .query({ roomName: roomName })
+      .send({ user_ids: [] })
       .end((err, res) => {
         if (!err && res.body) {
           dispatch(chatData(res.body.chatdata));
@@ -34,7 +18,7 @@ function getRoomId(roomName) {
   };
 }
 
-function createSocketChat(roomId, chatLogs) {
+export function createSocketChat(roomId, chatLogs) {
   return (dispatch) => {
     var Cable = require('actioncable');
     let cable = Cable.createConsumer('wss:localhost/api/cable');

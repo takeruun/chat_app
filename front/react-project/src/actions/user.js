@@ -7,6 +7,7 @@ export const API_LOGOUT = 'API_LOGOUT';
 export const APPEAR_USERS = 'APPEAR_USERS';
 export const API_USER = 'API_USER';
 export const APPEAR_SOCKET = 'APPEAR_SOCKET';
+export const API_GET_ROOMS = 'API_GET_ROOMS';
 
 export function createSocketAppear(id) {
   return (dispatch) => {
@@ -101,6 +102,7 @@ export function getCurrentUser() {
         if (!err && res.body.user) {
           dispatch(currentUser(res.body.user));
           dispatch(createSocketAppear(res.body.user.id));
+          dispatch(getRooms(res.body.user.id));
         } else {
           dispatch(apiFailuer(err));
         }
@@ -132,6 +134,21 @@ export function getUser(id) {
           dispacth(apiUser(res.body.user));
         } else {
           dispacth(apiFailuer());
+        }
+      });
+  };
+}
+
+function getRooms(id) {
+  return (dispatch) => {
+    request
+      .get('/api/rooms')
+      .query({ current_user_id: id })
+      .end((err, res) => {
+        if (!err && res.body.rooms) {
+          dispatch(apiGetRooms(res.body.rooms));
+        } else {
+          dispatch(apiFailuer(err));
         }
       });
   };
@@ -175,4 +192,9 @@ const appearUsers = (data, flag) => ({
   type: APPEAR_USERS,
   data,
   flag,
+});
+
+const apiGetRooms = (data) => ({
+  type: API_GET_ROOMS,
+  data,
 });

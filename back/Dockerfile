@@ -1,11 +1,9 @@
-FROM ruby
+FROM ruby:2.7.1-alpine3.12
 
-RUN apt-get update && \
-        apt-get install -y mariadb-client nodejs --no-install-recommends vim curl && \
-        curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-        echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-        apt-get update && apt-get install -y yarn && \
-        rm -rf /var/lib/apt/lists/*
+RUN apk add --update-cache --no-cache tzdata libxml2-dev curl-dev \
+  make gcc libc-dev g++ linux-headers \
+  mysql-dev mysql-client nodejs git && \
+  rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /chat
 
@@ -14,9 +12,10 @@ WORKDIR /chat
 ADD Gemfile /chat/Gemfile
 ADD Gemfile.lock /chat/Gemfile.lock
 
-RUN gem install bundle
+RUN gem install bundle && \
+  bundle install
 
-RUN bundle install
+RUN rm -rf /usr/local/bundle/cache/* /workdir/vendor/bundle/cache/*
 
 ADD . /chat
 
