@@ -6,28 +6,45 @@ import ChatRooms from '../molecues/chat_rooms';
 import propTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDoubleUp } from '@fortawesome/free-solid-svg-icons';
+import { MentionsInput, Mention } from 'react-mentions';
 
 class ChatRoom extends Component {
   constructor(props) {
     super(props);
     this.state = {
       currentChatMessage: '',
+      shiftKeyFlag: false,
     };
+    this.updateCurrentChatMessage = this.updateCurrentChatMessage.bind(this);
+    this.handleChatInputKeyPress = this.handleChatInputKeyPress.bind(this);
+    this.handleSendEvent = this.handleSendEvent.bind(this);
+    this.toMention = this.toMention.bind(this);
+    this.keyShiftFlag = this.keyShiftFlag.bind(this);
   }
 
   updateCurrentChatMessage(e) {
-    this.setState({ currentChatMessage: e.target.value });
+    this.setState({
+      currentChatMessage: e.target.value,
+    });
   }
 
   handleChatInputKeyPress(e) {
-    if (e.key === 'Enter') {
+    var msg = e.target.value;
+    if (this.state.shiftKeyFlag && e.key === 'Enter') {
+      msg += '\n';
+    } else if (e.key === 'Enter') {
       this.handleSendEvent(e);
+      msg = '';
     }
+    this.setState({ currentChatMessage: msg, shiftKeyFlag: false });
+  }
+
+  keyShiftFlag(e) {
+    if (e.key === 'Shift') this.setState({ shiftKeyFlag: true });
   }
 
   handleSendEvent(e) {
     e.preventDefault();
-    //this.chats.create(this.state.currentChatMessage, this.state.userId);
     this.props.chatSocket.create(
       this.state.currentChatMessage,
       this.props.userId
@@ -35,7 +52,14 @@ class ChatRoom extends Component {
     this.setState({ currentChatMessage: '' });
   }
 
+  toMention(id) {}
+
   render() {
+    var { users } = this.props;
+    users = users.map((user) => ({
+      id: user.id,
+      display: user.name,
+    }));
     return (
       <div className='chat_page'>
         <div className='login_status'>
@@ -57,14 +81,22 @@ class ChatRoom extends Component {
             <ChatLogs />
           </ul>
           <div className='send_message'>
-            <input
-              type='text'
-              onKeyPress={(e) => this.handleChatInputKeyPress(e)} //Enter key でも button 効果
+            <MentionsInput
+              onChange={this.updateCurrentChatMessage}
               value={this.state.currentChatMessage}
-              onChange={(e) => this.updateCurrentChatMessage(e)}
-              placeholder='メッセージ'
-              className='chat_input'
-            />
+              placeholder='メッセージをどうぞ'
+              onKeyDown={this.keyShiftFlag}
+              className='mentionedFriend'
+              onKeyPress={this.handleChatInputKeyPress}
+            >
+              <Mention
+                type='user'
+                trigger='@'
+                data={users}
+                displayTransform={(id, display) => `@${display}`}
+                onAdd={(id) => this.toMention(id)}
+              />
+            </MentionsInput>
             <FontAwesomeIcon
               icon={faAngleDoubleUp}
               size='3x'
@@ -83,6 +115,7 @@ ChatRoom.propTypes = {
   userName: propTypes.string.isRequired,
   chatSocket: propTypes.object,
   partnerName: propTypes.string,
+  users: propTypes.array.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -91,6 +124,7 @@ function mapStateToProps(state) {
     userName: state.user.name,
     chatSocket: state.chat.chatSocket,
     partnerName: state.chat.partnerName,
+    users: state.user.users,
   };
 }
 
