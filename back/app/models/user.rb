@@ -3,7 +3,7 @@
 class User < ApplicationRecord
   validates :name, presence: true
   validates :password, presence: true
-  validates :email, { presence: true, uniqueness: true }
+  validates :email, { presence: true, uniqueness: {case_sensitive: true}}
 
   has_secure_token
   has_secure_password
