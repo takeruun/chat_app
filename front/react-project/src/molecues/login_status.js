@@ -2,18 +2,9 @@ import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getUsers } from '../actions/user';
-import { changeChatRoom } from '../actions/chat';
+import { createRoom } from '../actions/chat';
 
 class LoginStatus extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      changedRoom: false,
-    };
-
-    this.changeRoomhandle = this.changeRoomhandle.bind(this);
-  }
-
   componentDidMount() {
     this.props.getUsersDispatch();
   }
@@ -36,26 +27,16 @@ class LoginStatus extends Component {
     }
   }
 
-  changeRoomhandle(partnerId) {
-    if (this.state.changedRoom) this.props.chatSocket.disconnected();
-    this.props.changeChatRoomDispatch(this.props.userId, partnerId);
-    this.setState({ changedRoom: true });
-  }
-
   render() {
     return this.props.users.map((user, index) => {
       return (
-        <li className="login_status_body_item" key={`user_${user.id}`}>
-          <div className="item_user_image">
-            <img
-              src="/images/blue.jpg"
-              onClick={(e) => this.changeRoomhandle(user.id)}
-              alt={`user_id:${user.id}の画像`}
-            />
+        <li className='login_status_body_item' key={`user_${user.id}`}>
+          <div className='item_user_image'>
+            <img src='/images/blue.jpg' alt={`user_id:${user.id}の画像`} />
           </div>
-          <div className="item_user_name">{user.name}</div>
-          <div className="item_user_status">
-            <span className="user_status" id={`loginUser_${user.id}`}></span>
+          <div className='item_user_name'>{user.name}</div>
+          <div className='item_user_status'>
+            <span className='user_status' id={`loginUser_${user.id}`}></span>
           </div>
         </li>
       );
@@ -67,7 +48,6 @@ LoginStatus.propTypes = {
   userId: propTypes.number.isRequired,
   users: propTypes.array.isRequired,
   appearUsers: propTypes.array,
-  chatSocket: propTypes.object,
 };
 
 function mapStateToProps(state) {
@@ -75,7 +55,6 @@ function mapStateToProps(state) {
     userId: Number(state.user.id),
     users: state.user.users,
     appearUsers: state.user.appearUsers,
-    chatSocket: state.chat.chatSocket,
   };
 }
 
@@ -85,7 +64,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(getUsers());
     },
     changeChatRoomDispatch(myId, partnerId) {
-      dispatch(changeChatRoom(myId, partnerId));
+      dispatch(createRoom(myId, partnerId));
     },
   };
 }
