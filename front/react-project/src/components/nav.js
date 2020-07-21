@@ -13,60 +13,65 @@ import { logout } from '../../src/actions/user';
 import propTypes from 'prop-types';
 
 class Nav extends Component {
+  constructor(props) {
+    super(props);
+    this.logoutClick = this.logoutClick.bind(this);
+  }
+
   logoutClick() {
     this.props.logoutDispatch(this.props.appearSocket, this.props.history);
   }
 
   render() {
     return (
-      <div className="nav">
-        <ul className="list_pages">
+      <div className='nav'>
+        <ul className='list_pages'>
           {(() => {
             if (this.props.userId) {
               return (
                 <li onClick={() => this.logoutClick()}>
-                  <span className="icon">
+                  <span className='icon'>
                     <FontAwesomeIcon icon={faSignOutAlt} />
                   </span>
-                  <p className="explanation">Logout</p>
+                  <p className='explanation'>Logout</p>
                 </li>
               );
             } else {
               return (
                 <li>
-                  <Link to="/login">
-                    <span className="icon">
+                  <Link to='/login'>
+                    <span className='icon'>
                       <FontAwesomeIcon icon={faSignInAlt} />
                     </span>
                   </Link>
-                  <p className="explanation">Login</p>
+                  <p className='explanation'>Login</p>
                 </li>
               );
             }
           })()}
           <li>
-            <Link to="/">
-              <span className="icon">
+            <Link to='/'>
+              <span className='icon'>
                 <FontAwesomeIcon icon={faHome} />
               </span>
             </Link>
-            <p className="explanation">Chat</p>
+            <p className='explanation'>Chat</p>
           </li>
           <li>
             <Link to={'/user/' + this.props.userId}>
-              <span className="icon">
+              <span className='icon'>
                 <FontAwesomeIcon icon={faUser} />
               </span>
             </Link>
-            <p className="explanation">{this.props.userName}</p>
+            <p className='explanation'>{this.props.userName}</p>
           </li>
           <li>
-            <Link to="/friends">
-              <span className="icon">
+            <Link to='/friends'>
+              <span className='icon'>
                 <FontAwesomeIcon icon={faUserFriends} />
               </span>
             </Link>
-            <p className="explanation">Friends</p>
+            <p className='explanation'>Friends</p>
           </li>
         </ul>
       </div>
@@ -90,9 +95,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    logoutDispatch(userId, history) {
+    logoutDispatch(sockeet, history) {
       history.push('login');
-      dispatch(logout(userId));
+      dispatch(logout(sockeet));
     },
   };
 }

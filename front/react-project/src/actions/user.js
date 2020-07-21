@@ -57,10 +57,7 @@ export function login(data) {
     dispatch(apiRequest());
     request
       .get('/api/login')
-      .query({
-        email: data.email,
-        password: data.password,
-      })
+      .query({ user: { email: data.email, password: data.password } })
       .end((err, res) => {
         if (!err && res.body.user) {
           dispatch(currentUser(res.body.user));
@@ -79,9 +76,9 @@ export function logout(appear) {
   return (dispatch) => {
     dispatch(apiRequest());
     request.post('/api/logout').end((err, res) => {
-      if (!err && res.body.text) {
+      if (!err && res.body.msg) {
         appear.unsubscribe();
-        dispatch(apiLogout(res.body.text));
+        dispatch(apiLogout(res.body.msg));
         dispatch(appearUsers(1, false));
         localStorage.setItem('token', '');
       } else {
