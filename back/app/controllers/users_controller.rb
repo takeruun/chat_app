@@ -9,32 +9,33 @@ class UsersController < ApplicationController
   end
 
   def login
-    @current_user = User.find_by(email: params[:email])
-    if @current_user&.authenticate(params[:password])
+    @current_user = User.find_by(email: user_params[:email])
+    if @current_user&&@current_user.authenticate(user_params[:password])
       jwt_token = encode(@current_user.id)
-      render json: { user: @current_user, text: 'ログインしました', token: jwt_token }
+      render json: { user: @current_user, msg: 'ログインしました', token: jwt_token }
     else
-      render json: { text: 'メールアドレス or パスワードが間違っています' }
+      render json: { msg: 'メールアドレス or パスワードが間違っています' }
     end
   end
 
   def signup
     @user = User.new(
+      name: params[:username],
       email: params[:email],
       password: params[:password],
-      name: params[:username]
+      password_confirmation: params[:password_confirmation]
     )
 
     if @user.save
       jwt_token = encode(@user.id)
-      render json: { user: @user, text: 'user作成しました', token: jwt_token }
+      render json: { user: @user, msg: 'user作成しました', token: jwt_token }
     else
-      render json: { text: @user.errors.full_messages }
+      render json: { err_msg: @user.errors.full_messages }
     end
   end
 
   def logout
-    render json: { text: 'ログアウトしました' }
+    render json: { msg: 'ログアウトしました' }
   end
 
   def user
@@ -50,11 +51,29 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find_by(id: params[:user_id])
+    @user = User.find_by(id: params[:id])
     if @user
       render json: { user: @user }
     else
       render json: {}
     end
+  end
+
+  def update
+    @user = User.find_by(id: params[:id])
+    if @user.update(user_params)
+      render json: { user: @user, msg: 'updateしました' }
+    else
+      render json: { msg: 'update失敗しました', err_msg: @user.errors.full_messages }
+    end
+  end
+
+  def destroy
+    User.find_by(id: params[:id]).destroy
+    render json: { msg: 'user削除しました' }
+  end
+
+  def user_params
+    params.require(:user).permit(:name, :email, :icon, :password, :password_confirmation)
   end
 end
