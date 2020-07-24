@@ -12,7 +12,7 @@ export const API_GET_ROOMS = 'API_GET_ROOMS';
 export function createSocketAppear(id) {
   return (dispatch) => {
     var Cable = require('actioncable');
-    let appearcable = Cable.createConsumer('wss:localhost/api/cable');
+    let appearcable = Cable.createConsumer('wss:localhost/api/v1/cable');
 
     let appear = appearcable.subscriptions.create(
       {
@@ -35,7 +35,7 @@ export function signUp(data) {
   return (dispatch) => {
     dispatch(apiRequest());
     request
-      .post('/api/signup')
+      .post('/api/v1/signup')
       .send({
         email: data.email,
         password: data.password,
@@ -56,11 +56,8 @@ export function login(data) {
   return (dispatch) => {
     dispatch(apiRequest());
     request
-      .get('/api/login')
-      .query({
-        email: data.email,
-        password: data.password,
-      })
+      .get('/api/v1/login')
+      .query({ user: { email: data.email, password: data.password } })
       .end((err, res) => {
         if (!err && res.body.user) {
           dispatch(currentUser(res.body.user));
@@ -78,10 +75,10 @@ export function login(data) {
 export function logout(appear) {
   return (dispatch) => {
     dispatch(apiRequest());
-    request.post('/api/logout').end((err, res) => {
-      if (!err && res.body.text) {
+    request.post('/api/v1/logout').end((err, res) => {
+      if (!err && res.body.msg) {
         appear.unsubscribe();
-        dispatch(apiLogout(res.body.text));
+        dispatch(apiLogout(res.body.msg));
         dispatch(appearUsers(1, false));
         localStorage.setItem('token', '');
       } else {
@@ -95,7 +92,7 @@ export function getCurrentUser() {
   return (dispatch) => {
     dispatch(apiRequest());
     request
-      .get('/api/user')
+      .get('/api/v1/user')
       .query({ token: localStorage.getItem('token') })
       //.set('Authorization', localStorage.getItem('token'))
       .end((err, res) => {
@@ -113,7 +110,7 @@ export function getCurrentUser() {
 export function getUsers() {
   return (dispatch) => {
     dispatch(apiRequest());
-    request.get('/api/users').end((err, res) => {
+    request.get('/api/v1/users').end((err, res) => {
       if (!err && res.body) {
         dispatch(apiUsers(res.body));
       } else {
@@ -127,7 +124,7 @@ export function getUser(id) {
   return (dispacth) => {
     dispacth(apiRequest());
     request
-      .get('/api/show')
+      .get('/api/v1/show')
       .query({ user_id: id })
       .end((err, res) => {
         if (!err && res.body.user) {
@@ -142,7 +139,7 @@ export function getUser(id) {
 function getRooms(id) {
   return (dispatch) => {
     request
-      .get('/api/rooms')
+      .get('/api/v1/rooms')
       .query({ current_user_id: id })
       .end((err, res) => {
         if (!err && res.body.rooms) {
