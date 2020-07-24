@@ -49,7 +49,7 @@ RSpec.describe 'Users', type: :request do
   end
 
   describe 'UserUpdateAPI' do
-    let(:user){ (create(:user)) }
+    let(:user) { create(:user) }
 
     it 'ユーザの name 変更できる' do
       put "/api/v1/users/#{user.id}", params: { user: { name: 'update' } }
@@ -81,7 +81,7 @@ RSpec.describe 'Users', type: :request do
   end
 
   describe 'UserSessionAPI' do
-    let(:user){ create(:user) }
+    let(:user) { create(:user) }
 
     it 'ログインできる' do
       get '/api/v1/login', params: { user: { email: user.email, password: user.password } }
