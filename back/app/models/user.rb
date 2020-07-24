@@ -2,11 +2,11 @@
 
 class User < ApplicationRecord
   validates :name, presence: true
-  validates :password, presence: true
+  validates :password, presence: true, on: :create
   validates :email, { presence: true, uniqueness: {case_sensitive: true}}
 
   has_secure_token
-  has_secure_password
+  has_secure_password validations: true
 
   has_many :messages
   has_many :rooms, through: :room_users

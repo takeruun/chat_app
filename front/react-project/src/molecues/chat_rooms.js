@@ -1,31 +1,35 @@
 import React, { Component } from 'react';
-import request from 'superagent';
+import propTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { createSocketChat } from '../actions/chat';
 
 class ChatRooms extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      rooms: [],
+      changeChatRoomFlag: false,
     };
+    this.changeChatRoom = this.changeChatRoom.bind(this);
   }
 
-  componentDidMount() {
-    request
-      .get('api/rooms')
-      .query({ current_user_id: this.props.userId })
-      .end((err, res) => {
-        if (!err && res.body.rooms) {
-          this.setState({ rooms: res.body.rooms });
-        }
-      });
+  componentDidMount() {}
+
+  changeChatRoom(roomId) {
+    if (this.state.changedRoom) this.props.chatSocket.disconnected();
+    this.props.changeChatRoomDispatch(roomId);
+    this.setState({ changedRoomFlag: true });
   }
 
-  renderRoomList() {
-    return this.props.rooms.map((room, index) => {
+  renderRoomLists() {
+    return this.props.rooms.map((room) => {
       return (
-        <li>
-          {room.id}
-          <div>{room.user_id}</div>
+        <li
+          onClick={() => this.changeChatRoom(room.id)}
+          key={`room_id:${room.id}`}
+        >
+          <div>
+            {room.id} : {room.name}
+          </div>
         </li>
       );
     });
@@ -34,20 +38,35 @@ class ChatRooms extends Component {
   render() {
     return (
       <div className='room_list'>
-        {(() => {
-          if (this.props.rooms) {
-            this.renderRoomList();
-          } else {
-            return (
-              <div className='header'>
-                <p>ルームリスト</p>
-              </div>
-            );
-          }
-        })()}
+        <div className='header'>
+          <p>ルームリスト</p>
+        </div>
+        {this.renderRoomLists()}
       </div>
     );
   }
 }
 
-export default ChatRooms;
+ChatRooms.propTypes = {
+  userId: propTypes.number.isRequired,
+  rooms: propTypes.array.isRequired,
+  chatSocket: propTypes.object,
+};
+
+function mapStateToProps(state) {
+  return {
+    userId: Number(state.user.id),
+    rooms: state.user.rooms,
+    chatSocket: state.chat.chatSocket,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    changeChatRoomDispatch(roomId) {
+      dispatch(createSocketChat(roomId, []));
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChatRooms);
