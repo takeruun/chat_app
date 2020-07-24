@@ -10,7 +10,7 @@ class UsersController < ApplicationController
 
   def login
     @current_user = User.find_by(email: user_params[:email])
-    if @current_user&&@current_user.authenticate(user_params[:password])
+    if @current_user&.authenticate(user_params[:password])
       jwt_token = encode(@current_user.id)
       render json: { user: @current_user, msg: 'ログインしました', token: jwt_token }
     else
@@ -72,6 +72,8 @@ class UsersController < ApplicationController
     User.find_by(id: params[:id]).destroy
     render json: { msg: 'user削除しました' }
   end
+
+  private
 
   def user_params
     params.require(:user).permit(:name, :email, :icon, :password, :password_confirmation)

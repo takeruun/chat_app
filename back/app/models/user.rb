@@ -2,8 +2,9 @@
 
 class User < ApplicationRecord
   validates :name, presence: true
-  validates :password, presence: true, on: :create
-  validates :email, { presence: true, uniqueness: {case_sensitive: true}}
+  validates :password, length: { minimum: 6 }, presence: true, on: :create
+  validates :password_confirmation, presence: true, on: :create
+  validates :email, { presence: true, uniqueness: { case_sensitive: true } }
 
   has_secure_token
   has_secure_password validations: true
