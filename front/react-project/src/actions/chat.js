@@ -6,7 +6,7 @@ export const PARTNER_NAME = 'PARTNER_NAME';
 export function createRoom() {
   return (dispatch) => {
     request
-      .get('/api/rooms')
+      .get('/api/v1/rooms')
       .send({ user_ids: [] })
       .end((err, res) => {
         if (!err && res.body) {
@@ -21,7 +21,7 @@ export function createRoom() {
 export function createSocketChat(roomId, chatLogs) {
   return (dispatch) => {
     var Cable = require('actioncable');
-    let cable = Cable.createConsumer('wss:localhost/api/cable');
+    let cable = Cable.createConsumer('wss:localhost/api/v1/cable');
     let chats = cable.subscriptions.create(
       {
         channel: 'ChatChannel',
@@ -53,7 +53,7 @@ export function createSocketChat(roomId, chatLogs) {
 function getPartnerName(partnerId) {
   return (dispatch) => {
     request
-      .get('/api/partner')
+      .get('/api/v1/partner')
       .query({ partner_id: partnerId })
       .end((err, res) => {
         if (!err && res.body) {
