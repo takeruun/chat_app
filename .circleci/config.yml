@@ -67,6 +67,7 @@ jobs:
       - run:
           name: Run rspec
           command: |
+            cd chat_app/back \
             mkdir /tmp/test-results
             TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | \
               circleci tests split --split-by=timings)"
