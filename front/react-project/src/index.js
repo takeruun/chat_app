@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './style/index.scss';
-import Home from './home';
-import Login from './login';
-import SignUp from './signup';
+import Home from './pages/home';
+import Login from './pages/login';
+import SignUp from './pages/signup';
 import ChatRoom from './components/chat_room';
 import Friends from './components/friends';
-import MyUser from './components/my_user';
+import MyUserInfo from './components/my_user_info';
 import User from './components/user';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
@@ -41,7 +41,7 @@ ReactDOM.render(
             <Home component={Friends} />
           </Route>
           <Route exact path='/user/:id'>
-            <Home component={MyUser} />
+            <Home component={MyUserInfo} />
           </Route>
           <Route exact path='/users/:id'>
             <Home component={User} />

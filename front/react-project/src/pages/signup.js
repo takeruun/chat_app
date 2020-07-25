@@ -1,5 +1,5 @@
 import React from 'react';
-import SignUpForm from './molecues/signup_form';
+import SignUpForm from '../molecues/signup_form';
 import './style/signup.scss';
 
 const SignUp = () => (
