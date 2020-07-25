@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Message, type: :model do
   let(:user){ create(:user) }
-  let(:room){ create(:room, user: user) }
+  let(:room){ create(:room) }
   let(:message){ create(:message, user: user, room: room) }
 
   it 'message を作成できる' do
