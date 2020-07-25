@@ -2,8 +2,8 @@ version: 2.1
 jobs:
   checkout_code:
     docker:
-      - image: circleci/ruby:2.6.3-stretch-node
-      - image: circleci/node
+      - image: circleci/ruby:2.7.1-node-browsers
+      - image: circleci/node:13.7.0
     working_directory: ~/chat_app
     steps:
       - checkout
@@ -11,14 +11,14 @@ jobs:
           key: v2-repo-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ~/chat_app
-  test:
+  test_back:
     docker:
-      - image: circleci/ruby:2.6.3-stretch-node
+      - image: circleci/ruby:2.7.1-node-browsers
         environment:
           RAILS_ENV: test
           MYSQL_HOST: 127.0.01
           MYSQL_PORT: 3306
-      - image: circleci/node
+      - image: circleci/node:13.7.0
       - image: circleci/mysql:8.0.16
         command: mysqld --default-authentication-plugin=mysql_native_password
         environment:
@@ -31,12 +31,10 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: v2-repo-{{ .Environment.CIRCLE_SHA1 }}
-      - restore_cache:
           keys:
-            - v2-dependencies-{{ checksum "back/Gemfile.lock" }}
+            - v2-rails-bundle-{{ checksum "Gemfile.lock" }}
             # fallback to using the latest cache if no exact match is found
-            - v2-dependencies-
+            - v2-rails-bundle-
       - run:
           name: updater bundler
           command: |
@@ -52,7 +50,7 @@ jobs:
       - save_cache:
           paths:
             - vendor/bundle
-          key: v2-dependencies-{{ checksum "back/Gemfile.lock" }}
+          key: v2-rails-bundle-{{ checksum "Gemfile.lock" }}
       # Database setup
       - run:
           name: Wait for DB
@@ -86,6 +84,6 @@ workflows:
   test:
     jobs:
       - checkout_code
-      - test:
+      - test_back:
           requires:
             - checkout_code
