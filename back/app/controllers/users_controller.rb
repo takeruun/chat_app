@@ -19,12 +19,7 @@ class UsersController < ApplicationController
   end
 
   def signup
-    @user = User.new(
-      name: params[:username],
-      email: params[:email],
-      password: params[:password],
-      password_confirmation: params[:password_confirmation]
-    )
+    @user = User.new(user_params)
 
     if @user.save
       jwt_token = encode(@user.id)
