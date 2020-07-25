@@ -12,7 +12,6 @@ class RoomsController < ApplicationController
   end
 
   def create
-    puts room_params
     @name = room_params[:user_ids].length == 2 ? User.find_by(id: room_params[:user_ids][1]).name : room_params[:name]
     @room = Room.create(name: @name)
 
