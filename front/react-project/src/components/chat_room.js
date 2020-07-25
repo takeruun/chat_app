@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import LoginStatus from '../molecues/login_status';
 import ChatLogs from '../molecues/chat_logs';
-import ChatRooms from '../molecues/chat_rooms';
+import RoomLists from '../molecues/room_lists';
 import propTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDoubleUp } from '@fortawesome/free-solid-svg-icons';
@@ -71,7 +71,7 @@ class ChatRoom extends Component {
           </ul>
         </div>
         <div className='chat_rooms'>
-          <ChatRooms />
+          <RoomLists />
         </div>
         <div className='chat'>
           <div className='room_name'>

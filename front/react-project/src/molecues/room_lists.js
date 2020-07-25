@@ -3,7 +3,7 @@ import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createSocketChat } from '../actions/chat';
 
-class ChatRooms extends Component {
+class RoomLists extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -47,7 +47,7 @@ class ChatRooms extends Component {
   }
 }
 
-ChatRooms.propTypes = {
+RoomLists.propTypes = {
   userId: propTypes.number.isRequired,
   rooms: propTypes.array.isRequired,
   chatSocket: propTypes.object,
@@ -69,4 +69,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ChatRooms);
+export default connect(mapStateToProps, mapDispatchToProps)(RoomLists);
