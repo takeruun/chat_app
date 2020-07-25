@@ -12,7 +12,7 @@ class MyUserInfo extends Component {
   }
 }
 
-MyUser.propTypes = {
+MyUserInfo.propTypes = {
   userName: propTypes.string.isRequired,
 };
 
