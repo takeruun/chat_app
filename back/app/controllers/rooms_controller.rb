@@ -12,14 +12,15 @@ class RoomsController < ApplicationController
   end
 
   def create
-    @room_name = params[:user_ids].length == 2 ? User.find_by(id: params[:user_ids][1]) : params[:room_name]
-    @room = Room.create(room_name: @room_name)
+    puts room_params
+    @name = room_params[:user_ids].length == 2 ? User.find_by(id: room_params[:user_ids][1]).name : room_params[:name]
+    @room = Room.create(name: @name)
 
-    params[:user_ids].each do |user_id|
+    room_params[:user_ids].each do |user_id|
       RoomUser.create(user_id: user_id, room: @room)
     end
     @messages = @room.messages
-    render json: { room_id: @room.id, room_name: @room.room_name, chatdata: @messages }
+    render json: { room: @room, chatdata: @messages }
   end
 
   def show
@@ -33,6 +34,6 @@ class RoomsController < ApplicationController
   private
 
   def room_params
-    params.require(:room).permit(:user_ids, :room_name)
+    params.require(:room).permit(:name, user_ids: [])
   end
 end

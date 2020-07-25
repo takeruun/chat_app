@@ -31,7 +31,7 @@ RSpec.describe User, type: :model do
     user.password = '123'
     user.password_confirmation = '123'
     user.valid?
-    expect(user.errors.full_messages[0]).to eq "Password is too short (minimum is 6 characters)"
+    expect(user.errors.full_messages[0]).to eq 'Password is too short (minimum is 6 characters)'
   end
 
   it 'password confirmationがないと登録できない' do
@@ -41,7 +41,7 @@ RSpec.describe User, type: :model do
   end
 
   it 'passwordとconfirmが一致しないと登録できない' do
-    user.password_confirmation = 'example' 
+    user.password_confirmation = 'example'
     user.valid?
     expect(user.errors.full_messages[0]).to eq "Password confirmation doesn't match Password"
   end
@@ -54,7 +54,7 @@ RSpec.describe User, type: :model do
   end
 
   context '多対多の関係' do
-    let(:room){create(:room)}
+    let(:room) { create(:room) }
     before do
       @messages = create_list(:message, 3, user: user, room: room)
       @rooms = create_list(:room, 3)
@@ -67,7 +67,7 @@ RSpec.describe User, type: :model do
       expect(user.messages).to eq @messages
     end
 
-    it'多数の room と関連づけられる' do
+    it '多数の room と関連づけられる' do
       get_rooms = []
       user.room_users.each do |ru|
         get_rooms.push(ru.room)

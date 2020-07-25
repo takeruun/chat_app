@@ -28,16 +28,16 @@ RSpec.describe 'Users', type: :request do
       get "/api/v1/users/#{@users[0].id}"
       json = JSON.parse(response.body)
       expect(response.status).to eq 200
-      expect(json['user']['name']).to eq 'test_name1'
-      expect(json['user']['email']).to eq 'test1@example.com'
+      expect(json['user']['name']).to eq @users[0].name
+      expect(json['user']['email']).to eq @users[0].email
     end
 
     it 'ユーザ2取得できる' do
       get "/api/v1/users/#{@users[1].id}"
       json = JSON.parse(response.body)
       expect(response.status).to eq 200
-      expect(json['user']['name']).to eq 'test_name4'
-      expect(json['user']['email']).to eq 'test4@example.com'
+      expect(json['user']['name']).to eq @users[1].name
+      expect(json['user']['email']).to eq @users[1].email
     end
 
     it '全ユーザー所得できる' do

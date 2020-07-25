@@ -3,9 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe Room, type: :model do
-  let(:user){ create(:user) }
-  let(:room){ create(:room) }
-  
+  let(:user) { create(:user) }
+  let(:room) { create(:room) }
+
   it 'room を作成できる' do
     expect(room).to be_valid
   end
