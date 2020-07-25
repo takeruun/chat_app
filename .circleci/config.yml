@@ -26,7 +26,7 @@ jobs:
           MYSQL_DATABASE: chat_test
           MYSQL_USER: root
           MYSQL_ROOT_PASSWORD: password
-    working_directory: ~/chat_app
+    working_directory: ~/chat_app/back
 
     steps:
       - checkout
@@ -34,7 +34,7 @@ jobs:
           key: v2-repo-{{ .Environment.CIRCLE_SHA1 }}
       - restore_cache:
           keys:
-            - v2-dependencies-{{ checksum "Gemfile.lock" }}
+            - v2-dependencies-{{ checksum "back/Gemfile.lock" }}
             # fallback to using the latest cache if no exact match is found
             - v2-dependencies-
       - run:
@@ -51,8 +51,8 @@ jobs:
           command: bundle update
       - save_cache:
           paths:
-            - .vendor/bundle
-          key: v2-dependencies-{{ checksum "Gemfile.lock" }}
+            - vendor/bundle
+          key: v2-dependencies-{{ checksum "back/Gemfile.lock" }}
       # Database setup
       - run:
           name: Wait for DB
@@ -67,7 +67,6 @@ jobs:
       - run:
           name: Run rspec
           command: |
-            cd chat_app/back \
             mkdir /tmp/test-results
             TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | \
               circleci tests split --split-by=timings)"
