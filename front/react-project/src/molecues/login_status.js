@@ -49,8 +49,10 @@ class LoginStatus extends Component {
         <div className='header'>
           <p>ログイン状況</p>
         </div>
-        <div className='body'>
-          <ul>{this.renderLoginUsers()}</ul>
+        <div className='login_status_body'>
+          {(() => {
+            if (this.props.users) return <ul>{this.renderLoginUsers()}</ul>;
+          })()}
         </div>
       </React.Fragment>
     );

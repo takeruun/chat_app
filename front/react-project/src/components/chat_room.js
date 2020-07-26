@@ -72,9 +72,9 @@ class ChatRoom extends Component {
           <div className='room_name'>
             <p className='partner_name'>{this.props.partnerName}</p>
           </div>
-          <ul className='chat_logs' id='chatLogs'>
+          <div className='chat_logs' id='chatLogs'>
             <ChatLogs />
-          </ul>
+          </div>
           <div className='send_message'>
             <MentionsInput
               onChange={this.updateCurrentChatMessage}

@@ -25,6 +25,7 @@ class RoomLists extends Component {
       return (
         <li
           onClick={() => this.changeChatRoom(room.id)}
+          className='room_list_body_item'
           key={`room_id:${room.id}`}
         >
           <div>
@@ -37,12 +38,16 @@ class RoomLists extends Component {
 
   render() {
     return (
-      <div className='room_list'>
+      <React.Fragment>
         <div className='header'>
           <p>ルームリスト</p>
         </div>
-        {this.renderRoomLists()}
-      </div>
+        <div className='room_lists_body'>
+          {(() => {
+            if (this.props.rooms) return <ul>{this.renderRoomLists()}</ul>;
+          })()}
+        </div>
+      </React.Fragment>
     );
   }
 }
