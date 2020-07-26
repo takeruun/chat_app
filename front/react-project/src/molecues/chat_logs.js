@@ -53,7 +53,7 @@ class ChatLogs extends Component {
   }
 
   render() {
-    return <div>{this.renderChatLogs()}</div>;
+    return <ul>{this.renderChatLogs()}</ul>;
   }
 }
 

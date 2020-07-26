@@ -61,16 +61,11 @@ class ChatRoom extends Component {
       display: user.name,
     }));
     return (
-      <div className='chat_page'>
+      <div className='chat_room'>
         <div className='login_status'>
-          <div className='header'>
-            <p>ログイン状況</p>
-          </div>
-          <ul className='body'>
-            <LoginStatus />
-          </ul>
+          <LoginStatus />
         </div>
-        <div className='chat_rooms'>
+        <div className='room_lists'>
           <RoomLists />
         </div>
         <div className='chat'>
