@@ -47,6 +47,9 @@
   "devDependencies": {
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
-    "redux-devtools-extension": "^2.13.8"
+    "jest-styled-components": "^7.0.2",
+    "react-test-renderer": "^16.13.1",
+    "redux-devtools-extension": "^2.13.8",
+    "styled-components": "^5.1.1"
   }
 }
