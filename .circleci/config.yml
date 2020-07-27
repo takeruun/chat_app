@@ -84,7 +84,7 @@ jobs:
   test_front:
     docker:
       - image: circleci/node:13.7.0
-    working_directory: ~/chat/front/react-project
+    working_directory: ~/chat_app/front/react-project
 
     steps:
       - checkout
@@ -99,7 +99,8 @@ jobs:
           name: npm install dependencies
           command: npm install
       - save_cache:
-          path: node_modules/
+          paths: node_modules/
+          key: v2-front-dependencies-{{ checksum "package.json" }}
       - run:
           name: Run test
           command: npm test
