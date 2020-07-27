@@ -58,14 +58,6 @@ class Nav extends Component {
             <p className='explanation'>Chat</p>
           </li>
           <li>
-            <Link to={'/user/' + this.props.userId}>
-              <span className='icon'>
-                <FontAwesomeIcon icon={faUser} />
-              </span>
-            </Link>
-            <p className='explanation'>{this.props.userName}</p>
-          </li>
-          <li>
             <Link to='/friends'>
               <span className='icon'>
                 <FontAwesomeIcon icon={faUserFriends} />
@@ -73,6 +65,20 @@ class Nav extends Component {
             </Link>
             <p className='explanation'>Friends</p>
           </li>
+          {(() => {
+            if (this.props.userId) {
+              return (
+                <li>
+                  <Link to={'/user/' + this.props.userId}>
+                    <span className='icon'>
+                      <FontAwesomeIcon icon={faUser} />
+                    </span>
+                  </Link>
+                  <p className='explanation'>{this.props.userName}</p>
+                </li>
+              );
+            }
+          })()}
         </ul>
       </div>
     );
