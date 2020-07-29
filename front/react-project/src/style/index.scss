@@ -73,7 +73,7 @@ p {
   }
 
   //chat page
-  .chat_page {
+  .chat_room {
     width: 96%;
     display: flex;
 
@@ -86,12 +86,12 @@ p {
         text-align: center;
         border-bottom: 1px solid #ccc;
       }
-      .body {
+      .login_status_body {
         padding: 20px;
       }
     }
 
-    .chat_rooms {
+    .room_lists {
       width: 15%;
       background-color: #67aad63d;
 

@@ -61,25 +61,20 @@ class ChatRoom extends Component {
       display: user.name,
     }));
     return (
-      <div className='chat_page'>
+      <div className='chat_room'>
         <div className='login_status'>
-          <div className='header'>
-            <p>ログイン状況</p>
-          </div>
-          <ul className='body'>
-            <LoginStatus />
-          </ul>
+          <LoginStatus />
         </div>
-        <div className='chat_rooms'>
+        <div className='room_lists'>
           <RoomLists />
         </div>
         <div className='chat'>
           <div className='room_name'>
             <p className='partner_name'>{this.props.partnerName}</p>
           </div>
-          <ul className='chat_logs' id='chatLogs'>
+          <div className='chat_logs' id='chatLogs'>
             <ChatLogs />
-          </ul>
+          </div>
           <div className='send_message'>
             <MentionsInput
               onChange={this.updateCurrentChatMessage}
