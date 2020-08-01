@@ -7,6 +7,7 @@ import propTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDoubleUp } from '@fortawesome/free-solid-svg-icons';
 import { MentionsInput, Mention } from 'react-mentions';
+import request from 'superagent';
 
 class ChatRoom extends Component {
   constructor(props) {
@@ -14,12 +15,14 @@ class ChatRoom extends Component {
     this.state = {
       currentChatMessage: '',
       shiftKeyFlag: false,
+      workId: '',
     };
     this.updateCurrentChatMessage = this.updateCurrentChatMessage.bind(this);
     this.handleChatInputKeyPress = this.handleChatInputKeyPress.bind(this);
     this.handleSendEvent = this.handleSendEvent.bind(this);
     this.toMention = this.toMention.bind(this);
     this.keyShiftFlag = this.keyShiftFlag.bind(this);
+    this.handleWorkingTime = this.handleWorkingTime.bind(this);
   }
 
   updateCurrentChatMessage(e) {
@@ -45,14 +48,34 @@ class ChatRoom extends Component {
 
   handleSendEvent(e) {
     e.preventDefault();
-    this.props.chatSocket.create(
-      this.state.currentChatMessage,
-      this.props.userId
-    );
+    if (!(e.target.value === '@勤務開始' || e.target.value === '@勤務終了'))
+      this.props.chatSocket.create(
+        this.state.currentChatMessage,
+        this.props.userId
+      );
     this.setState({ currentChatMessage: '' });
   }
 
-  toMention(id) {}
+  toMention() {}
+
+  handleWorkingTime(flag) {
+    flag === 0
+      ? request
+          .post('/api/v1/works/')
+          .send({
+            work: { status: 0, user_id: this.props.userId },
+          })
+          .end((err, res) => {
+            if (!err && res.status === 200) {
+              this.setState({ workId: res.body.work.id });
+            }
+          })
+      : request.put('/api/v1/works/' + this.state.workId).end((err, res) => {
+          if (!err && res.status === 200) {
+            this.setState({ workId: '' });
+          }
+        });
+  }
 
   render() {
     var { users } = this.props;
@@ -60,6 +83,10 @@ class ChatRoom extends Component {
       id: user.id,
       display: user.name,
     }));
+    var startEnd = [
+      { id: 0, display: '勤務開始' },
+      { id: 1, display: '勤務終了' },
+    ];
     return (
       <div className='chat_room'>
         <div className='login_status'>
@@ -90,6 +117,12 @@ class ChatRoom extends Component {
                 data={users}
                 displayTransform={(id, display) => `@${display}`}
                 onAdd={(id) => this.toMention(id)}
+              />
+              <Mention
+                trigger='@work'
+                data={startEnd}
+                displayTransform={(display) => `${display}`}
+                onAdd={(id) => this.handleWorkingTime(id)}
               />
             </MentionsInput>
             <FontAwesomeIcon

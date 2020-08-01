@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_200_724_084_523) do
+ActiveRecord::Schema.define(version: 20_200_730_131_706) do
   create_table 'messages', options: 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci', force: :cascade do |t|
     t.string 'body'
     t.datetime 'created_at', precision: 6, null: false
@@ -47,8 +47,19 @@ ActiveRecord::Schema.define(version: 20_200_724_084_523) do
     t.datetime 'updated_at', precision: 6, null: false
   end
 
+  create_table 'works', options: 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci', force: :cascade do |t|
+    t.bigint 'user_id', null: false
+    t.timestamp 'start_time'
+    t.timestamp 'end_time'
+    t.integer 'status', default: 0, null: false
+    t.datetime 'created_at', precision: 6, null: false
+    t.datetime 'updated_at', precision: 6, null: false
+    t.index ['user_id'], name: 'index_works_on_user_id'
+  end
+
   add_foreign_key 'messages', 'rooms'
   add_foreign_key 'messages', 'users'
   add_foreign_key 'room_users', 'rooms'
   add_foreign_key 'room_users', 'users'
+  add_foreign_key 'works', 'users'
 end
