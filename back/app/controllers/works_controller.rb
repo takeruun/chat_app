@@ -3,7 +3,7 @@ class WorksController < ApplicationController
     start_time = Time.zone.now.strftime('%Y-%m-%d %H:%M:%S')
     @work = Work.new(user_id: work_params[:user_id], status: work_params[:status], start_time: start_time)
     if @work.save
-      render json: { msg: 'がんばりましょ！', work: @work }
+      render json: { msg: "#{@work.user.name}さん、がんばりましょ！", work: @work }
     else
       render status: 500, json: { msg: @work.errors.full_messages }
     end
@@ -13,7 +13,7 @@ class WorksController < ApplicationController
     @work = Work.find_by(id: params[:id])
     @work.end_time = Time.zone.now.strftime('%Y-%m-%d %H:%M:%S')
     if @work.save
-      render json: { msg: 'お疲れ様でした！' }
+      render json: { msg: "#{@work.user.name}さん、お疲れ様です！" }
     else
       render status: 500, json: { msg: @work.erros.full_messages }
     end

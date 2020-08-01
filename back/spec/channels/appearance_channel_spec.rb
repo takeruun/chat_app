@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe AppearanceChannel, type: :channel do
-  let(:user){ create(:user) }
+  let(:user) { create(:user) }
 
   it '購読できる' do
     subscribe(user_id: user.id)
