@@ -63,7 +63,7 @@ class ChatRoom extends Component {
       ? request
           .post('/api/v1/works/')
           .send({
-            work: { status: 0, user_id: this.props.userId },
+            work: { status: 'work', user_id: this.props.userId },
           })
           .end((err, res) => {
             if (!err && res.status === 200) {
@@ -75,6 +75,7 @@ class ChatRoom extends Component {
             this.setState({ workId: '' });
           }
         });
+    this.setState({ currentChatMessage: '' });
   }
 
   render() {
