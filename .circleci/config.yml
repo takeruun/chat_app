@@ -18,7 +18,6 @@ jobs:
           RAILS_ENV: test
           MYSQL_HOST: 127.0.01
           MYSQL_PORT: 3306
-      - image: circleci/node:13.7.0
       - image: circleci/mysql:8.0.16
         command: mysqld --default-authentication-plugin=mysql_native_password
         environment:
@@ -34,9 +33,9 @@ jobs:
           key: v2-repo-{{ .Environment.CIRCLE_SHA1 }}
       - restore_cache:
           keys:
-            - v2-dependencies-{{ checksum "Gemfile.lock" }}
+            - v2-back-dependencies-{{ checksum "Gemfile.lock" }}
             # fallback to using the latest cache if no exact match is found
-            - v2-dependencies-
+            - v2-back-dependencies-
       - run:
           name: updater bundler
           command: |
@@ -52,7 +51,7 @@ jobs:
       - save_cache:
           paths:
             - vendor/bundle
-          key: v2-dependencies-{{ checksum "Gemfile.lock" }}
+          key: v2-back-dependencies-{{ checksum "Gemfile.lock" }}
       # Database setup
       - run:
           name: Wait for DB
@@ -81,11 +80,39 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
+
+  test_front:
+    docker:
+      - image: circleci/node:13.7.0
+    working_directory: ~/chat_app/front/react-project
+
+    steps:
+      - checkout
+      - restore_cache:
+          key: v2-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          keys:
+            - v2-front-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v2-front-dependencies-
+      - run:
+          name: npm install dependencies
+          command: npm install
+      - save_cache:
+          paths: node_modules/
+          key: v2-front-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Run test
+          command: npm test
+
 workflows:
   version: 2.1
   test:
     jobs:
       - checkout_code
       - test_back:
+          requires:
+            - checkout_code
+      - test_front:
           requires:
             - checkout_code

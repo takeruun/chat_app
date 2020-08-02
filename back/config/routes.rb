@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       get 'show' => 'users#show'
       resources :messages
       resources :rooms
+      resources :works
     end
   end
   mount ActionCable.server => '/api/v1/cable'

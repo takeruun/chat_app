@@ -27,7 +27,7 @@ class LoginStatus extends Component {
     }
   }
 
-  render() {
+  renderLoginUsers() {
     return this.props.users.map((user, index) => {
       return (
         <li className='login_status_body_item' key={`user_${user.id}`}>
@@ -41,6 +41,21 @@ class LoginStatus extends Component {
         </li>
       );
     });
+  }
+
+  render() {
+    return (
+      <React.Fragment>
+        <div className='header'>
+          <p>ログイン状況</p>
+        </div>
+        <div className='login_status_body'>
+          {(() => {
+            if (this.props.users) return <ul>{this.renderLoginUsers()}</ul>;
+          })()}
+        </div>
+      </React.Fragment>
+    );
   }
 }
 

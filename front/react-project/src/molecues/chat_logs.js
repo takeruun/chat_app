@@ -17,7 +17,7 @@ class ChatLogs extends Component {
   renderChatLogs() {
     return this.props.chatLogs.map((el) => {
       return (
-        <li key={`chat_${el.id}`} className='chat_box'>
+        <li key={`chat_${el.id}`} className='chat_log_body_item'>
           {(() => {
             if (el.user_id === this.props.userId) {
               return (
@@ -53,7 +53,13 @@ class ChatLogs extends Component {
   }
 
   render() {
-    return <div>{this.renderChatLogs()}</div>;
+    return (
+      <div className='chat_logs_body'>
+        {(() => {
+          if (this.props.chatLogs) return <ul>{this.renderChatLogs()}</ul>;
+        })()}
+      </div>
+    );
   }
 }
 

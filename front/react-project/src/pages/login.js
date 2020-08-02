@@ -1,6 +1,6 @@
 import React from 'react';
 import LogInForm from '../molecues/login_form';
-import './style/login.scss';
+import '../style/login.scss';
 
 const Login = () => {
   return (
