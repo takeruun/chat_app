@@ -8,6 +8,7 @@ export const APPEAR_USERS = 'APPEAR_USERS';
 export const API_USER = 'API_USER';
 export const APPEAR_SOCKET = 'APPEAR_SOCKET';
 export const API_GET_ROOMS = 'API_GET_ROOMS';
+export const API_GET_ROOM_USER_NAMES = 'API_GET_ROOM_USER_NAMES';
 
 export function createSocketAppear(id) {
   return (dispatch) => {
@@ -142,8 +143,10 @@ function getRooms(id) {
       .get('/api/v1/rooms')
       .query({ current_user_id: id })
       .end((err, res) => {
-        if (!err && res.body.rooms) {
+        if (!err && res.body.msg) {
+        } else if (!err && res.status === 200) {
           dispatch(apiGetRooms(res.body.rooms));
+          dispatch(apiGetRoomUserNames(res.body.room_names));
         } else {
           dispatch(apiFailuer(err));
         }
@@ -193,5 +196,10 @@ const appearUsers = (data, flag) => ({
 
 const apiGetRooms = (data) => ({
   type: API_GET_ROOMS,
+  data,
+});
+
+const apiGetRoomUserNames = (data) => ({
+  type: API_GET_ROOM_USER_NAMES,
   data,
 });
