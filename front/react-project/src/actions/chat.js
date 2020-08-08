@@ -1,9 +1,10 @@
 import request from 'superagent';
+import { apiGetRooms, apiGetRoomUserNames } from './user';
 export const CHAT_DATA = 'CHAT_DATA';
 export const CHAT_SOCKET = 'CHAT_SOCKET';
 export const API_FAILUER = 'API_FAILUER';
 
-export function createRoom(ids, name = '') {
+export function createRoom(ids, rooms, roomNames, name = '') {
   return (dispatch) => {
     request
       .post('/api/v1/rooms')
@@ -12,6 +13,10 @@ export function createRoom(ids, name = '') {
         if (!err && res.body.msg) {
           console.log(res.body.msg);
         } else if (!err && res.status === 200) {
+          rooms = rooms.concat(res.body.room);
+          roomNames = roomNames.concat(res.body.room_name);
+          dispatch(apiGetRooms(rooms));
+          dispatch(apiGetRoomUserNames(roomNames));
           dispatch(createSocketChat(res.body.room.id));
         } else {
           dispatch(apiFailuer(err));
