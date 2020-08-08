@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { createSocketChat } from '../actions/chat';
+import { changeChatRoom } from '../actions/chat';
 
 class RoomLists extends Component {
   constructor(props) {
@@ -21,16 +21,14 @@ class RoomLists extends Component {
   }
 
   renderRoomLists() {
-    return this.props.rooms.map((room) => {
+    return this.props.rooms.map((room, index) => {
       return (
         <li
           onClick={() => this.changeChatRoom(room.id)}
           className='room_list_body_item'
           key={`room_id:${room.id}`}
         >
-          <div>
-            {room.id} : {room.name}
-          </div>
+          <div className='item_room'>{this.props.roomNames[index]}</div>
         </li>
       );
     });
@@ -56,6 +54,7 @@ RoomLists.propTypes = {
   userId: propTypes.number.isRequired,
   rooms: propTypes.array.isRequired,
   chatSocket: propTypes.object,
+  roomNames: propTypes.array,
 };
 
 function mapStateToProps(state) {
@@ -63,13 +62,14 @@ function mapStateToProps(state) {
     userId: Number(state.user.id),
     rooms: state.user.rooms,
     chatSocket: state.chat.chatSocket,
+    roomNames: state.user.roomNames,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     changeChatRoomDispatch(roomId) {
-      dispatch(createSocketChat(roomId, []));
+      dispatch(changeChatRoom(roomId));
     },
   };
 }
