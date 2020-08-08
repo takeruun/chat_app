@@ -1,6 +1,6 @@
 import React from 'react';
-import SignUpForm from './molecues/signup_form';
-import './style/signup.scss';
+import SignUpForm from '../molecues/signup_form';
+import '../style/signup.scss';
 
 const SignUp = () => (
   <div className='signup_page'>

@@ -1,8 +1,8 @@
 import React from 'react';
-import Nav from './components/nav';
+import Nav from '../components/nav';
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import { getCurrentUser } from './actions/user';
+import { getCurrentUser } from '../actions/user';
 
 class Home extends Component {
   componentDidMount() {
@@ -12,7 +12,7 @@ class Home extends Component {
   render() {
     const Component = this.props.component;
     return (
-      <div className="home">
+      <div className='home'>
         <Nav />
         <Component />
       </div>
