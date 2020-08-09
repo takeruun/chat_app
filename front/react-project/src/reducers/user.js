@@ -3,6 +3,7 @@ const initialState = {
   name: '',
   users: [],
   rooms: [],
+  roomLists: [],
   roomNames: [],
   requesting: false,
   requested: false,
