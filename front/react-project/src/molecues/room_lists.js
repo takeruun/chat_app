@@ -21,14 +21,15 @@ class RoomLists extends Component {
   }
 
   renderRoomLists() {
+    const { roomNames } = this.props;
     return this.props.rooms.map((room, index) => {
       return (
         <li
           onClick={() => this.changeChatRoom(room.id)}
-          className='room_list_body_item'
+          className={`room_list_body_item room_${roomNames[index]}`}
           key={`room_id:${room.id}`}
         >
-          <div className='item_room'>{this.props.roomNames[index]}</div>
+          <div className='item_room'>{roomNames[index]}</div>
         </li>
       );
     });
