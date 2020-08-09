@@ -51,7 +51,8 @@ export function createSocketChat(roomId, chatLogs) {
         conneted: () => {},
         received: (data) => {
           //chatLogs.push(data);これでは再レンダリングされない
-          chatLogs = chatLogs.concat(data);
+          if (roomId === data.room_id) chatLogs = chatLogs.concat(data);
+          else chatLogs.push(data);
           dispatch(chatData(chatLogs));
         },
         create: function (chatContent, id) {
