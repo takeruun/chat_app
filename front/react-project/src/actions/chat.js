@@ -3,6 +3,7 @@ import { apiGetRooms, apiGetRoomUserNames } from './user';
 export const CHAT_DATA = 'CHAT_DATA';
 export const CHAT_SOCKET = 'CHAT_SOCKET';
 export const API_FAILUER = 'API_FAILUER';
+export const GET_CHAT_SOCKET_LISTS = 'GET_CHAT_SOCKET_LISTS';
 
 export function createRoom(ids, rooms, roomNames, name = '') {
   return (dispatch) => {
@@ -25,12 +26,21 @@ export function createRoom(ids, rooms, roomNames, name = '') {
   };
 }
 
-export function changeChatRoom(roomId) {
+export function changeChatRoom(roomId, chatSocketLists) {
   return (dispatch) => {
     request.get('/api/v1/rooms/' + roomId).end((err, res) => {
       if (!err && res.status === 200) {
         dispatch(chatData(res.body.messages));
-        dispatch(createSocketChat(roomId, res.body.messages));
+        const socket = chatSocketLists.filter((socket) => {
+          return JSON.parse(socket.identifier).room_id === roomId
+            ? socket
+            : null;
+        });
+        if (socket[0]) dispatch(chatSocket(socket[0]));
+        else
+          dispatch(
+            createSocketChat(roomId, res.body.messages, chatSocketLists)
+          );
       } else {
         dispatch(apiFailuer(err));
       }
@@ -38,10 +48,12 @@ export function changeChatRoom(roomId) {
   };
 }
 
-export function createSocketChat(roomId, chatLogs) {
+export function createSocketChat(roomId, chatLogs, chatSocketLists) {
   return (dispatch) => {
     var Cable = require('actioncable');
-    let cable = Cable.createConsumer('wss:localhost/api/v1/cable');
+    let cable = Cable.createConsumer(
+      'wss:' + window.location.host + '/api/v1/cable'
+    );
     let chats = cable.subscriptions.create(
       {
         channel: 'ChatChannel',
@@ -52,7 +64,6 @@ export function createSocketChat(roomId, chatLogs) {
         received: (data) => {
           //chatLogs.push(data);これでは再レンダリングされない
           if (roomId === data.room_id) chatLogs = chatLogs.concat(data);
-          else chatLogs.push(data);
           dispatch(chatData(chatLogs));
         },
         create: function (chatContent, id) {
@@ -67,6 +78,8 @@ export function createSocketChat(roomId, chatLogs) {
         },
       }
     );
+    chatSocketLists.push(chats);
+    dispatch(getChatSocketLists(chatSocketLists));
     dispatch(chatSocket(chats));
   };
 }
@@ -78,6 +91,11 @@ const chatData = (data) => ({
 
 const chatSocket = (data) => ({
   type: CHAT_SOCKET,
+  data,
+});
+
+const getChatSocketLists = (data) => ({
+  type: GET_CHAT_SOCKET_LISTS,
   data,
 });
 

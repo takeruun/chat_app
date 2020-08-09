@@ -23,8 +23,8 @@ class RoomLists extends Component {
 
   changeChatRoom(roomId, roomName) {
     this.currentRoom(roomName);
-    if (this.state.changedRoom) this.props.chatSocket.disconnected();
-    this.props.changeChatRoomDispatch(roomId);
+    //if (this.state.changedRoom) this.props.chatSocket.disconnected();
+    this.props.changeChatRoomDispatch(roomId, this.props.chatSocketLists);
     this.setState({ changedRoomFlag: true });
   }
 
@@ -65,6 +65,7 @@ RoomLists.propTypes = {
   rooms: propTypes.array.isRequired,
   chatSocket: propTypes.object,
   roomNames: propTypes.array,
+  chatSocketLists: propTypes.array,
 };
 
 function mapStateToProps(state) {
@@ -73,13 +74,14 @@ function mapStateToProps(state) {
     rooms: state.user.rooms,
     chatSocket: state.chat.chatSocket,
     roomNames: state.user.roomNames,
+    chatSocketLists: state.chat.chatSocketLists,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    changeChatRoomDispatch(roomId) {
-      dispatch(changeChatRoom(roomId));
+    changeChatRoomDispatch(roomId, chatSocketLists) {
+      dispatch(changeChatRoom(roomId, chatSocketLists));
     },
   };
 }
