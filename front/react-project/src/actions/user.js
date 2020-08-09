@@ -194,12 +194,12 @@ const appearUsers = (data, flag) => ({
   flag,
 });
 
-const apiGetRooms = (data) => ({
+export const apiGetRooms = (data) => ({
   type: API_GET_ROOMS,
   data,
 });
 
-const apiGetRoomUserNames = (data) => ({
+export const apiGetRoomUserNames = (data) => ({
   type: API_GET_ROOM_USER_NAMES,
   data,
 });

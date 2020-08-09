@@ -36,7 +36,11 @@ class LoginStatus extends Component {
   }
 
   createChatRoom(partnerId) {
-    this.props.createChatRoomDispatch([this.props.userId, partnerId]);
+    this.props.createChatRoomDispatch(
+      [this.props.userId, partnerId],
+      this.props.rooms,
+      this.props.roomNames
+    );
   }
 
   renderLoginUsers() {
@@ -79,6 +83,8 @@ LoginStatus.propTypes = {
   userId: propTypes.number.isRequired,
   users: propTypes.array.isRequired,
   appearUsers: propTypes.array,
+  rooms: propTypes.array,
+  roomNames: propTypes.array,
 };
 
 function mapStateToProps(state) {
@@ -86,6 +92,8 @@ function mapStateToProps(state) {
     userId: Number(state.user.id),
     users: state.user.users,
     appearUsers: state.user.appearUsers,
+    rooms: state.user.rooms,
+    roomNames: state.user.roomNames,
   };
 }
 
@@ -94,8 +102,8 @@ function mapDispatchToProps(dispatch) {
     getUsersDispatch() {
       dispatch(getUsers());
     },
-    createChatRoomDispatch(user_ids) {
-      dispatch(createRoom(user_ids));
+    createChatRoomDispatch(user_ids, rooms, roomNames) {
+      dispatch(createRoom(user_ids, rooms, roomNames));
     },
   };
 }

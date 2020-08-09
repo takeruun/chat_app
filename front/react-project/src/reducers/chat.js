@@ -1,5 +1,6 @@
 const initialState = {
   chatLogs: [],
+  chatSocketLists: [],
 };
 
 export default (state = initialState, action) => {
@@ -19,9 +20,9 @@ export default (state = initialState, action) => {
         chatSocket: action.data,
       });
 
-    case 'PARTNER_NAME':
+    case 'GET_CHAT_SOCKET_LISTS':
       return Object.assign({}, state, {
-        partnerName: action.data,
+        chatSocketLists: action.data,
       });
 
     default:
