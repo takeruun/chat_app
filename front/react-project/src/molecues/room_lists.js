@@ -14,7 +14,15 @@ class RoomLists extends Component {
 
   componentDidMount() {}
 
-  changeChatRoom(roomId) {
+  currentRoom(name) {
+    var oldElement = document.getElementsByClassName('current_room');
+    if (oldElement.length !== 0) oldElement[0].classList.remove('current_room');
+    var element = document.getElementById(`room_${name}`);
+    element.classList.add('current_room');
+  }
+
+  changeChatRoom(roomId, roomName) {
+    this.currentRoom(roomName);
     if (this.state.changedRoom) this.props.chatSocket.disconnected();
     this.props.changeChatRoomDispatch(roomId);
     this.setState({ changedRoomFlag: true });
@@ -25,8 +33,9 @@ class RoomLists extends Component {
     return this.props.rooms.map((room, index) => {
       return (
         <li
-          onClick={() => this.changeChatRoom(room.id)}
+          onClick={() => this.changeChatRoom(room.id, roomNames[index])}
           className={`room_list_body_item room_${roomNames[index]}`}
+          id={`room_${roomNames[index]}`}
           key={`room_id:${room.id}`}
         >
           <div className='item_room'>{roomNames[index]}</div>
