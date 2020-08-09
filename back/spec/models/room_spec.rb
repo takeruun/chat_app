@@ -10,12 +10,6 @@ RSpec.describe Room, type: :model do
     expect(room).to be_valid
   end
 
-  it 'name がないと作成できない' do
-    room.name = nil
-    room.valid?
-    expect(room.errors.full_messages[0]).to eq "Name can't be blank"
-  end
-
   context '多対多の関係' do
     before do
       @messages = create_list(:message, 3, room: room, user: user)

@@ -17,8 +17,9 @@ describe('<ChatRoom />', () => {
         ],
         rooms: [
           { id: 1, name: 'room_1' },
-          { id: 2, name: 'room_2' },
+          { id: 2, name: '' },
         ],
+        roomNames: ['', 'room_2'],
       },
       chat: {
         chatLogs: [
