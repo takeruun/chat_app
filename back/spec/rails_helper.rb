@@ -5,9 +5,7 @@ require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
 # Prevent database truncation if the environment is production
-if Rails.env.production?
-  abort('The Rails environment is running in production mode!')
-end
+abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -41,7 +39,7 @@ RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
-  config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = false
 
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
@@ -67,4 +65,24 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.include FactoryBot::Syntax::Methods # Factoryの省略
+
+  # RSpecの実行前に一度、実行
+  config.before(:suite) do
+    # DBを綺麗にする手段を指定、トランザクションを張ってrollbackするように指定
+    DatabaseCleaner.strategy = :transaction
+    # truncate table文を実行し、レコードを消す
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  # exampleが始まるごとに実行
+  config.before(:each) do
+    # strategyがtransactionなので、トランザクションを張る
+    DatabaseCleaner.start
+  end
+
+  # exampleが終わるごとに実行
+  config.after(:each) do
+    # strategyがtransactionなので、rollbackする
+    DatabaseCleaner.clean
+  end
 end

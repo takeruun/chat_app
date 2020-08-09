@@ -1,27 +1,42 @@
 import request from 'superagent';
 export const CHAT_DATA = 'CHAT_DATA';
 export const CHAT_SOCKET = 'CHAT_SOCKET';
-export const PARTNER_NAME = 'PARTNER_NAME';
+export const API_FAILUER = 'API_FAILUER';
 
-export function createRoom() {
+export function createRoom(ids, name = '') {
   return (dispatch) => {
     request
-      .get('/api/rooms')
-      .send({ user_ids: [] })
+      .post('/api/v1/rooms')
+      .send({ room: { user_ids: ids, name: name } })
       .end((err, res) => {
-        if (!err && res.body) {
-          dispatch(chatData(res.body.chatdata));
+        if (!err && res.body.msg) {
+          console.log(res.body.msg);
+        } else if (!err && res.status === 200) {
+          dispatch(createSocketChat(res.body.room.id));
         } else {
+          dispatch(apiFailuer(err));
         }
-        dispatch(createSocketChat(res.body.room_id, res.body.chatdata));
       });
+  };
+}
+
+export function changeChatRoom(roomId) {
+  return (dispatch) => {
+    request.get('/api/v1/rooms/' + roomId).end((err, res) => {
+      if (!err && res.status === 200) {
+        dispatch(chatData(res.body.messages));
+        dispatch(createSocketChat(roomId, res.body.messages));
+      } else {
+        dispatch(apiFailuer(err));
+      }
+    });
   };
 }
 
 export function createSocketChat(roomId, chatLogs) {
   return (dispatch) => {
     var Cable = require('actioncable');
-    let cable = Cable.createConsumer('wss:localhost/api/cable');
+    let cable = Cable.createConsumer('wss:localhost/api/v1/cable');
     let chats = cable.subscriptions.create(
       {
         channel: 'ChatChannel',
@@ -50,19 +65,6 @@ export function createSocketChat(roomId, chatLogs) {
   };
 }
 
-function getPartnerName(partnerId) {
-  return (dispatch) => {
-    request
-      .get('/api/partner')
-      .query({ partner_id: partnerId })
-      .end((err, res) => {
-        if (!err && res.body) {
-          dispatch(partnerName(res.body.user_name));
-        }
-      });
-  };
-}
-
 const chatData = (data) => ({
   type: CHAT_DATA,
   data,
@@ -73,7 +75,7 @@ const chatSocket = (data) => ({
   data,
 });
 
-const partnerName = (data) => ({
-  type: PARTNER_NAME,
-  data,
+const apiFailuer = (err) => ({
+  type: API_FAILUER,
+  err,
 });

@@ -3,6 +3,7 @@ const initialState = {
   name: '',
   users: [],
   rooms: [],
+  roomNames: [],
   requesting: false,
   requested: false,
 };
@@ -70,6 +71,11 @@ export default (state = initialState, action) => {
     case 'API_GET_ROOMS':
       return Object.assign({}, state, {
         rooms: action.data,
+      });
+
+    case 'API_GET_ROOM_USER_NAMES':
+      return Object.assign({}, state, {
+        roomNames: action.data,
       });
 
     default:

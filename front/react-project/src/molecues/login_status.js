@@ -5,6 +5,14 @@ import { getUsers } from '../actions/user';
 import { createRoom } from '../actions/chat';
 
 class LoginStatus extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      changeChatRoomFlag: false,
+    };
+    this.createChatRoom = this.createChatRoom.bind(this);
+  }
+
   componentDidMount() {
     this.props.getUsersDispatch();
   }
@@ -27,12 +35,20 @@ class LoginStatus extends Component {
     }
   }
 
-  render() {
+  createChatRoom(partnerId) {
+    this.props.createChatRoomDispatch([this.props.userId, partnerId]);
+  }
+
+  renderLoginUsers() {
     return this.props.users.map((user, index) => {
       return (
         <li className='login_status_body_item' key={`user_${user.id}`}>
           <div className='item_user_image'>
-            <img src='/images/blue.jpg' alt={`user_id:${user.id}の画像`} />
+            <img
+              src='/images/blue.jpg'
+              alt={`user_id:${user.id}の画像`}
+              onClick={() => this.createChatRoom(user.id)}
+            />
           </div>
           <div className='item_user_name'>{user.name}</div>
           <div className='item_user_status'>
@@ -41,6 +57,21 @@ class LoginStatus extends Component {
         </li>
       );
     });
+  }
+
+  render() {
+    return (
+      <React.Fragment>
+        <div className='header'>
+          <p>ログイン状況</p>
+        </div>
+        <div className='login_status_body'>
+          {(() => {
+            if (this.props.users) return <ul>{this.renderLoginUsers()}</ul>;
+          })()}
+        </div>
+      </React.Fragment>
+    );
   }
 }
 
@@ -63,8 +94,8 @@ function mapDispatchToProps(dispatch) {
     getUsersDispatch() {
       dispatch(getUsers());
     },
-    changeChatRoomDispatch(myId, partnerId) {
-      dispatch(createRoom(myId, partnerId));
+    createChatRoomDispatch(user_ids) {
+      dispatch(createRoom(user_ids));
     },
   };
 }

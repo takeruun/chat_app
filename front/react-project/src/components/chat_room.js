@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import LoginStatus from '../molecues/login_status';
 import ChatLogs from '../molecues/chat_logs';
-import ChatRooms from '../molecues/chat_rooms';
+import RoomLists from '../molecues/room_lists';
 import propTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDoubleUp } from '@fortawesome/free-solid-svg-icons';
 import { MentionsInput, Mention } from 'react-mentions';
+import request from 'superagent';
 
 class ChatRoom extends Component {
   constructor(props) {
@@ -14,12 +15,14 @@ class ChatRoom extends Component {
     this.state = {
       currentChatMessage: '',
       shiftKeyFlag: false,
+      workId: '',
     };
     this.updateCurrentChatMessage = this.updateCurrentChatMessage.bind(this);
     this.handleChatInputKeyPress = this.handleChatInputKeyPress.bind(this);
     this.handleSendEvent = this.handleSendEvent.bind(this);
     this.toMention = this.toMention.bind(this);
     this.keyShiftFlag = this.keyShiftFlag.bind(this);
+    this.handleWorkingTime = this.handleWorkingTime.bind(this);
   }
 
   updateCurrentChatMessage(e) {
@@ -45,14 +48,35 @@ class ChatRoom extends Component {
 
   handleSendEvent(e) {
     e.preventDefault();
-    this.props.chatSocket.create(
-      this.state.currentChatMessage,
-      this.props.userId
-    );
+    if (!(e.target.value === '@勤務開始' || e.target.value === '@勤務終了'))
+      this.props.chatSocket.create(
+        this.state.currentChatMessage,
+        this.props.userId
+      );
     this.setState({ currentChatMessage: '' });
   }
 
-  toMention(id) {}
+  toMention() {}
+
+  handleWorkingTime(flag) {
+    flag === 0
+      ? request
+          .post('/api/v1/works/')
+          .send({
+            work: { status: 'work', user_id: this.props.userId },
+          })
+          .end((err, res) => {
+            if (!err && res.status === 200) {
+              this.setState({ workId: res.body.work.id });
+            }
+          })
+      : request.put('/api/v1/works/' + this.state.workId).end((err, res) => {
+          if (!err && res.status === 200) {
+            this.setState({ workId: '' });
+          }
+        });
+    this.setState({ currentChatMessage: '' });
+  }
 
   render() {
     var { users } = this.props;
@@ -60,26 +84,25 @@ class ChatRoom extends Component {
       id: user.id,
       display: user.name,
     }));
+    var startEnd = [
+      { id: 0, display: '勤務開始' },
+      { id: 1, display: '勤務終了' },
+    ];
     return (
-      <div className='chat_page'>
+      <div className='chat_room'>
         <div className='login_status'>
-          <div className='header'>
-            <p>ログイン状況</p>
-          </div>
-          <ul className='body'>
-            <LoginStatus />
-          </ul>
+          <LoginStatus />
         </div>
-        <div className='chat_rooms'>
-          <ChatRooms />
+        <div className='room_lists'>
+          <RoomLists />
         </div>
         <div className='chat'>
           <div className='room_name'>
             <p className='partner_name'>{this.props.partnerName}</p>
           </div>
-          <ul className='chat_logs' id='chatLogs'>
+          <div className='chat_logs' id='chatLogs'>
             <ChatLogs />
-          </ul>
+          </div>
           <div className='send_message'>
             <MentionsInput
               onChange={this.updateCurrentChatMessage}
@@ -95,6 +118,12 @@ class ChatRoom extends Component {
                 data={users}
                 displayTransform={(id, display) => `@${display}`}
                 onAdd={(id) => this.toMention(id)}
+              />
+              <Mention
+                trigger='@work'
+                data={startEnd}
+                displayTransform={(display) => `${display}`}
+                onAdd={(id) => this.handleWorkingTime(id)}
               />
             </MentionsInput>
             <FontAwesomeIcon
