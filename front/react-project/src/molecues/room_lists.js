@@ -34,7 +34,7 @@ class RoomLists extends Component {
       return (
         <li
           onClick={() => this.changeChatRoom(room.id, roomNames[index])}
-          className={`room_list_body_item room_${roomNames[index]}`}
+          className={`room_list_body_item room_${roomNames[index]} ${room.id}`}
           id={`room_${roomNames[index]}`}
           key={`room_id:${room.id}`}
         >

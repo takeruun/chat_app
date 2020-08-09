@@ -63,8 +63,13 @@ export function createSocketChat(roomId, chatLogs, chatSocketLists) {
         conneted: () => {},
         received: (data) => {
           //chatLogs.push(data);これでは再レンダリングされない
-          if (roomId === data.room_id) chatLogs = chatLogs.concat(data);
-          dispatch(chatData(chatLogs));
+          var currentRoomId = Number(
+            document.getElementsByClassName('current_room')[0].classList[2]
+          );
+          if (roomId === currentRoomId) {
+            chatLogs = chatLogs.concat(data);
+            dispatch(chatData(chatLogs));
+          }
         },
         create: function (chatContent, id) {
           //this.chats.createの引数がchatContent, id
