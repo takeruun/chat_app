@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { createSocketChat } from '../actions/chat';
+import { apiChangeChatRoom } from '../actions/chat';
 
 class RoomLists extends Component {
   constructor(props) {
@@ -14,23 +14,30 @@ class RoomLists extends Component {
 
   componentDidMount() {}
 
-  changeChatRoom(roomId) {
-    if (this.state.changedRoom) this.props.chatSocket.disconnected();
-    this.props.changeChatRoomDispatch(roomId);
+  currentRoom(name) {
+    var oldElement = document.getElementsByClassName('current_room');
+    if (oldElement.length !== 0) oldElement[0].classList.remove('current_room');
+    var element = document.getElementById(`room_${name}`);
+    element.classList.add('current_room');
+  }
+
+  changeChatRoom(roomId, roomName) {
+    this.currentRoom(roomName);
+    this.props.apiChangeChatRoomDispatch(roomId, this.props.chatSocketLists);
     this.setState({ changedRoomFlag: true });
   }
 
   renderRoomLists() {
-    return this.props.rooms.map((room) => {
+    const { roomNames } = this.props;
+    return this.props.rooms.map((room, index) => {
       return (
         <li
-          onClick={() => this.changeChatRoom(room.id)}
-          className='room_list_body_item'
+          onClick={() => this.changeChatRoom(room.id, roomNames[index])}
+          className={`room_list_body_item room_${roomNames[index]} ${room.id}`}
+          id={`room_${roomNames[index]}`}
           key={`room_id:${room.id}`}
         >
-          <div>
-            {room.id} : {room.name}
-          </div>
+          <div className='item_room'>{roomNames[index]}</div>
         </li>
       );
     });
@@ -56,6 +63,8 @@ RoomLists.propTypes = {
   userId: propTypes.number.isRequired,
   rooms: propTypes.array.isRequired,
   chatSocket: propTypes.object,
+  roomNames: propTypes.array,
+  chatSocketLists: propTypes.array,
 };
 
 function mapStateToProps(state) {
@@ -63,13 +72,15 @@ function mapStateToProps(state) {
     userId: Number(state.user.id),
     rooms: state.user.rooms,
     chatSocket: state.chat.chatSocket,
+    roomNames: state.user.roomNames,
+    chatSocketLists: state.chat.chatSocketLists,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    changeChatRoomDispatch(roomId) {
-      dispatch(createSocketChat(roomId, []));
+    apiChangeChatRoomDispatch(roomId, chatSocketLists) {
+      dispatch(apiChangeChatRoom(roomId, chatSocketLists));
     },
   };
 }

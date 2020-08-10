@@ -1,27 +1,59 @@
 import request from 'superagent';
-export const CHAT_DATA = 'CHAT_DATA';
-export const CHAT_SOCKET = 'CHAT_SOCKET';
-export const PARTNER_NAME = 'PARTNER_NAME';
+import { setRooms, setRoomUserNames } from './user';
+export const SET_CHAT_DATA = 'SET_CHAT_DATA';
+export const SET_CHAT_SOCKET = 'SET_CHAT_SOCKET';
+export const API_FAILUER = 'API_FAILUER';
+export const SET_CHAT_SOCKET_LISTS = 'SET_CHAT_SOCKET_LISTS';
 
-export function createRoom() {
+export function apiCreateRoom(ids, rooms, roomNames, name = '') {
   return (dispatch) => {
     request
-      .get('/api/v1/rooms')
-      .send({ user_ids: [] })
+      .post('/api/v1/rooms')
+      .send({ room: { user_ids: ids, name: name } })
       .end((err, res) => {
-        if (!err && res.body) {
-          dispatch(chatData(res.body.chatdata));
+        if (!err && res.body.msg) {
+          console.log(res.body.msg);
+        } else if (!err && res.status === 200) {
+          rooms = rooms.concat(res.body.room);
+          roomNames = roomNames.concat(res.body.room_name);
+          dispatch(setRooms(rooms));
+          dispatch(setRoomUserNames(roomNames));
+          dispatch(apiCreateSocketChat(res.body.room.id));
         } else {
+          dispatch(apiFailuer(err));
         }
-        dispatch(createSocketChat(res.body.room_id, res.body.chatdata));
       });
   };
 }
 
-export function createSocketChat(roomId, chatLogs) {
+export function apiChangeChatRoom(roomId, chatSocketLists) {
+  return (dispatch) => {
+    request.get('/api/v1/rooms/' + roomId).end((err, res) => {
+      if (!err && res.status === 200) {
+        dispatch(setChatData(res.body.messages));
+        const socket = chatSocketLists.filter((socket) => {
+          return JSON.parse(socket.identifier).room_id === roomId
+            ? socket
+            : null;
+        });
+        if (socket[0]) dispatch(setChatSocket(socket[0]));
+        else
+          dispatch(
+            apiCreateSocketChat(roomId, res.body.messages, chatSocketLists)
+          );
+      } else {
+        dispatch(apiFailuer(err));
+      }
+    });
+  };
+}
+
+export function apiCreateSocketChat(roomId, chatLogs, chatSocketLists) {
   return (dispatch) => {
     var Cable = require('actioncable');
-    let cable = Cable.createConsumer('wss:localhost/api/v1/cable');
+    let cable = Cable.createConsumer(
+      'wss:' + window.location.host + '/api/v1/cable'
+    );
     let chats = cable.subscriptions.create(
       {
         channel: 'ChatChannel',
@@ -31,8 +63,13 @@ export function createSocketChat(roomId, chatLogs) {
         conneted: () => {},
         received: (data) => {
           //chatLogs.push(data);これでは再レンダリングされない
-          chatLogs = chatLogs.concat(data);
-          dispatch(chatData(chatLogs));
+          var currentRoomId = Number(
+            document.getElementsByClassName('current_room')[0].classList[2]
+          );
+          if (roomId === currentRoomId) {
+            chatLogs = chatLogs.concat(data);
+            dispatch(setChatData(chatLogs));
+          }
         },
         create: function (chatContent, id) {
           //this.chats.createの引数がchatContent, id
@@ -46,34 +83,28 @@ export function createSocketChat(roomId, chatLogs) {
         },
       }
     );
-    dispatch(chatSocket(chats));
+    chatSocketLists.push(chats);
+    dispatch(setChatSocketLists(chatSocketLists));
+    dispatch(setChatSocket(chats));
   };
 }
 
-function getPartnerName(partnerId) {
-  return (dispatch) => {
-    request
-      .get('/api/v1/partner')
-      .query({ partner_id: partnerId })
-      .end((err, res) => {
-        if (!err && res.body) {
-          dispatch(partnerName(res.body.user_name));
-        }
-      });
-  };
-}
-
-const chatData = (data) => ({
-  type: CHAT_DATA,
+const setChatData = (data) => ({
+  type: SET_CHAT_DATA,
   data,
 });
 
-const chatSocket = (data) => ({
-  type: CHAT_SOCKET,
+const setChatSocket = (data) => ({
+  type: SET_CHAT_SOCKET,
   data,
 });
 
-const partnerName = (data) => ({
-  type: PARTNER_NAME,
+const setChatSocketLists = (data) => ({
+  type: SET_CHAT_SOCKET_LISTS,
   data,
+});
+
+const apiFailuer = (err) => ({
+  type: API_FAILUER,
+  err,
 });

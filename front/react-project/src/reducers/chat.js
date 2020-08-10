@@ -1,27 +1,23 @@
 const initialState = {
   chatLogs: [],
+  chatSocketLists: [],
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case 'CHAT_DATA':
+    case 'SET_CHAT_DATA':
       return Object.assign({}, state, {
         chatLogs: action.data,
       });
 
-    case 'CURRENT_CHAT_DATA':
-      return Object.assign({}, state, {
-        chatLogs: action.data,
-      });
-
-    case 'CHAT_SOCKET':
+    case 'SET_CHAT_SOCKET':
       return Object.assign({}, state, {
         chatSocket: action.data,
       });
 
-    case 'PARTNER_NAME':
+    case 'SET_CHAT_SOCKET_LISTS':
       return Object.assign({}, state, {
-        partnerName: action.data,
+        chatSocketLists: action.data,
       });
 
     default:

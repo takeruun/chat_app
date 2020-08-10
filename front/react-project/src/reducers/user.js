@@ -3,6 +3,8 @@ const initialState = {
   name: '',
   users: [],
   rooms: [],
+  roomLists: [],
+  roomNames: [],
   requesting: false,
   requested: false,
 };
@@ -16,7 +18,7 @@ export default (state = initialState, action) => {
         result: false,
       });
 
-    case 'CURRENT_USER':
+    case 'SET_CURRENT_USER':
       return Object.assign({}, state, {
         requesting: false,
         requested: true,
@@ -31,27 +33,27 @@ export default (state = initialState, action) => {
         result: action.err,
       });
 
-    case 'API_USERS':
+    case 'SET_USERS':
       return Object.assign({}, state, {
         requesting: false,
         requested: true,
         users: action.data,
       });
 
-    case 'API_USER':
+    case 'SET_USER':
       return Object.assign({}, state, {
         requesting: false,
         requested: true,
         user: action.data,
       });
 
-    case 'API_LOGOUT':
+    case 'SET_LOGOUT':
       return Object.assign({}, state, {
         id: '',
         msg: action.msg,
       });
 
-    case 'APPEAR_USERS':
+    case 'SET_APPEAR_USERS':
       if (action.flag) {
         return Object.assign({}, state, {
           appearUsers: action.data,
@@ -62,14 +64,19 @@ export default (state = initialState, action) => {
         });
       }
 
-    case 'APPEAR_SOCKET':
+    case 'SET_APPEAR_SOCKET':
       return Object.assign({}, state, {
         appearSocket: action.data,
       });
 
-    case 'API_GET_ROOMS':
+    case 'SET_ROOMS':
       return Object.assign({}, state, {
         rooms: action.data,
+      });
+
+    case 'SET_ROOM_USER_NAMES':
+      return Object.assign({}, state, {
+        roomNames: action.data,
       });
 
     default:
