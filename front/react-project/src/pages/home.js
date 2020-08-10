@@ -2,11 +2,11 @@ import React from 'react';
 import Nav from '../components/nav';
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import { getCurrentUser } from '../actions/user';
+import { apiGetCurrentUser } from '../actions/user';
 
 class Home extends Component {
   componentDidMount() {
-    this.props.getCurrentUserDispatch();
+    this.props.apiGetCurrentUserDispatch();
   }
 
   render() {
@@ -20,11 +20,11 @@ class Home extends Component {
   }
 }
 
-//Action Createrの呼び出し　actionのgetCurrentUser method
+//Action Createrの呼び出し　actionのapiGetCurrentUser method
 function mapDispatchToProps(dispatch) {
   return {
-    getCurrentUserDispatch() {
-      dispatch(getCurrentUser());
+    apiGetCurrentUserDispatch() {
+      dispatch(apiGetCurrentUser());
     },
   };
 }

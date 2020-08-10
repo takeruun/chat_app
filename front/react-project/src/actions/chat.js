@@ -1,11 +1,11 @@
 import request from 'superagent';
-import { apiGetRooms, apiGetRoomUserNames } from './user';
-export const CHAT_DATA = 'CHAT_DATA';
-export const CHAT_SOCKET = 'CHAT_SOCKET';
+import { setRooms, setRoomUserNames } from './user';
+export const SET_CHAT_DATA = 'SET_CHAT_DATA';
+export const SET_CHAT_SOCKET = 'SET_CHAT_SOCKET';
 export const API_FAILUER = 'API_FAILUER';
-export const GET_CHAT_SOCKET_LISTS = 'GET_CHAT_SOCKET_LISTS';
+export const SET_CHAT_SOCKET_LISTS = 'SET_CHAT_SOCKET_LISTS';
 
-export function createRoom(ids, rooms, roomNames, name = '') {
+export function apiCreateRoom(ids, rooms, roomNames, name = '') {
   return (dispatch) => {
     request
       .post('/api/v1/rooms')
@@ -16,9 +16,9 @@ export function createRoom(ids, rooms, roomNames, name = '') {
         } else if (!err && res.status === 200) {
           rooms = rooms.concat(res.body.room);
           roomNames = roomNames.concat(res.body.room_name);
-          dispatch(apiGetRooms(rooms));
-          dispatch(apiGetRoomUserNames(roomNames));
-          dispatch(createSocketChat(res.body.room.id));
+          dispatch(setRooms(rooms));
+          dispatch(setRoomUserNames(roomNames));
+          dispatch(apiCreateSocketChat(res.body.room.id));
         } else {
           dispatch(apiFailuer(err));
         }
@@ -26,20 +26,20 @@ export function createRoom(ids, rooms, roomNames, name = '') {
   };
 }
 
-export function changeChatRoom(roomId, chatSocketLists) {
+export function apiChangeChatRoom(roomId, chatSocketLists) {
   return (dispatch) => {
     request.get('/api/v1/rooms/' + roomId).end((err, res) => {
       if (!err && res.status === 200) {
-        dispatch(chatData(res.body.messages));
+        dispatch(setChatData(res.body.messages));
         const socket = chatSocketLists.filter((socket) => {
           return JSON.parse(socket.identifier).room_id === roomId
             ? socket
             : null;
         });
-        if (socket[0]) dispatch(chatSocket(socket[0]));
+        if (socket[0]) dispatch(setChatSocket(socket[0]));
         else
           dispatch(
-            createSocketChat(roomId, res.body.messages, chatSocketLists)
+            apiCreateSocketChat(roomId, res.body.messages, chatSocketLists)
           );
       } else {
         dispatch(apiFailuer(err));
@@ -48,7 +48,7 @@ export function changeChatRoom(roomId, chatSocketLists) {
   };
 }
 
-export function createSocketChat(roomId, chatLogs, chatSocketLists) {
+export function apiCreateSocketChat(roomId, chatLogs, chatSocketLists) {
   return (dispatch) => {
     var Cable = require('actioncable');
     let cable = Cable.createConsumer(
@@ -68,7 +68,7 @@ export function createSocketChat(roomId, chatLogs, chatSocketLists) {
           );
           if (roomId === currentRoomId) {
             chatLogs = chatLogs.concat(data);
-            dispatch(chatData(chatLogs));
+            dispatch(setChatData(chatLogs));
           }
         },
         create: function (chatContent, id) {
@@ -84,23 +84,23 @@ export function createSocketChat(roomId, chatLogs, chatSocketLists) {
       }
     );
     chatSocketLists.push(chats);
-    dispatch(getChatSocketLists(chatSocketLists));
-    dispatch(chatSocket(chats));
+    dispatch(setChatSocketLists(chatSocketLists));
+    dispatch(setChatSocket(chats));
   };
 }
 
-const chatData = (data) => ({
-  type: CHAT_DATA,
+const setChatData = (data) => ({
+  type: SET_CHAT_DATA,
   data,
 });
 
-const chatSocket = (data) => ({
-  type: CHAT_SOCKET,
+const setChatSocket = (data) => ({
+  type: SET_CHAT_SOCKET,
   data,
 });
 
-const getChatSocketLists = (data) => ({
-  type: GET_CHAT_SOCKET_LISTS,
+const setChatSocketLists = (data) => ({
+  type: SET_CHAT_SOCKET_LISTS,
   data,
 });
 

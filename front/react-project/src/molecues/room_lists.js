@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { changeChatRoom } from '../actions/chat';
+import { apiChangeChatRoom } from '../actions/chat';
 
 class RoomLists extends Component {
   constructor(props) {
@@ -23,8 +23,7 @@ class RoomLists extends Component {
 
   changeChatRoom(roomId, roomName) {
     this.currentRoom(roomName);
-    //if (this.state.changedRoom) this.props.chatSocket.disconnected();
-    this.props.changeChatRoomDispatch(roomId, this.props.chatSocketLists);
+    this.props.apiChangeChatRoomDispatch(roomId, this.props.chatSocketLists);
     this.setState({ changedRoomFlag: true });
   }
 
@@ -80,8 +79,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    changeChatRoomDispatch(roomId, chatSocketLists) {
-      dispatch(changeChatRoom(roomId, chatSocketLists));
+    apiChangeChatRoomDispatch(roomId, chatSocketLists) {
+      dispatch(apiChangeChatRoom(roomId, chatSocketLists));
     },
   };
 }
