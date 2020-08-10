@@ -17,13 +17,17 @@ class RoomLists extends Component {
   currentRoom(name) {
     var oldElement = document.getElementsByClassName('current_room');
     if (oldElement.length !== 0) oldElement[0].classList.remove('current_room');
-    var element = document.getElementById(`room_${name}`);
-    element.classList.add('current_room');
+    var element = document.getElementsByClassName(`room_${name}`);
+    element[0].classList.add('current_room');
   }
 
   changeChatRoom(roomId, roomName) {
     this.currentRoom(roomName);
-    this.props.apiChangeChatRoomDispatch(roomId, this.props.chatSocketLists);
+    this.props.apiChangeChatRoomDispatch(
+      roomId,
+      this.props.chatSocketLists,
+      this.props.chatLogsLists
+    );
     this.setState({ changedRoomFlag: true });
   }
 
@@ -33,8 +37,8 @@ class RoomLists extends Component {
       return (
         <li
           onClick={() => this.changeChatRoom(room.id, roomNames[index])}
-          className={`room_list_body_item room_${roomNames[index]} ${room.id}`}
-          id={`room_${roomNames[index]}`}
+          className={`room_list_body_item room_${roomNames[index]} ${index}`}
+          id={room.id}
           key={`room_id:${room.id}`}
         >
           <div className='item_room'>{roomNames[index]}</div>
@@ -65,6 +69,7 @@ RoomLists.propTypes = {
   chatSocket: propTypes.object,
   roomNames: propTypes.array,
   chatSocketLists: propTypes.array,
+  chatLogsLists: propTypes.array,
 };
 
 function mapStateToProps(state) {
@@ -74,13 +79,14 @@ function mapStateToProps(state) {
     chatSocket: state.chat.chatSocket,
     roomNames: state.user.roomNames,
     chatSocketLists: state.chat.chatSocketLists,
+    chatLogsLists: state.chat.chatLogsLists,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    apiChangeChatRoomDispatch(roomId, chatSocketLists) {
-      dispatch(apiChangeChatRoom(roomId, chatSocketLists));
+    apiChangeChatRoomDispatch(roomId, chatSocketLists, chatLogsLists) {
+      dispatch(apiChangeChatRoom(roomId, chatSocketLists, chatLogsLists));
     },
   };
 }

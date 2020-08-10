@@ -136,6 +136,7 @@ export function getUser(id) {
 }
 
 function apiGetRooms(id, chatSocketLists) {
+  var data = [];
   return (dispatch) => {
     request
       .get('/api/v1/rooms')
@@ -145,7 +146,18 @@ function apiGetRooms(id, chatSocketLists) {
         } else if (!err && res.status === 200) {
           dispatch(setRooms(res.body.rooms));
           res.body.rooms.forEach((room) => {
-            dispatch(apiCreateSocketChat(room.id, [], chatSocketLists));
+            data.push([]);
+          });
+          res.body.rooms.forEach((room, i) => {
+            dispatch(
+              apiCreateSocketChat(
+                room.id,
+                data,
+                chatSocketLists,
+                i,
+                res.body.rooms
+              )
+            );
           });
           dispatch(setRoomUserNames(res.body.room_names));
         } else {

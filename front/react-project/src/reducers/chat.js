@@ -1,7 +1,9 @@
 const initialState = {
   chatLogs: [],
+  chatLogsLists: [[]],
   chatSocketLists: [],
   unreadCount: [[]],
+  currentRoomIndex: '',
 };
 
 export default (state = initialState, action) => {
@@ -19,6 +21,11 @@ export default (state = initialState, action) => {
     case 'SET_CHAT_SOCKET_LISTS':
       return Object.assign({}, state, {
         chatSocketLists: action.data,
+      });
+
+    case 'SET_CHAT_DATA_LISTS':
+      return Object.assign({}, state, {
+        chatLogsLists: action.data,
       });
 
     default:
