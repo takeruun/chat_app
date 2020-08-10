@@ -1,6 +1,7 @@
 const initialState = {
   chatLogs: [],
   chatSocketLists: [],
+  unreadCount: [[]],
 };
 
 export default (state = initialState, action) => {

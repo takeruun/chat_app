@@ -36,11 +36,7 @@ export function apiChangeChatRoom(roomId, chatSocketLists) {
             ? socket
             : null;
         });
-        if (socket[0]) dispatch(setChatSocket(socket[0]));
-        else
-          dispatch(
-            apiCreateSocketChat(roomId, res.body.messages, chatSocketLists)
-          );
+        dispatch(setChatSocket(socket[0]));
       } else {
         dispatch(apiFailuer(err));
       }
@@ -85,7 +81,6 @@ export function apiCreateSocketChat(roomId, chatLogs, chatSocketLists) {
     );
     chatSocketLists.push(chats);
     dispatch(setChatSocketLists(chatSocketLists));
-    dispatch(setChatSocket(chats));
   };
 }
 

@@ -1,4 +1,5 @@
 import request from 'superagent';
+import { apiCreateSocketChat } from './chat';
 export const API_REQUEST = 'API_REQUEST';
 export const API_FAILUER = 'API_FAILUER';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
@@ -89,7 +90,7 @@ export function logout(appear) {
   };
 }
 
-export function apiGetCurrentUser() {
+export function apiGetCurrentUser(chatSocketLists) {
   return (dispatch) => {
     dispatch(apiRequest());
     request
@@ -100,7 +101,7 @@ export function apiGetCurrentUser() {
         if (!err && res.body.user) {
           dispatch(setCurrentUser(res.body.user));
           dispatch(apiCreateSocketAppear(res.body.user.id));
-          dispatch(apiGetRooms(res.body.user.id));
+          dispatch(apiGetRooms(res.body.user.id, chatSocketLists));
         } else {
           dispatch(apiFailuer(err));
         }
@@ -134,7 +135,7 @@ export function getUser(id) {
   };
 }
 
-function apiGetRooms(id) {
+function apiGetRooms(id, chatSocketLists) {
   return (dispatch) => {
     request
       .get('/api/v1/rooms')
@@ -143,6 +144,9 @@ function apiGetRooms(id) {
         if (!err && res.body.msg) {
         } else if (!err && res.status === 200) {
           dispatch(setRooms(res.body.rooms));
+          res.body.rooms.forEach((room) => {
+            dispatch(apiCreateSocketChat(room.id, [], chatSocketLists));
+          });
           dispatch(setRoomUserNames(res.body.room_names));
         } else {
           dispatch(apiFailuer(err));
