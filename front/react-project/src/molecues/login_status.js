@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getUsers } from '../actions/user';
-import { createRoom } from '../actions/chat';
+import { apiGetUsers } from '../actions/user';
+import { apiCreateRoom } from '../actions/chat';
 
 class LoginStatus extends Component {
   constructor(props) {
@@ -14,7 +14,7 @@ class LoginStatus extends Component {
   }
 
   componentDidMount() {
-    this.props.getUsersDispatch();
+    this.props.apiGetUsersDispatch();
   }
 
   componentDidUpdate() {
@@ -36,7 +36,7 @@ class LoginStatus extends Component {
   }
 
   createChatRoom(partnerId) {
-    this.props.createChatRoomDispatch(
+    this.props.apiCreateChatRoomDispatch(
       [this.props.userId, partnerId],
       this.props.rooms,
       this.props.roomNames
@@ -99,11 +99,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getUsersDispatch() {
-      dispatch(getUsers());
+    apiGetUsersDispatch() {
+      dispatch(apiGetUsers());
     },
-    createChatRoomDispatch(user_ids, rooms, roomNames) {
-      dispatch(createRoom(user_ids, rooms, roomNames));
+    apiCreateChatRoomDispatch(user_ids, rooms, roomNames) {
+      dispatch(apiCreateRoom(user_ids, rooms, roomNames));
     },
   };
 }
