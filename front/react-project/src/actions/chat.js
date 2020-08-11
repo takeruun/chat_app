@@ -5,6 +5,7 @@ export const SET_CHAT_SOCKET = 'SET_CHAT_SOCKET';
 export const API_FAILUER = 'API_FAILUER';
 export const SET_CHAT_SOCKET_LISTS = 'SET_CHAT_SOCKET_LISTS';
 export const SET_CHAT_DATA_LISTS = 'SET_CHAT_DATA_LISTS';
+export const SET_UNREAD_COUNTS = 'SET_UNREAD_COUNTS';
 
 export function apiCreateRoom(ids, rooms, roomNames, name = '') {
   return (dispatch) => {
@@ -69,15 +70,15 @@ export function apiCreateSocketChat(
         conneted: () => {},
         received: (data) => {
           //chatLogs.push(data);これでは再レンダリングされない
-          const currentRoomIndex = Number(
-            document.getElementsByClassName('current_room')[0].classList[2]
-          );
           const currentRoomId = Number(
             document
               .getElementsByClassName('current_room')[0]
               .getAttribute('id')
           );
           if (roomId === currentRoomId) {
+            const currentRoomIndex = Number(
+              document.getElementsByClassName('current_room')[0].classList[2]
+            );
             chatLogsLists[currentRoomIndex] = chatLogsLists[
               currentRoomIndex
             ].concat(data);
@@ -140,6 +141,11 @@ const setChatSocket = (data) => ({
 
 const setChatSocketLists = (data) => ({
   type: SET_CHAT_SOCKET_LISTS,
+  data,
+});
+
+export const setUnreadCounts = (data) => ({
+  type: SET_UNREAD_COUNTS,
   data,
 });
 

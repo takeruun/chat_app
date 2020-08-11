@@ -32,7 +32,7 @@ class RoomLists extends Component {
   }
 
   renderRoomLists() {
-    const { roomNames } = this.props;
+    const { roomNames, unreadCounts } = this.props;
     return this.props.rooms.map((room, index) => {
       return (
         <li
@@ -42,6 +42,10 @@ class RoomLists extends Component {
           key={`room_id:${room.id}`}
         >
           <div className='item_room'>{roomNames[index]}</div>
+          {(() => {
+            if (unreadCounts[index] > 0)
+              return <span>{unreadCounts[index]}</span>;
+          })()}
         </li>
       );
     });
@@ -70,6 +74,7 @@ RoomLists.propTypes = {
   roomNames: propTypes.array,
   chatSocketLists: propTypes.array,
   chatLogsLists: propTypes.array,
+  unreadCounts: propTypes.array,
 };
 
 function mapStateToProps(state) {
@@ -80,6 +85,7 @@ function mapStateToProps(state) {
     roomNames: state.user.roomNames,
     chatSocketLists: state.chat.chatSocketLists,
     chatLogsLists: state.chat.chatLogsLists,
+    unreadCounts: state.chat.unreadCounts,
   };
 }
 
