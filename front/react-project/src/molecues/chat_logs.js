@@ -65,7 +65,7 @@ class ChatLogs extends Component {
 
 ChatLogs.propTypes = {
   userId: propTypes.number.isRequired,
-  chatLogs: propTypes.array.isRequired,
+  chatLogs: propTypes.array,
 };
 
 function mapStateToProps(state) {

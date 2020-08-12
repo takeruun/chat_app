@@ -4,6 +4,8 @@ export const SET_CHAT_DATA = 'SET_CHAT_DATA';
 export const SET_CHAT_SOCKET = 'SET_CHAT_SOCKET';
 export const API_FAILUER = 'API_FAILUER';
 export const SET_CHAT_SOCKET_LISTS = 'SET_CHAT_SOCKET_LISTS';
+export const SET_CHAT_DATA_LISTS = 'SET_CHAT_DATA_LISTS';
+export const SET_UNREAD_COUNTS = 'SET_UNREAD_COUNTS';
 
 export function apiCreateRoom(ids, rooms, roomNames, name = '') {
   return (dispatch) => {
@@ -26,21 +28,20 @@ export function apiCreateRoom(ids, rooms, roomNames, name = '') {
   };
 }
 
-export function apiChangeChatRoom(roomId, chatSocketLists) {
+export function apiChangeChatRoom(roomId, chatSocketLists, chatLogsLists) {
   return (dispatch) => {
     request.get('/api/v1/rooms/' + roomId).end((err, res) => {
       if (!err && res.status === 200) {
-        dispatch(setChatData(res.body.messages));
+        var currentRoomIndex = Number(
+          document.getElementsByClassName('current_room')[0].classList[2]
+        );
+        dispatch(setChatData(chatLogsLists[currentRoomIndex]));
         const socket = chatSocketLists.filter((socket) => {
           return JSON.parse(socket.identifier).room_id === roomId
             ? socket
             : null;
         });
-        if (socket[0]) dispatch(setChatSocket(socket[0]));
-        else
-          dispatch(
-            apiCreateSocketChat(roomId, res.body.messages, chatSocketLists)
-          );
+        dispatch(setChatSocket(socket[0]));
       } else {
         dispatch(apiFailuer(err));
       }
@@ -48,7 +49,13 @@ export function apiChangeChatRoom(roomId, chatSocketLists) {
   };
 }
 
-export function apiCreateSocketChat(roomId, chatLogs, chatSocketLists) {
+export function apiCreateSocketChat(
+  roomId,
+  chatLogsLists,
+  chatSocketLists,
+  index,
+  rooms
+) {
   return (dispatch) => {
     var Cable = require('actioncable');
     let cable = Cable.createConsumer(
@@ -63,12 +70,25 @@ export function apiCreateSocketChat(roomId, chatLogs, chatSocketLists) {
         conneted: () => {},
         received: (data) => {
           //chatLogs.push(data);これでは再レンダリングされない
-          var currentRoomId = Number(
-            document.getElementsByClassName('current_room')[0].classList[2]
+          const currentRoomId = Number(
+            document
+              .getElementsByClassName('current_room')[0]
+              .getAttribute('id')
           );
           if (roomId === currentRoomId) {
-            chatLogs = chatLogs.concat(data);
-            dispatch(setChatData(chatLogs));
+            const currentRoomIndex = Number(
+              document.getElementsByClassName('current_room')[0].classList[2]
+            );
+            chatLogsLists[currentRoomIndex] = chatLogsLists[
+              currentRoomIndex
+            ].concat(data);
+            dispatch(setChatData(chatLogsLists[currentRoomIndex]));
+          } else {
+            const roomIndex = rooms.findIndex(
+              (room) => room.id === data.room_id
+            );
+            chatLogsLists[roomIndex].push(data);
+            setChatData(chatLogsLists[roomIndex]);
           }
         },
         create: function (chatContent, id) {
@@ -84,13 +104,33 @@ export function apiCreateSocketChat(roomId, chatLogs, chatSocketLists) {
       }
     );
     chatSocketLists.push(chats);
+    dispatch(apiGetChatData(roomId, chatLogsLists, index));
     dispatch(setChatSocketLists(chatSocketLists));
-    dispatch(setChatSocket(chats));
+  };
+}
+
+function apiGetChatData(roomId, chatLogsLists, index) {
+  return (dispatch) => {
+    request.get('/api/v1/rooms/' + roomId).end((err, res) => {
+      if (!err && res.status === 200) {
+        res.body.messages.forEach((chat) => {
+          chatLogsLists[index].push(chat);
+        });
+        dispatch(setChatDataLists(chatLogsLists));
+      } else {
+        dispatch(apiFailuer(err));
+      }
+    });
   };
 }
 
 const setChatData = (data) => ({
   type: SET_CHAT_DATA,
+  data,
+});
+
+const setChatDataLists = (data) => ({
+  type: SET_CHAT_DATA_LISTS,
   data,
 });
 
@@ -101,6 +141,11 @@ const setChatSocket = (data) => ({
 
 const setChatSocketLists = (data) => ({
   type: SET_CHAT_SOCKET_LISTS,
+  data,
+});
+
+export const setUnreadCounts = (data) => ({
+  type: SET_UNREAD_COUNTS,
   data,
 });
 
