@@ -7,7 +7,7 @@ import { apiGetCurrentUser } from '../actions/user';
 
 class Home extends Component {
   componentDidMount() {
-    this.props.apiGetCurrentUserDispatch(this.props.chatSocketLists);
+    this.props.apiGetCurrentUserDispatch();
   }
 
   render() {
@@ -34,8 +34,8 @@ function mapStateToProps(state) {
 //Action Createrの呼び出し　actionのapiGetCurrentUser method
 function mapDispatchToProps(dispatch) {
   return {
-    apiGetCurrentUserDispatch(chatSocketLists) {
-      dispatch(apiGetCurrentUser(chatSocketLists));
+    apiGetCurrentUserDispatch() {
+      dispatch(apiGetCurrentUser());
     },
   };
 }

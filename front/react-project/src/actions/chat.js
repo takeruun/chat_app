@@ -6,6 +6,7 @@ export const API_FAILUER = 'API_FAILUER';
 export const SET_CHAT_SOCKET_LISTS = 'SET_CHAT_SOCKET_LISTS';
 export const SET_CHAT_DATA_LISTS = 'SET_CHAT_DATA_LISTS';
 export const SET_UNREAD_COUNTS = 'SET_UNREAD_COUNTS';
+export const CHANGE_CHAT_DATA = 'CHANGE_CHAT_DATA';
 
 export function apiCreateRoom(ids, rooms, roomNames, name = '') {
   return (dispatch) => {
@@ -20,7 +21,7 @@ export function apiCreateRoom(ids, rooms, roomNames, name = '') {
           roomNames = roomNames.concat(res.body.room_name);
           dispatch(setRooms(rooms));
           dispatch(setRoomUserNames(roomNames));
-          dispatch(apiCreateSocketChat(res.body.room.id));
+          dispatch(apiCreateSocketChat(res.body.room.id, ids[0]));
         } else {
           dispatch(apiFailuer(err));
         }
@@ -28,14 +29,14 @@ export function apiCreateRoom(ids, rooms, roomNames, name = '') {
   };
 }
 
-export function apiChangeChatRoom(roomId, chatSocketLists, chatLogsLists) {
+export function apiChangeChatRoom(roomId, chatSocketLists) {
   return (dispatch) => {
     request.get('/api/v1/rooms/' + roomId).end((err, res) => {
       if (!err && res.status === 200) {
         var currentRoomIndex = Number(
           document.getElementsByClassName('current_room')[0].classList[2]
         );
-        dispatch(setChatData(chatLogsLists[currentRoomIndex]));
+        dispatch(setChatData(currentRoomIndex));
         const socket = chatSocketLists.filter((socket) => {
           return JSON.parse(socket.identifier).room_id === roomId
             ? socket
@@ -49,80 +50,62 @@ export function apiChangeChatRoom(roomId, chatSocketLists, chatLogsLists) {
   };
 }
 
-export function apiCreateSocketChat(
-  roomId,
-  chatLogsLists,
-  chatSocketLists,
-  index,
-  rooms,
-  userId
-) {
-  return (dispatch) => {
-    var currentFlag = false;
-    var Cable = require('actioncable');
-    let cable = Cable.createConsumer(
-      'wss:' + window.location.host + '/api/v1/cable'
-    );
-    let chats = cable.subscriptions.create(
-      {
-        channel: 'ChatChannel',
-        room_id: roomId,
+export const apiCreateSocketChat = (roomId, userId) => async (dispatch) => {
+  var currentFlag = false;
+  var Cable = require('actioncable');
+  let cable = Cable.createConsumer(
+    'wss:' + window.location.host + '/api/v1/cable'
+  );
+  let chats = cable.subscriptions.create(
+    {
+      channel: 'ChatChannel',
+      room_id: roomId,
+    },
+    {
+      conneted: () => {},
+      received: (data) => {
+        //chatLogs.push(data);これでは再レンダリングされない
+        const currentRoomId = Number(
+          document.getElementsByClassName('current_room')[0].getAttribute('id')
+        );
+        const currentRoomIndex = Number(
+          document.getElementsByClassName('current_room')[0].classList[2]
+        );
+        dispatch(chageChatData(data, currentFlag, currentRoomIndex));
+        if (roomId === currentRoomId) {
+          currentFlag = true;
+          dispatch(setChatData(currentRoomIndex));
+        } else {
+          currentFlag = false;
+        }
+        //dispatch(apiUpdateUnreadCounts(currentFlag, data));
       },
-      {
-        conneted: () => {},
-        received: (data) => {
-          //chatLogs.push(data);これでは再レンダリングされない
-          const currentRoomId = Number(
-            document
-              .getElementsByClassName('current_room')[0]
-              .getAttribute('id')
-          );
-          if (roomId === currentRoomId) {
-            currentFlag = true;
-            const currentRoomIndex = Number(
-              document.getElementsByClassName('current_room')[0].classList[2]
-            );
-            chatLogsLists[currentRoomIndex] = chatLogsLists[
-              currentRoomIndex
-            ].concat(data);
-            dispatch(setChatData(chatLogsLists[currentRoomIndex]));
-          } else {
-            currentFlag = false;
-            const roomIndex = rooms.findIndex(
-              (room) => room.id === data.room_id
-            );
-            chatLogsLists[roomIndex].push(data);
-            setChatData(chatLogsLists[roomIndex]);
-          }
-          dispatch(apiUpdateUnreadCounts(currentFlag, data));
-        },
-        create: function (chatContent, id) {
-          //this.chats.createの引数がchatContent, id
-          this.perform('create', {
-            user_id: id,
-            body: chatContent,
-          });
-        },
-        disconnected: () => {
-          cable.subscriptions.consumer.disconnect();
-        },
-      }
-    );
-    chatSocketLists.push(chats);
-    dispatch(apiGetChatData(roomId, chatLogsLists, index));
-    dispatch(setChatSocketLists(chatSocketLists));
-    apiGetUnreadCount(roomId, userId);
-  };
-}
+      create: function (chatContent, id) {
+        //this.chats.createの引数がchatContent, id
+        this.perform('create', {
+          user_id: id,
+          body: chatContent,
+        });
+      },
+      disconnected: () => {
+        cable.subscriptions.consumer.disconnect();
+      },
+    }
+  );
+  await dispatch(apiGetChatData(roomId));
+  dispatch(setChatSocketLists(chats));
+  apiGetUnreadCount(roomId, userId);
+};
 
-function apiGetChatData(roomId, chatLogsLists, index) {
+function apiGetChatData(roomId) {
   return (dispatch) => {
+    var messages = [];
     request.get('/api/v1/rooms/' + roomId).end((err, res) => {
       if (!err && res.status === 200) {
         res.body.messages.forEach((chat) => {
-          chatLogsLists[index].push(chat);
+          messages.push(chat);
         });
-        dispatch(setChatDataLists(chatLogsLists));
+        dispatch(setChatDataLists(messages));
       } else {
         dispatch(apiFailuer(err));
       }
@@ -180,4 +163,11 @@ export const setUnreadCounts = (data) => ({
 const apiFailuer = (err) => ({
   type: API_FAILUER,
   err,
+});
+
+const chageChatData = (data, flag, index) => ({
+  type: CHANGE_CHAT_DATA,
+  data,
+  flag,
+  index,
 });

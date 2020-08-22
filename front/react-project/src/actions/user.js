@@ -92,7 +92,7 @@ export function logout(appear) {
   };
 }
 
-export function apiGetCurrentUser(chatSocketLists) {
+export function apiGetCurrentUser() {
   return (dispatch) => {
     dispatch(apiRequest());
     request
@@ -103,7 +103,7 @@ export function apiGetCurrentUser(chatSocketLists) {
         if (!err && res.body.user) {
           dispatch(setCurrentUser(res.body.user));
           dispatch(apiCreateSocketAppear(res.body.user.id));
-          dispatch(apiGetRooms(res.body.user.id, chatSocketLists));
+          dispatch(apiGetRooms(res.body.user.id));
         } else {
           dispatch(apiFailuer(err));
         }
@@ -137,8 +137,7 @@ export function getUser(id) {
   };
 }
 
-function apiGetRooms(id, chatSocketLists) {
-  var data = [];
+function apiGetRooms(id) {
   return (dispatch) => {
     request
       .get('/api/v1/rooms')
@@ -147,20 +146,8 @@ function apiGetRooms(id, chatSocketLists) {
         if (!err && res.body.msg) {
         } else if (!err && res.status === 200) {
           dispatch(setRooms(res.body.rooms));
-          res.body.rooms.forEach((room) => {
-            data.push([]);
-          });
           res.body.rooms.forEach((room, i) => {
-            dispatch(
-              apiCreateSocketChat(
-                room.id,
-                data,
-                chatSocketLists,
-                i,
-                res.body.rooms,
-                id
-              )
-            );
+            dispatch(apiCreateSocketChat(room.id, id));
           });
           dispatch(setRoomUserNames(res.body.room_names));
         } else {
