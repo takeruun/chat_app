@@ -54,7 +54,8 @@ export function apiCreateSocketChat(
   chatLogsLists,
   chatSocketLists,
   index,
-  rooms
+  rooms,
+  userId
 ) {
   return (dispatch) => {
     var currentFlag = false;
@@ -110,6 +111,7 @@ export function apiCreateSocketChat(
     chatSocketLists.push(chats);
     dispatch(apiGetChatData(roomId, chatLogsLists, index));
     dispatch(setChatSocketLists(chatSocketLists));
+    apiGetUnreadCount(roomId, userId);
   };
 }
 
@@ -128,11 +130,21 @@ function apiGetChatData(roomId, chatLogsLists, index) {
   };
 }
 
+function apiGetUnreadCount(roomId, userId) {
+  request
+    .get('/api/v1/unread_counts')
+    .query({ unread_count: { room_id: roomId, user_id: userId } })
+    .end((err, res) => {
+      if (!err && res.status === 200) {
+      }
+    });
+}
+
 function apiUpdateUnreadCounts(flag, message) {
   return (dispatch) => {
     request
-      .put('/api/v1/unread_counts/' + message.id)
-      .send({ unrad_count: { flag: flag, room_id: data.room_id } })
+      .put('/api/v1/unread_counts/' + message.unread_count_id)
+      .send({ unrad_count: { flag: flag, message_id: message.id } })
       .end((err, res) => {
         if (!err && res.status === 200) {
         }

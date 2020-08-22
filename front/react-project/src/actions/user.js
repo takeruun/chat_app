@@ -157,7 +157,8 @@ function apiGetRooms(id, chatSocketLists) {
                 data,
                 chatSocketLists,
                 i,
-                res.body.rooms
+                res.body.rooms,
+                id
               )
             );
           });
