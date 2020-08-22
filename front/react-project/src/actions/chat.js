@@ -57,6 +57,7 @@ export function apiCreateSocketChat(
   rooms
 ) {
   return (dispatch) => {
+    var currentFlag = false;
     var Cable = require('actioncable');
     let cable = Cable.createConsumer(
       'wss:' + window.location.host + '/api/v1/cable'
@@ -76,6 +77,7 @@ export function apiCreateSocketChat(
               .getAttribute('id')
           );
           if (roomId === currentRoomId) {
+            currentFlag = true;
             const currentRoomIndex = Number(
               document.getElementsByClassName('current_room')[0].classList[2]
             );
@@ -84,12 +86,14 @@ export function apiCreateSocketChat(
             ].concat(data);
             dispatch(setChatData(chatLogsLists[currentRoomIndex]));
           } else {
+            currentFlag = false;
             const roomIndex = rooms.findIndex(
               (room) => room.id === data.room_id
             );
             chatLogsLists[roomIndex].push(data);
             setChatData(chatLogsLists[roomIndex]);
           }
+          dispatch(apiUpdateUnreadCounts(currentFlag, data));
         },
         create: function (chatContent, id) {
           //this.chats.createの引数がchatContent, id
@@ -121,6 +125,18 @@ function apiGetChatData(roomId, chatLogsLists, index) {
         dispatch(apiFailuer(err));
       }
     });
+  };
+}
+
+function apiUpdateUnreadCounts(flag, message) {
+  return (dispatch) => {
+    request
+      .put('/api/v1/unread_counts/' + message.id)
+      .send({ unrad_count: { flag: flag, room_id: data.room_id } })
+      .end((err, res) => {
+        if (!err && res.status === 200) {
+        }
+      });
   };
 }
 

@@ -29,7 +29,7 @@ class RoomsController < ApplicationController
     end
 
     @room = Room.create(name: room_params[:name])
-
+    UnreadCount.create(user: User.find_by(id: room_params[:user_ids][0]), room: @room)
     room_params[:user_ids].each do |user_id|
       RoomUser.create(user_id: user_id, room: @room)
     end

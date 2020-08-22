@@ -14,7 +14,9 @@ export const SET_ROOM_USER_NAMES = 'SET_ROOM_USER_NAMES';
 export function apiCreateSocketAppear(id) {
   return (dispatch) => {
     var Cable = require('actioncable');
-    let appearcable = Cable.createConsumer('wss:localhost/api/v1/cable');
+    let appearcable = Cable.createConsumer(
+      'wss:' + window.location.host + '/api/v1/cable'
+    );
 
     let appear = appearcable.subscriptions.create(
       {

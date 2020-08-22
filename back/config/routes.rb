@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       resources :messages
       resources :rooms
       resources :works
+      resources :unread_counts
     end
   end
   mount ActionCable.server => '/api/v1/cable'
