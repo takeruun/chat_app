@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_200_822_034_322) do
+ActiveRecord::Schema.define(version: 20_200_823_051_429) do
   create_table 'messages', options: 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci', force: :cascade do |t|
     t.string 'body'
     t.datetime 'created_at', precision: 6, null: false
@@ -19,6 +19,18 @@ ActiveRecord::Schema.define(version: 20_200_822_034_322) do
     t.bigint 'room_id', null: false
     t.index ['room_id'], name: 'index_messages_on_room_id'
     t.index ['user_id'], name: 'index_messages_on_user_id'
+  end
+
+  create_table 'readed_messages', options: 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci', force: :cascade do |t|
+    t.boolean 'is_read', default: false
+    t.bigint 'user_id', null: false
+    t.bigint 'message_id', null: false
+    t.bigint 'room_id', null: false
+    t.datetime 'created_at', precision: 6, null: false
+    t.datetime 'updated_at', precision: 6, null: false
+    t.index ['message_id'], name: 'index_readed_messages_on_message_id'
+    t.index ['room_id'], name: 'index_readed_messages_on_room_id'
+    t.index ['user_id'], name: 'index_readed_messages_on_user_id'
   end
 
   create_table 'room_users', options: 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci', force: :cascade do |t|
@@ -69,6 +81,9 @@ ActiveRecord::Schema.define(version: 20_200_822_034_322) do
 
   add_foreign_key 'messages', 'rooms'
   add_foreign_key 'messages', 'users'
+  add_foreign_key 'readed_messages', 'messages'
+  add_foreign_key 'readed_messages', 'rooms'
+  add_foreign_key 'readed_messages', 'users'
   add_foreign_key 'room_users', 'rooms'
   add_foreign_key 'room_users', 'users'
   add_foreign_key 'unread_counts', 'rooms'

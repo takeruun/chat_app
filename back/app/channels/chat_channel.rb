@@ -10,10 +10,17 @@ class ChatChannel < ApplicationCable::Channel
   end
 
   def create(data)
-    Message.create(
+    message = Message.create(
       user: User.find(data.fetch('user_id')),
       room: Room.find(params[:room_id]),
       body: data.fetch('body')
+    )
+
+    ReadedMessage.create(
+      user_id: data.fetch('user_id'),
+      message: message,
+      room_id: params[:room_id],
+      is_read: true
     )
   end
 end

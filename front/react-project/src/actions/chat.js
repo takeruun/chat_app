@@ -7,6 +7,8 @@ export const SET_CHAT_SOCKET_LISTS = 'SET_CHAT_SOCKET_LISTS';
 export const SET_CHAT_DATA_LISTS = 'SET_CHAT_DATA_LISTS';
 export const SET_UNREAD_COUNTS = 'SET_UNREAD_COUNTS';
 export const CHANGE_CHAT_DATA = 'CHANGE_CHAT_DATA';
+export const CHANGE_UNREAD_COUNT = 'CHANGE_UNREAD_COUNT';
+export const RESET_UNREAD_COUNT = 'RESET_UNREAD_COUNT';
 
 export function apiCreateRoom(ids, rooms, roomNames, name = '') {
   return (dispatch) => {
@@ -29,7 +31,7 @@ export function apiCreateRoom(ids, rooms, roomNames, name = '') {
   };
 }
 
-export function apiChangeChatRoom(roomId, chatSocketLists) {
+export function apiChangeChatRoom(roomId, chatSocketLists, userId) {
   return (dispatch) => {
     request.get('/api/v1/rooms/' + roomId).end((err, res) => {
       if (!err && res.status === 200) {
@@ -37,6 +39,7 @@ export function apiChangeChatRoom(roomId, chatSocketLists) {
           document.getElementsByClassName('current_room')[0].classList[2]
         );
         dispatch(setChatData(currentRoomIndex));
+        dispatch(apiResetUnreadCount(roomId, userId));
         const socket = chatSocketLists.filter((socket) => {
           return JSON.parse(socket.identifier).room_id === roomId
             ? socket
@@ -51,7 +54,6 @@ export function apiChangeChatRoom(roomId, chatSocketLists) {
 }
 
 export const apiCreateSocketChat = (roomId, userId) => async (dispatch) => {
-  var currentFlag = false;
   var Cable = require('actioncable');
   let cable = Cable.createConsumer(
     'wss:' + window.location.host + '/api/v1/cable'
@@ -65,6 +67,7 @@ export const apiCreateSocketChat = (roomId, userId) => async (dispatch) => {
       conneted: () => {},
       received: (data) => {
         //chatLogs.push(data);これでは再レンダリングされない
+        var currentFlag = false;
         const currentRoomId = Number(
           document.getElementsByClassName('current_room')[0].getAttribute('id')
         );
@@ -72,13 +75,12 @@ export const apiCreateSocketChat = (roomId, userId) => async (dispatch) => {
           document.getElementsByClassName('current_room')[0].classList[2]
         );
         dispatch(chageChatData(data, currentFlag, currentRoomIndex));
+
         if (roomId === currentRoomId) {
           currentFlag = true;
           dispatch(setChatData(currentRoomIndex));
-        } else {
-          currentFlag = false;
         }
-        //dispatch(apiUpdateUnreadCounts(currentFlag, data));
+        dispatch(apiUpdateUnreadCounts(currentFlag, data, userId));
       },
       create: function (chatContent, id) {
         //this.chats.createの引数がchatContent, id
@@ -94,7 +96,6 @@ export const apiCreateSocketChat = (roomId, userId) => async (dispatch) => {
   );
   await dispatch(apiGetChatData(roomId));
   dispatch(setChatSocketLists(chats));
-  apiGetUnreadCount(roomId, userId);
 };
 
 function apiGetChatData(roomId) {
@@ -113,23 +114,48 @@ function apiGetChatData(roomId) {
   };
 }
 
-function apiGetUnreadCount(roomId, userId) {
-  request
-    .get('/api/v1/unread_counts')
-    .query({ unread_count: { room_id: roomId, user_id: userId } })
-    .end((err, res) => {
-      if (!err && res.status === 200) {
-      }
-    });
+export function apiGetUnreadCount(roomId, userId) {
+  return (dispatch) => {
+    request
+      .get('/api/v1/unread_counts')
+      .query({ unread_count: { room_id: roomId, user_id: userId } })
+      .end((err, res) => {
+        if (!err && res.status === 200) {
+          dispatch(setUnreadCounts(roomId, res.body.unread_count));
+        }
+      });
+  };
 }
 
-function apiUpdateUnreadCounts(flag, message) {
+function apiUpdateUnreadCounts(flag, message, userId) {
   return (dispatch) => {
     request
       .put('/api/v1/unread_counts/' + message.unread_count_id)
-      .send({ unrad_count: { flag: flag, message_id: message.id } })
+      .send({
+        unread_count: {
+          flag: flag,
+          message_id: message.id,
+          room_id: message.room_id,
+          user_id: userId,
+        },
+      })
       .end((err, res) => {
         if (!err && res.status === 200) {
+          dispatch(changeUnreadCount(flag, message.room_id));
+        }
+      });
+  };
+}
+
+function apiResetUnreadCount(roomId, userId) {
+  return (dispatch) => {
+    request
+      .get('/api/v1/unread_counts/reset')
+      .query({ unread_count: { room_id: roomId, user_id: userId } })
+      .end((err, res) => {
+        if (!err && res.status === 200) {
+          dispatch(resetUnreadCount(roomId));
+        } else {
         }
       });
   };
@@ -155,8 +181,9 @@ const setChatSocketLists = (data) => ({
   data,
 });
 
-export const setUnreadCounts = (data) => ({
+const setUnreadCounts = (roomId, data) => ({
   type: SET_UNREAD_COUNTS,
+  roomId,
   data,
 });
 
@@ -170,4 +197,15 @@ const chageChatData = (data, flag, index) => ({
   data,
   flag,
   index,
+});
+
+const changeUnreadCount = (flag, roomId) => ({
+  type: CHANGE_UNREAD_COUNT,
+  flag,
+  roomId,
+});
+
+const resetUnreadCount = (roomId) => ({
+  type: RESET_UNREAD_COUNT,
+  roomId,
 });
