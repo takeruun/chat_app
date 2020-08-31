@@ -8,11 +8,41 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case 'SET_CHAT_DATA':
-      var logs = state.chatLogsLists[action.data];
+    case 'SET_MESSAGE':
+      const setMesKey = `room_${action.roomId}`;
+      var logs = state.chatLogsLists[setMesKey];
       return Object.assign({}, state, {
         chatLogs: logs,
       });
+
+    case 'SET_MESSAGE_LISTS':
+      const setMesListsKey = `room_${action.roomId}`;
+      var setMes = {};
+      setMes[setMesListsKey] = action.data;
+      var setMesLists = state.chatLogsLists;
+      setMesLists = Object.assign({}, setMesLists, setMes);
+      return Object.assign({}, state, {
+        chatLogsLists: setMesLists,
+      });
+
+    case 'CHANGE_MESSAGE':
+      const changeMesKey = `room_${action.roomId}`;
+      var changeLogs = state.chatLogsLists;
+      var setMes = {};
+      var mes = state.chatLogsLists[changeMesKey];
+      setMes[changeMesKey] = mes.concat(action.data);
+      delete changeLogs[changeMesKey];
+      changeLogs = Object.assign({}, changeLogs, setMes);
+      console.log(mes, action.data, setMes, changeLogs);
+      if (action.flag)
+        return Object.assign({}, state, {
+          chatLogsLists: changeLogs,
+          chatLogs: changeLogs[changeMesKey],
+        });
+      else
+        return Object.assign({}, state, {
+          chatLogsLists: changeLogs,
+        });
 
     case 'SET_CHAT_SOCKET':
       return Object.assign({}, state, {
@@ -27,13 +57,6 @@ export default (state = initialState, action) => {
         chatSocketLists: setSocketLists,
       });
 
-    case 'SET_CHAT_DATA_LISTS':
-      var setDataLists = state.chatLogsLists;
-      setDataLists.push(action.data);
-      return Object.assign({}, state, {
-        chatLogsLists: setDataLists,
-      });
-
     case 'SET_UNREAD_COUNTS':
       const setKey = `room_${action.roomId}`;
       var setData = {};
@@ -42,17 +65,6 @@ export default (state = initialState, action) => {
       setCounts = Object.assign({}, setCounts, setData);
       return Object.assign({}, state, {
         unreadCounts: setCounts,
-      });
-
-    case 'CHANGE_CHAT_DATA':
-      var data = state.chatLogsLists[action.index];
-      data = data.concat(action.data);
-
-      var chagneLogs = state.chatLogsLists;
-      chagneLogs.splice(action.index, 1, data);
-
-      return Object.assign({}, state, {
-        chatLogsLists: chagneLogs,
       });
 
     case 'CHANGE_UNREAD_COUNT':

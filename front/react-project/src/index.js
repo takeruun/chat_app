@@ -28,7 +28,7 @@ ReactDOM.render(
     <Provider store={store}>
       <BrowserRouter>
         <Switch>
-          <Route exact path='/'>
+          <Route path='/'>
             <Home component={ChatRoom} />
           </Route>
           <Route exact path='/login'>

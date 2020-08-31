@@ -1,12 +1,12 @@
 import request from 'superagent';
 import { setRooms, setRoomUserNames } from './user';
-export const SET_CHAT_DATA = 'SET_CHAT_DATA';
+export const SET_MESSAGE = 'SET_MESSAGE';
 export const SET_CHAT_SOCKET = 'SET_CHAT_SOCKET';
 export const API_FAILUER = 'API_FAILUER';
 export const SET_CHAT_SOCKET_LISTS = 'SET_CHAT_SOCKET_LISTS';
-export const SET_CHAT_DATA_LISTS = 'SET_CHAT_DATA_LISTS';
+export const SET_MESSAGE_LISTS = 'SET_MESSAGE_LISTS';
 export const SET_UNREAD_COUNTS = 'SET_UNREAD_COUNTS';
-export const CHANGE_CHAT_DATA = 'CHANGE_CHAT_DATA';
+export const CHANGE_MESSAGE = 'CHANGE_MESSAGE';
 export const CHANGE_UNREAD_COUNT = 'CHANGE_UNREAD_COUNT';
 export const RESET_UNREAD_COUNT = 'RESET_UNREAD_COUNT';
 
@@ -35,10 +35,7 @@ export function apiChangeChatRoom(roomId, chatSocketLists, userId) {
   return (dispatch) => {
     request.get('/api/v1/rooms/' + roomId).end((err, res) => {
       if (!err && res.status === 200) {
-        var currentRoomIndex = Number(
-          document.getElementsByClassName('current_room')[0].classList[2]
-        );
-        dispatch(setChatData(currentRoomIndex));
+        dispatch(setMessage(roomId));
         dispatch(apiResetUnreadCount(roomId, userId));
         const socket = chatSocketLists.filter((socket) => {
           return JSON.parse(socket.identifier).room_id === roomId
@@ -74,12 +71,12 @@ export const apiCreateSocketChat = (roomId, userId) => async (dispatch) => {
         const currentRoomIndex = Number(
           document.getElementsByClassName('current_room')[0].classList[2]
         );
-        dispatch(chageChatData(data, currentFlag, currentRoomIndex));
 
         if (roomId === currentRoomId) {
           currentFlag = true;
-          dispatch(setChatData(currentRoomIndex));
+          dispatch(setMessage(roomId));
         }
+        dispatch(changeMessage(data, currentFlag, data.room_id));
         dispatch(apiUpdateUnreadCounts(currentFlag, data, userId));
       },
       create: function (chatContent, id) {
@@ -94,19 +91,15 @@ export const apiCreateSocketChat = (roomId, userId) => async (dispatch) => {
       },
     }
   );
-  await dispatch(apiGetChatData(roomId));
+  dispatch(apiGetChatData(roomId));
   dispatch(setChatSocketLists(chats));
 };
 
 function apiGetChatData(roomId) {
   return (dispatch) => {
-    var messages = [];
     request.get('/api/v1/rooms/' + roomId).end((err, res) => {
       if (!err && res.status === 200) {
-        res.body.messages.forEach((chat) => {
-          messages.push(chat);
-        });
-        dispatch(setChatDataLists(messages));
+        dispatch(setMessageLists(res.body.messages, roomId));
       } else {
         dispatch(apiFailuer(err));
       }
@@ -161,14 +154,15 @@ function apiResetUnreadCount(roomId, userId) {
   };
 }
 
-const setChatData = (data) => ({
-  type: SET_CHAT_DATA,
-  data,
+const setMessage = (roomId) => ({
+  type: SET_MESSAGE,
+  roomId,
 });
 
-const setChatDataLists = (data) => ({
-  type: SET_CHAT_DATA_LISTS,
+const setMessageLists = (data, roomId) => ({
+  type: SET_MESSAGE_LISTS,
   data,
+  roomId,
 });
 
 const setChatSocket = (data) => ({
@@ -192,11 +186,11 @@ const apiFailuer = (err) => ({
   err,
 });
 
-const chageChatData = (data, flag, index) => ({
-  type: CHANGE_CHAT_DATA,
+const changeMessage = (data, flag, roomId) => ({
+  type: CHANGE_MESSAGE,
   data,
   flag,
-  index,
+  roomId,
 });
 
 const changeUnreadCount = (flag, roomId) => ({

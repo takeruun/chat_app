@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { apiChangeChatRoom } from '../actions/chat';
+import { withRouter } from 'react-router-dom';
 
 class RoomLists extends Component {
   constructor(props) {
@@ -29,6 +30,7 @@ class RoomLists extends Component {
       this.props.userId
     );
     this.setState({ changedRoomFlag: true });
+    //this.props.history.push('/chat/' + roomId);
   }
 
   renderRoomLists() {
@@ -45,7 +47,7 @@ class RoomLists extends Component {
           <div className='item_room'>
             <p className='room_name'>{roomNames[index]}</p>
             {(() => {
-              if (unreadCounts[key] >= 0)
+              if (unreadCounts[key] > 0)
                 return (
                   <span className='unread_count'>{unreadCounts[key]}</span>
                 );
@@ -100,4 +102,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RoomLists);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(RoomLists));
