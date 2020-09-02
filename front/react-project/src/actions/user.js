@@ -1,5 +1,5 @@
 import request from 'superagent';
-import { apiCreateSocketChat } from './chat';
+import { apiCreateSocketChat, apiGetUnreadCount } from './chat';
 export const API_REQUEST = 'API_REQUEST';
 export const API_FAILUER = 'API_FAILUER';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
@@ -148,6 +148,7 @@ function apiGetRooms(id) {
           dispatch(setRooms(res.body.rooms));
           res.body.rooms.forEach((room, i) => {
             dispatch(apiCreateSocketChat(room.id, id));
+            dispatch(apiGetUnreadCount(room.id, id));
           });
           dispatch(setRoomUserNames(res.body.room_names));
         } else {

@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       resources :messages
       resources :rooms
       resources :works
+      get '/unread_counts/reset' => 'unread_counts#reset'
       resources :unread_counts
     end
   end

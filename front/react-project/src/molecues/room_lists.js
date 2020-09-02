@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { apiChangeChatRoom } from '../actions/chat';
+import { withRouter } from 'react-router-dom';
 
 class RoomLists extends Component {
   constructor(props) {
@@ -26,14 +27,16 @@ class RoomLists extends Component {
     this.props.apiChangeChatRoomDispatch(
       roomId,
       this.props.chatSocketLists,
-      this.props.chatLogsLists
+      this.props.userId
     );
     this.setState({ changedRoomFlag: true });
+    //this.props.history.push('/chat/' + roomId);
   }
 
   renderRoomLists() {
     const { roomNames, unreadCounts } = this.props;
     return this.props.rooms.map((room, index) => {
+      const key = `room_${room.id}`;
       return (
         <li
           onClick={() => this.changeChatRoom(room.id, roomNames[index])}
@@ -41,11 +44,15 @@ class RoomLists extends Component {
           id={room.id}
           key={`room_id:${room.id}`}
         >
-          <div className='item_room'>{roomNames[index]}</div>
-          {(() => {
-            if (unreadCounts[index] > 0)
-              return <span>{unreadCounts[index]}</span>;
-          })()}
+          <div className='item_room'>
+            <p className='room_name'>{roomNames[index]}</p>
+            {(() => {
+              if (unreadCounts[key] > 0)
+                return (
+                  <span className='unread_count'>{unreadCounts[key]}</span>
+                );
+            })()}
+          </div>
         </li>
       );
     });
@@ -73,8 +80,7 @@ RoomLists.propTypes = {
   chatSocket: propTypes.object,
   roomNames: propTypes.array,
   chatSocketLists: propTypes.array,
-  chatLogsLists: propTypes.array,
-  unreadCounts: propTypes.array,
+  unreadCounts: propTypes.object,
 };
 
 function mapStateToProps(state) {
@@ -84,17 +90,19 @@ function mapStateToProps(state) {
     chatSocket: state.chat.chatSocket,
     roomNames: state.user.roomNames,
     chatSocketLists: state.chat.chatSocketLists,
-    chatLogsLists: state.chat.chatLogsLists,
     unreadCounts: state.chat.unreadCounts,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    apiChangeChatRoomDispatch(roomId, chatSocketLists, chatLogsLists) {
-      dispatch(apiChangeChatRoom(roomId, chatSocketLists, chatLogsLists));
+    apiChangeChatRoomDispatch(roomId, chatSocketLists, userId) {
+      dispatch(apiChangeChatRoom(roomId, chatSocketLists, userId));
     },
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RoomLists);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(RoomLists));
