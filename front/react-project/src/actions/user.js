@@ -1,4 +1,5 @@
 import request from 'superagent';
+import { apiCreateSocketChat, apiGetUnreadCount } from './chat';
 export const API_REQUEST = 'API_REQUEST';
 export const API_FAILUER = 'API_FAILUER';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
@@ -13,7 +14,9 @@ export const SET_ROOM_USER_NAMES = 'SET_ROOM_USER_NAMES';
 export function apiCreateSocketAppear(id) {
   return (dispatch) => {
     var Cable = require('actioncable');
-    let appearcable = Cable.createConsumer('wss:localhost/api/v1/cable');
+    let appearcable = Cable.createConsumer(
+      'wss:' + window.location.host + '/api/v1/cable'
+    );
 
     let appear = appearcable.subscriptions.create(
       {
@@ -143,6 +146,10 @@ function apiGetRooms(id) {
         if (!err && res.body.msg) {
         } else if (!err && res.status === 200) {
           dispatch(setRooms(res.body.rooms));
+          res.body.rooms.forEach((room, i) => {
+            dispatch(apiCreateSocketChat(room.id, id));
+            dispatch(apiGetUnreadCount(room.id, id));
+          });
           dispatch(setRoomUserNames(res.body.room_names));
         } else {
           dispatch(apiFailuer(err));
