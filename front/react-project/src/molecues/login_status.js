@@ -38,8 +38,7 @@ class LoginStatus extends Component {
   createChatRoom(partnerId) {
     this.props.apiCreateChatRoomDispatch(
       [this.props.userId, partnerId],
-      this.props.rooms,
-      this.props.roomNames
+      this.props.rooms
     );
   }
 
@@ -84,7 +83,7 @@ LoginStatus.propTypes = {
   users: propTypes.array.isRequired,
   appearUsers: propTypes.array,
   rooms: propTypes.array,
-  roomNames: propTypes.array,
+  roomNames: propTypes.object,
 };
 
 function mapStateToProps(state) {
@@ -102,8 +101,8 @@ function mapDispatchToProps(dispatch) {
     apiGetUsersDispatch() {
       dispatch(apiGetUsers());
     },
-    apiCreateChatRoomDispatch(user_ids, rooms, roomNames) {
-      dispatch(apiCreateRoom(user_ids, rooms, roomNames));
+    apiCreateChatRoomDispatch(user_ids, rooms) {
+      dispatch(apiCreateRoom(user_ids, rooms));
     },
   };
 }

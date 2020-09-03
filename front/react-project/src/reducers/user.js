@@ -4,7 +4,7 @@ const initialState = {
   users: [],
   rooms: [],
   roomLists: [],
-  roomNames: [],
+  roomNames: {},
   requesting: false,
   requested: false,
 };
@@ -74,9 +74,19 @@ export default (state = initialState, action) => {
         rooms: action.data,
       });
 
-    case 'SET_ROOM_USER_NAMES':
+    case 'SET_ROOM_NAMES':
       return Object.assign({}, state, {
         roomNames: action.data,
+      });
+
+    case 'ADD_ROOM_NAME':
+      const addNameKey = `room_${action.roomId}`;
+      var name = {};
+      name[addNameKey] = action.data;
+      var addNames = state.roomNames;
+      addNames = Object.assign({}, addNames, name);
+      return Object.assign({}, state, {
+        roomNames: addNames,
       });
 
     default:

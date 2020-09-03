@@ -39,13 +39,13 @@ class RoomLists extends Component {
       const key = `room_${room.id}`;
       return (
         <li
-          onClick={() => this.changeChatRoom(room.id, roomNames[index])}
-          className={`room_list_body_item room_${roomNames[index]} ${index}`}
+          onClick={() => this.changeChatRoom(room.id, roomNames[key])}
+          className={`room_list_body_item room_${roomNames[key]} ${index}`}
           id={room.id}
           key={`room_id:${room.id}`}
         >
           <div className='item_room'>
-            <p className='room_name'>{roomNames[index]}</p>
+            <p className='room_name'>{roomNames[key]}</p>
             {(() => {
               if (unreadCounts[key] > 0)
                 return (
@@ -78,7 +78,7 @@ RoomLists.propTypes = {
   userId: propTypes.number.isRequired,
   rooms: propTypes.array.isRequired,
   chatSocket: propTypes.object,
-  roomNames: propTypes.array,
+  roomNames: propTypes.object,
   chatSocketLists: propTypes.array,
   unreadCounts: propTypes.object,
 };

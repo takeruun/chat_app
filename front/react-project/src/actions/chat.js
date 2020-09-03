@@ -1,5 +1,5 @@
 import request from 'superagent';
-import { setRooms, setRoomUserNames } from './user';
+import { setRooms, addRoomName } from './user';
 export const SET_MESSAGE = 'SET_MESSAGE';
 export const SET_CHAT_SOCKET = 'SET_CHAT_SOCKET';
 export const API_FAILUER = 'API_FAILUER';
@@ -10,7 +10,7 @@ export const CHANGE_MESSAGE = 'CHANGE_MESSAGE';
 export const CHANGE_UNREAD_COUNT = 'CHANGE_UNREAD_COUNT';
 export const RESET_UNREAD_COUNT = 'RESET_UNREAD_COUNT';
 
-export function apiCreateRoom(ids, rooms, roomNames, name = '') {
+export function apiCreateRoom(ids, rooms, name = '') {
   return (dispatch) => {
     request
       .post('/api/v1/rooms')
@@ -20,9 +20,8 @@ export function apiCreateRoom(ids, rooms, roomNames, name = '') {
           console.log(res.body.msg);
         } else if (!err && res.status === 200) {
           rooms = rooms.concat(res.body.room);
-          roomNames = roomNames.concat(res.body.room_name);
           dispatch(setRooms(rooms));
-          dispatch(setRoomUserNames(roomNames));
+          dispatch(addRoomName(res.body.room_name, res.body.room.id));
           dispatch(apiCreateSocketChat(res.body.room.id, ids[0]));
         } else {
           dispatch(apiFailuer(err));
@@ -67,9 +66,6 @@ export const apiCreateSocketChat = (roomId, userId) => async (dispatch) => {
         var currentFlag = false;
         const currentRoomId = Number(
           document.getElementsByClassName('current_room')[0].getAttribute('id')
-        );
-        const currentRoomIndex = Number(
-          document.getElementsByClassName('current_room')[0].classList[2]
         );
 
         if (roomId === currentRoomId) {

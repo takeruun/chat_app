@@ -9,7 +9,8 @@ export const SET_APPEAR_USERS = 'SET_APPEAR_USERS';
 export const SET_USER = 'SET_USER';
 export const SET_APPEAR_SOCKET = 'SET_APPEAR_SOCKET';
 export const SET_ROOMS = 'SET_ROOMS';
-export const SET_ROOM_USER_NAMES = 'SET_ROOM_USER_NAMES';
+export const SET_ROOM_NAMES = 'SET_ROOM_NAMES';
+export const ADD_ROOM_NAME = 'ADD_ROOM_NAME';
 
 export function apiCreateSocketAppear(id) {
   return (dispatch) => {
@@ -138,6 +139,7 @@ export function getUser(id) {
 }
 
 function apiGetRooms(id) {
+  var names = {};
   return (dispatch) => {
     request
       .get('/api/v1/rooms')
@@ -150,7 +152,11 @@ function apiGetRooms(id) {
             dispatch(apiCreateSocketChat(room.id, id));
             dispatch(apiGetUnreadCount(room.id, id));
           });
-          dispatch(setRoomUserNames(res.body.room_names));
+          res.body.room_names.forEach((name, i) => {
+            const key = `room_${res.body.rooms[i].id}`;
+            names[key] = name;
+          });
+          dispatch(setRoomNames(names));
         } else {
           dispatch(apiFailuer(err));
         }
@@ -203,7 +209,13 @@ export const setRooms = (data) => ({
   data,
 });
 
-export const setRoomUserNames = (data) => ({
-  type: SET_ROOM_USER_NAMES,
+export const setRoomNames = (data) => ({
+  type: SET_ROOM_NAMES,
   data,
+});
+
+export const addRoomName = (data, roomId) => ({
+  type: ADD_ROOM_NAME,
+  data,
+  roomId,
 });
