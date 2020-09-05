@@ -103,36 +103,42 @@ class ChatRoom extends Component {
           <div className='chat_logs' id='chatLogs'>
             <ChatLogs />
           </div>
-          <div className='send_message'>
-            <MentionsInput
-              onChange={this.updateCurrentChatMessage}
-              value={this.state.currentChatMessage}
-              placeholder='メッセージをどうぞ'
-              onKeyDown={this.keyShiftFlag}
-              className='mentionedFriend'
-              onKeyPress={this.handleChatInputKeyPress}
-            >
-              <Mention
-                type='user'
-                trigger='@'
-                data={users}
-                displayTransform={(id, display) => `@${display}`}
-                onAdd={(id) => this.toMention(id)}
-              />
-              <Mention
-                trigger='@work'
-                data={startEnd}
-                displayTransform={(display) => `${display}`}
-                onAdd={(id) => this.handleWorkingTime(id)}
-              />
-            </MentionsInput>
-            <FontAwesomeIcon
-              icon={faAngleDoubleUp}
-              size='3x'
-              onClick={(e) => this.handleSendEvent(e)}
-              className='btn_send'
-            />
-          </div>
+          {(() => {
+            if (this.props.chatSocket) {
+              return (
+                <div className='send_message'>
+                  <MentionsInput
+                    onChange={this.updateCurrentChatMessage}
+                    value={this.state.currentChatMessage}
+                    placeholder='メッセージをどうぞ'
+                    onKeyDown={this.keyShiftFlag}
+                    className='mentionedFriend'
+                    onKeyPress={this.handleChatInputKeyPress}
+                  >
+                    <Mention
+                      type='user'
+                      trigger='@'
+                      data={users}
+                      displayTransform={(id, display) => `@${display}`}
+                      onAdd={(id) => this.toMention(id)}
+                    />
+                    <Mention
+                      trigger='@work'
+                      data={startEnd}
+                      displayTransform={(display) => `${display}`}
+                      onAdd={(id) => this.handleWorkingTime(id)}
+                    />
+                  </MentionsInput>
+                  <FontAwesomeIcon
+                    icon={faAngleDoubleUp}
+                    size='3x'
+                    onClick={(e) => this.handleSendEvent(e)}
+                    className='btn_send'
+                  />
+                </div>
+              );
+            }
+          })()}
         </div>
       </div>
     );
@@ -141,18 +147,14 @@ class ChatRoom extends Component {
 
 ChatRoom.propTypes = {
   userId: propTypes.number.isRequired,
-  userName: propTypes.string.isRequired,
   chatSocket: propTypes.object,
-  partnerName: propTypes.string,
-  users: propTypes.array.isRequired,
+  users: propTypes.array,
 };
 
 function mapStateToProps(state) {
   return {
     userId: Number(state.user.id),
-    userName: state.user.name,
     chatSocket: state.chat.chatSocket,
-    partnerName: state.chat.partnerName,
     users: state.user.users,
   };
 }

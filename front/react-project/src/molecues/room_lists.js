@@ -7,9 +7,6 @@ import { withRouter } from 'react-router-dom';
 class RoomLists extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      changeChatRoomFlag: false,
-    };
     this.changeChatRoom = this.changeChatRoom.bind(this);
   }
 
@@ -29,7 +26,6 @@ class RoomLists extends Component {
       this.props.chatSocketLists,
       this.props.userId
     );
-    this.setState({ changedRoomFlag: true });
     //this.props.history.push('/chat/' + roomId);
   }
 
@@ -86,9 +82,9 @@ RoomLists.propTypes = {
 function mapStateToProps(state) {
   return {
     userId: Number(state.user.id),
-    rooms: state.user.rooms,
+    rooms: state.room.rooms,
     chatSocket: state.chat.chatSocket,
-    roomNames: state.user.roomNames,
+    roomNames: state.room.roomNames,
     chatSocketLists: state.chat.chatSocketLists,
     unreadCounts: state.chat.unreadCounts,
   };

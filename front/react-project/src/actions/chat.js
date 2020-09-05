@@ -1,5 +1,5 @@
 import request from 'superagent';
-import { setRooms, addRoomName } from './user';
+import { setRooms, addRoomName } from './room';
 export const SET_MESSAGE = 'SET_MESSAGE';
 export const SET_CHAT_SOCKET = 'SET_CHAT_SOCKET';
 export const API_FAILUER = 'API_FAILUER';
