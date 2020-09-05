@@ -16,6 +16,7 @@ class ChatRoom extends Component {
       currentChatMessage: '',
       shiftKeyFlag: false,
       workId: '',
+      users: [],
     };
     this.updateCurrentChatMessage = this.updateCurrentChatMessage.bind(this);
     this.handleChatInputKeyPress = this.handleChatInputKeyPress.bind(this);
@@ -78,8 +79,35 @@ class ChatRoom extends Component {
     this.setState({ currentChatMessage: '' });
   }
 
+  componentDidUpdate(prevProps) {
+    var prevRoomId =
+      typeof prevProps.chatSocket === 'undefined'
+        ? 0
+        : JSON.parse(prevProps.chatSocket.identifier).room_id;
+
+    var { chatSocket } = this.props;
+    var currentRoomId =
+      typeof chatSocket === 'undefined'
+        ? null
+        : JSON.parse(chatSocket.identifier).room_id;
+
+    if (currentRoomId && currentRoomId !== prevRoomId) {
+      request
+        .get('/api/v1/room_users')
+        .query({
+          room_id: currentRoomId,
+          user_id: this.props.userId,
+        })
+        .end((err, res) => {
+          if (!err && res.status === 200) {
+            this.state.users = res.body.users;
+          }
+        });
+    }
+  }
+
   render() {
-    var { users } = this.props;
+    var { users } = this.state;
     users = users.map((user) => ({
       id: user.id,
       display: user.name,
@@ -148,14 +176,12 @@ class ChatRoom extends Component {
 ChatRoom.propTypes = {
   userId: propTypes.number.isRequired,
   chatSocket: propTypes.object,
-  users: propTypes.array,
 };
 
 function mapStateToProps(state) {
   return {
     userId: Number(state.user.id),
     chatSocket: state.chat.chatSocket,
-    users: state.user.users,
   };
 }
 
