@@ -64,10 +64,15 @@ export const apiCreateSocketChat = (roomId, userId) => async (dispatch) => {
       received: (data) => {
         //chatLogs.push(data);これでは再レンダリングされない
         var currentFlag = false;
-        const currentRoomId = Number(
-          document.getElementsByClassName('current_room')[0].getAttribute('id')
-        );
-
+        const currentRoomId =
+          typeof document.getElementsByClassName('current_room')[0] !==
+          'undefined'
+            ? Number(
+                document
+                  .getElementsByClassName('current_room')[0]
+                  .getAttribute('id')
+              )
+            : 0;
         if (roomId === currentRoomId) {
           currentFlag = true;
           dispatch(setMessage(roomId));
