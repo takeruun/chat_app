@@ -33,7 +33,6 @@ export default (state = initialState, action) => {
       setMes[changeMesKey] = mes.concat(action.data);
       delete changeLogs[changeMesKey];
       changeLogs = Object.assign({}, changeLogs, setMes);
-      console.log(mes, action.data, setMes, changeLogs);
       if (action.flag)
         return Object.assign({}, state, {
           chatLogsLists: changeLogs,

@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_200_823_051_429) do
+ActiveRecord::Schema.define(version: 20_200_907_115_920) do
+  create_table 'mention_threads', options: 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci', force: :cascade do |t|
+    t.bigint 'user_id', null: false
+    t.bigint 'room_id', null: false
+    t.string 'content'
+    t.datetime 'created_at', precision: 6, null: false
+    t.datetime 'updated_at', precision: 6, null: false
+    t.index ['room_id'], name: 'index_mention_threads_on_room_id'
+    t.index ['user_id'], name: 'index_mention_threads_on_user_id'
+  end
+
   create_table 'messages', options: 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci', force: :cascade do |t|
     t.string 'body'
     t.datetime 'created_at', precision: 6, null: false
@@ -19,6 +29,16 @@ ActiveRecord::Schema.define(version: 20_200_823_051_429) do
     t.bigint 'room_id', null: false
     t.index ['room_id'], name: 'index_messages_on_room_id'
     t.index ['user_id'], name: 'index_messages_on_user_id'
+  end
+
+  create_table 'outgoing_threads', options: 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci', force: :cascade do |t|
+    t.bigint 'user_id', null: false
+    t.bigint 'mention_thread_id', null: false
+    t.boolean 'is_read', default: false
+    t.datetime 'created_at', precision: 6, null: false
+    t.datetime 'updated_at', precision: 6, null: false
+    t.index ['mention_thread_id'], name: 'index_outgoing_threads_on_mention_thread_id'
+    t.index ['user_id'], name: 'index_outgoing_threads_on_user_id'
   end
 
   create_table 'readed_messages', options: 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci', force: :cascade do |t|
@@ -79,8 +99,12 @@ ActiveRecord::Schema.define(version: 20_200_823_051_429) do
     t.index ['user_id'], name: 'index_works_on_user_id'
   end
 
+  add_foreign_key 'mention_threads', 'rooms'
+  add_foreign_key 'mention_threads', 'users'
   add_foreign_key 'messages', 'rooms'
   add_foreign_key 'messages', 'users'
+  add_foreign_key 'outgoing_threads', 'mention_threads'
+  add_foreign_key 'outgoing_threads', 'users'
   add_foreign_key 'readed_messages', 'messages'
   add_foreign_key 'readed_messages', 'rooms'
   add_foreign_key 'readed_messages', 'users'

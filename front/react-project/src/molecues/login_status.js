@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { apiGetUsers } from '../actions/user';
-import { apiCreateRoom } from '../actions/chat';
+import { apiCreateRoom } from '../actions/room';
 
 class LoginStatus extends Component {
   constructor(props) {
@@ -35,12 +35,8 @@ class LoginStatus extends Component {
     }
   }
 
-  createChatRoom(partnerId) {
-    this.props.apiCreateChatRoomDispatch(
-      [this.props.userId, partnerId],
-      this.props.rooms,
-      this.props.roomNames
-    );
+  createChatRoom(partnerId, name = '') {
+    this.props.apiCreateChatRoomDispatch([this.props.userId, partnerId], name);
   }
 
   renderLoginUsers() {
@@ -84,7 +80,7 @@ LoginStatus.propTypes = {
   users: propTypes.array.isRequired,
   appearUsers: propTypes.array,
   rooms: propTypes.array,
-  roomNames: propTypes.array,
+  roomNames: propTypes.object,
 };
 
 function mapStateToProps(state) {
@@ -102,8 +98,8 @@ function mapDispatchToProps(dispatch) {
     apiGetUsersDispatch() {
       dispatch(apiGetUsers());
     },
-    apiCreateChatRoomDispatch(user_ids, rooms, roomNames) {
-      dispatch(apiCreateRoom(user_ids, rooms, roomNames));
+    apiCreateChatRoomDispatch(user_ids, name) {
+      dispatch(apiCreateRoom(user_ids, name));
     },
   };
 }

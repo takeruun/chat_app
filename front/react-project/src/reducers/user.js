@@ -2,9 +2,6 @@ const initialState = {
   id: '',
   name: '',
   users: [],
-  rooms: [],
-  roomLists: [],
-  roomNames: [],
   requesting: false,
   requested: false,
 };
@@ -67,16 +64,6 @@ export default (state = initialState, action) => {
     case 'SET_APPEAR_SOCKET':
       return Object.assign({}, state, {
         appearSocket: action.data,
-      });
-
-    case 'SET_ROOMS':
-      return Object.assign({}, state, {
-        rooms: action.data,
-      });
-
-    case 'SET_ROOM_USER_NAMES':
-      return Object.assign({}, state, {
-        roomNames: action.data,
       });
 
     default:

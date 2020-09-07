@@ -1,5 +1,6 @@
 import request from 'superagent';
-import { apiCreateSocketChat, apiGetUnreadCount } from './chat';
+import { apiGetRooms } from './room';
+import { apiGetMentionThread } from './mention';
 export const API_REQUEST = 'API_REQUEST';
 export const API_FAILUER = 'API_FAILUER';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
@@ -8,8 +9,6 @@ export const SET_LOGOUT = 'SET_LOGOUT';
 export const SET_APPEAR_USERS = 'SET_APPEAR_USERS';
 export const SET_USER = 'SET_USER';
 export const SET_APPEAR_SOCKET = 'SET_APPEAR_SOCKET';
-export const SET_ROOMS = 'SET_ROOMS';
-export const SET_ROOM_USER_NAMES = 'SET_ROOM_USER_NAMES';
 
 export function apiCreateSocketAppear(id) {
   return (dispatch) => {
@@ -104,6 +103,7 @@ export function apiGetCurrentUser() {
           dispatch(setCurrentUser(res.body.user));
           dispatch(apiCreateSocketAppear(res.body.user.id));
           dispatch(apiGetRooms(res.body.user.id));
+          dispatch(apiGetMentionThread(res.body.user.id));
         } else {
           dispatch(apiFailuer(err));
         }
@@ -134,27 +134,6 @@ export function getUser(id) {
         dispacth(apiFailuer());
       }
     });
-  };
-}
-
-function apiGetRooms(id) {
-  return (dispatch) => {
-    request
-      .get('/api/v1/rooms')
-      .query({ current_user_id: id })
-      .end((err, res) => {
-        if (!err && res.body.msg) {
-        } else if (!err && res.status === 200) {
-          dispatch(setRooms(res.body.rooms));
-          res.body.rooms.forEach((room, i) => {
-            dispatch(apiCreateSocketChat(room.id, id));
-            dispatch(apiGetUnreadCount(room.id, id));
-          });
-          dispatch(setRoomUserNames(res.body.room_names));
-        } else {
-          dispatch(apiFailuer(err));
-        }
-      });
   };
 }
 
@@ -196,14 +175,4 @@ const setAppearUsers = (data, flag) => ({
   type: SET_APPEAR_USERS,
   data,
   flag,
-});
-
-export const setRooms = (data) => ({
-  type: SET_ROOMS,
-  data,
-});
-
-export const setRoomUserNames = (data) => ({
-  type: SET_ROOM_USER_NAMES,
-  data,
 });

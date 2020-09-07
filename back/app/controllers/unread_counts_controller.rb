@@ -19,23 +19,25 @@ class UnreadCountsController < ApplicationController
 
   def update
     @unread_count = UnreadCount.find_by(id: params[:id])
-    ReadedMessage.create(
-      message_id: unread_count_params[:message_id],
-      user_id: unread_count_params[:user_id],
-      room_id: unread_count_params[:room_id],
-      is_read: unread_count_params[:flag]
-    ) if ReadedMessage.find_by(
+    if ReadedMessage.find_by(
       message_id: unread_count_params[:message_id],
       user_id: unread_count_params[:user_id],
       room_id: unread_count_params[:room_id],
       is_read: true
     ).nil?
+      ReadedMessage.create(
+        message_id: unread_count_params[:message_id],
+        user_id: unread_count_params[:user_id],
+        room_id: unread_count_params[:room_id],
+        is_read: unread_count_params[:flag]
+      )
+    end
 
     count = ReadedMessage.where(
-              user_id: unread_count_params[:user_id],
-              room_id: unread_count_params[:room_id],
-              is_read: false
-            ).count
+      user_id: unread_count_params[:user_id],
+      room_id: unread_count_params[:room_id],
+      is_read: false
+    ).count
 
     if unread_count_params[:flag]
       @unread_count.update(count: 0)
