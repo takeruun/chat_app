@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDoubleUp } from '@fortawesome/free-solid-svg-icons';
 import { MentionsInput, Mention } from 'react-mentions';
 import request from 'superagent';
+import { apiCreateMentionThread } from '../actions/mention';
 
 class ChatRoom extends Component {
   constructor(props) {
@@ -17,6 +18,7 @@ class ChatRoom extends Component {
       shiftKeyFlag: false,
       workId: '',
       users: [],
+      toMentionUser: [],
     };
     this.updateCurrentChatMessage = this.updateCurrentChatMessage.bind(this);
     this.handleChatInputKeyPress = this.handleChatInputKeyPress.bind(this);
@@ -54,10 +56,18 @@ class ChatRoom extends Component {
         this.state.currentChatMessage,
         this.props.userId
       );
+    this.props.apiCreateMentionThreadDispatch(
+      this.props.userId,
+      this.state.toMentionUser,
+      this.state.currentChatMessage,
+      JSON.parse(this.props.chatSocket.identifier).room_id
+    );
     this.setState({ currentChatMessage: '' });
   }
 
-  toMention() {}
+  toMention(id) {
+    this.state.toMentionUser.push(id);
+  }
 
   handleWorkingTime(flag) {
     flag === 0
@@ -178,6 +188,14 @@ ChatRoom.propTypes = {
   chatSocket: propTypes.object,
 };
 
+function mapDispatchToProps(dispatch) {
+  return {
+    apiCreateMentionThreadDispatch(userId, toUserIds, content, roomId) {
+      dispatch(apiCreateMentionThread(userId, toUserIds, content, roomId));
+    },
+  };
+}
+
 function mapStateToProps(state) {
   return {
     userId: Number(state.user.id),
@@ -185,4 +203,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(ChatRoom);
+export default connect(mapStateToProps, mapDispatchToProps)(ChatRoom);

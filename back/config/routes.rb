@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       get '/unread_counts/reset' => 'unread_counts#reset'
       resources :unread_counts
       get '/room_users' => 'room_users#users'
+      resources :mention_threads
     end
   end
   mount ActionCable.server => '/api/v1/cable'

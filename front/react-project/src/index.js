@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './style/index.scss';
 import Home from './pages/home';
 import Login from './pages/login';
+import MentionList from './components/mention_list';
 import SignUp from './pages/signup';
 import ChatRoom from './components/chat_room';
 import Friends from './components/friends';
@@ -30,6 +31,9 @@ ReactDOM.render(
         <Switch>
           <Route exact path='/'>
             <Home component={ChatRoom} />
+          </Route>
+          <Route exact path='/mention'>
+            <Home component={MentionList} />
           </Route>
           <Route exact path='/login'>
             <Login />

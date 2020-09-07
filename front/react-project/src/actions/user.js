@@ -1,5 +1,6 @@
 import request from 'superagent';
 import { apiGetRooms } from './room';
+import { apiGetMentionThread } from './mention';
 export const API_REQUEST = 'API_REQUEST';
 export const API_FAILUER = 'API_FAILUER';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
@@ -102,6 +103,7 @@ export function apiGetCurrentUser() {
           dispatch(setCurrentUser(res.body.user));
           dispatch(apiCreateSocketAppear(res.body.user.id));
           dispatch(apiGetRooms(res.body.user.id));
+          dispatch(apiGetMentionThread(res.body.user.id));
         } else {
           dispatch(apiFailuer(err));
         }
