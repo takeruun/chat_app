@@ -9,7 +9,9 @@ class ChatMessageCreationEventBroadcastJob < ApplicationJob
       .broadcast("chat_channel_#{chat_message.room_id}",
                  id: chat_message.id,
                  user_id: chat_message.user_id,
-                 created_at: chat_message.created_at.strftime('%H:%M'),
+                 room_id: chat_message.room_id,
+                 unread_count_id: UnreadCount.find_by(user_id: chat_message.user_id, room_id: chat_message.room_id).id,
+                 created_at: chat_message.created_at,
                  body: chat_message.body)
   end
 end

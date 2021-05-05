@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getUsers } from '../actions/user';
-import { createRoom } from '../actions/chat';
+import { apiGetUsers } from '../actions/user';
+import { apiCreateRoom } from '../actions/room';
 
 class LoginStatus extends Component {
   constructor(props) {
@@ -14,7 +14,7 @@ class LoginStatus extends Component {
   }
 
   componentDidMount() {
-    this.props.getUsersDispatch();
+    this.props.apiGetUsersDispatch();
   }
 
   componentDidUpdate() {
@@ -35,8 +35,8 @@ class LoginStatus extends Component {
     }
   }
 
-  createChatRoom(partnerId) {
-    this.props.createChatRoomDispatch([this.props.userId, partnerId]);
+  createChatRoom(partnerId, name = '') {
+    this.props.apiCreateChatRoomDispatch([this.props.userId, partnerId], name);
   }
 
   renderLoginUsers() {
@@ -79,6 +79,8 @@ LoginStatus.propTypes = {
   userId: propTypes.number.isRequired,
   users: propTypes.array.isRequired,
   appearUsers: propTypes.array,
+  rooms: propTypes.array,
+  roomNames: propTypes.object,
 };
 
 function mapStateToProps(state) {
@@ -86,16 +88,18 @@ function mapStateToProps(state) {
     userId: Number(state.user.id),
     users: state.user.users,
     appearUsers: state.user.appearUsers,
+    rooms: state.user.rooms,
+    roomNames: state.user.roomNames,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    getUsersDispatch() {
-      dispatch(getUsers());
+    apiGetUsersDispatch() {
+      dispatch(apiGetUsers());
     },
-    createChatRoomDispatch(user_ids) {
-      dispatch(createRoom(user_ids));
+    apiCreateChatRoomDispatch(user_ids, name) {
+      dispatch(apiCreateRoom(user_ids, name));
     },
   };
 }

@@ -1,19 +1,21 @@
 import request from 'superagent';
+import { apiGetRooms } from './room';
+import { apiGetMentionThread } from './mention';
 export const API_REQUEST = 'API_REQUEST';
 export const API_FAILUER = 'API_FAILUER';
-export const CURRENT_USER = 'CURRENT_USER';
-export const API_USERS = 'API_USERS';
-export const API_LOGOUT = 'API_LOGOUT';
-export const APPEAR_USERS = 'APPEAR_USERS';
-export const API_USER = 'API_USER';
-export const APPEAR_SOCKET = 'APPEAR_SOCKET';
-export const API_GET_ROOMS = 'API_GET_ROOMS';
-export const API_GET_ROOM_USER_NAMES = 'API_GET_ROOM_USER_NAMES';
+export const SET_CURRENT_USER = 'SET_CURRENT_USER';
+export const SET_USERS = 'SET_USERS';
+export const SET_LOGOUT = 'SET_LOGOUT';
+export const SET_APPEAR_USERS = 'SET_APPEAR_USERS';
+export const SET_USER = 'SET_USER';
+export const SET_APPEAR_SOCKET = 'SET_APPEAR_SOCKET';
 
-export function createSocketAppear(id) {
+export function apiCreateSocketAppear(id) {
   return (dispatch) => {
     var Cable = require('actioncable');
-    let appearcable = Cable.createConsumer('wss:localhost/api/v1/cable');
+    let appearcable = Cable.createConsumer(
+      'wss:' + window.location.host + '/api/v1/cable'
+    );
 
     let appear = appearcable.subscriptions.create(
       {
@@ -23,12 +25,12 @@ export function createSocketAppear(id) {
       {
         connected: () => {},
         received: (data) => {
-          dispatch(appearUsers(data.user, true));
+          dispatch(setAppearUsers(data.user, true));
         },
         disconnected: () => {},
       }
     );
-    dispatch(appearSocket(appear));
+    dispatch(setAppearSocket(appear));
   };
 }
 
@@ -44,8 +46,8 @@ export function signUp(data) {
       })
       .end((err, res) => {
         if (!err && res.body.user) {
-          dispatch(currentUser(res.body.user));
-          dispatch(createSocketAppear(res.body.user.id));
+          dispatch(setCurrentUser(res.body.user));
+          dispatch(apiCreateSocketAppear(res.body.user.id));
         } else {
           dispatch(apiFailuer(err));
         }
@@ -61,9 +63,9 @@ export function login(data) {
       .query({ user: { email: data.email, password: data.password } })
       .end((err, res) => {
         if (!err && res.body.user) {
-          dispatch(currentUser(res.body.user));
+          dispatch(setCurrentUser(res.body.user));
           localStorage.setItem('token', res.body.token);
-          dispatch(createSocketAppear(res.body.user.id));
+          dispatch(apiCreateSocketAppear(res.body.user.id));
         } else if (!err) {
           dispatch(apiFailuer(res));
         } else {
@@ -79,8 +81,8 @@ export function logout(appear) {
     request.post('/api/v1/logout').end((err, res) => {
       if (!err && res.body.msg) {
         appear.unsubscribe();
-        dispatch(apiLogout(res.body.msg));
-        dispatch(appearUsers(1, false));
+        dispatch(setLogout(res.body.msg));
+        dispatch(setAppearUsers(1, false));
         localStorage.setItem('token', '');
       } else {
         dispatch(apiFailuer());
@@ -89,7 +91,7 @@ export function logout(appear) {
   };
 }
 
-export function getCurrentUser() {
+export function apiGetCurrentUser() {
   return (dispatch) => {
     dispatch(apiRequest());
     request
@@ -98,9 +100,10 @@ export function getCurrentUser() {
       //.set('Authorization', localStorage.getItem('token'))
       .end((err, res) => {
         if (!err && res.body.user) {
-          dispatch(currentUser(res.body.user));
-          dispatch(createSocketAppear(res.body.user.id));
-          dispatch(getRooms(res.body.user.id));
+          dispatch(setCurrentUser(res.body.user));
+          dispatch(apiCreateSocketAppear(res.body.user.id));
+          dispatch(apiGetRooms(res.body.user.id));
+          dispatch(apiGetMentionThread(res.body.user.id));
         } else {
           dispatch(apiFailuer(err));
         }
@@ -108,12 +111,12 @@ export function getCurrentUser() {
   };
 }
 
-export function getUsers() {
+export function apiGetUsers() {
   return (dispatch) => {
     dispatch(apiRequest());
     request.get('/api/v1/users').end((err, res) => {
       if (!err && res.body) {
-        dispatch(apiUsers(res.body));
+        dispatch(setUsers(res.body));
       } else {
         dispatch(apiFailuer(err));
       }
@@ -124,33 +127,13 @@ export function getUsers() {
 export function getUser(id) {
   return (dispacth) => {
     dispacth(apiRequest());
-    request
-      .get('/api/v1/show')
-      .query({ user_id: id })
-      .end((err, res) => {
-        if (!err && res.body.user) {
-          dispacth(apiUser(res.body.user));
-        } else {
-          dispacth(apiFailuer());
-        }
-      });
-  };
-}
-
-function getRooms(id) {
-  return (dispatch) => {
-    request
-      .get('/api/v1/rooms')
-      .query({ current_user_id: id })
-      .end((err, res) => {
-        if (!err && res.body.msg) {
-        } else if (!err && res.status === 200) {
-          dispatch(apiGetRooms(res.body.rooms));
-          dispatch(apiGetRoomUserNames(res.body.room_names));
-        } else {
-          dispatch(apiFailuer(err));
-        }
-      });
+    request.get('/api/v1/users/' + id).end((err, res) => {
+      if (!err && res.status === 200) {
+        dispacth(setUser(res.body.user));
+      } else {
+        dispacth(apiFailuer());
+      }
+    });
   };
 }
 
@@ -163,43 +146,33 @@ const apiFailuer = (err) => ({
   err,
 });
 
-const currentUser = (data) => ({
-  type: CURRENT_USER,
+const setCurrentUser = (data) => ({
+  type: SET_CURRENT_USER,
   data,
 });
 
-const apiUsers = (data) => ({
-  type: API_USERS,
+const setUsers = (data) => ({
+  type: SET_USERS,
   data,
 });
 
-const apiUser = (data) => ({
-  type: API_USER,
+const setUser = (data) => ({
+  type: SET_USER,
   data,
 });
 
-const apiLogout = (data) => ({
-  type: API_LOGOUT,
+const setLogout = (data) => ({
+  type: SET_LOGOUT,
   msg: data,
 });
 
-const appearSocket = (data) => ({
-  type: APPEAR_SOCKET,
+const setAppearSocket = (data) => ({
+  type: SET_APPEAR_SOCKET,
   data,
 });
 
-const appearUsers = (data, flag) => ({
-  type: APPEAR_USERS,
+const setAppearUsers = (data, flag) => ({
+  type: SET_APPEAR_USERS,
   data,
   flag,
-});
-
-const apiGetRooms = (data) => ({
-  type: API_GET_ROOMS,
-  data,
-});
-
-const apiGetRoomUserNames = (data) => ({
-  type: API_GET_ROOM_USER_NAMES,
-  data,
 });

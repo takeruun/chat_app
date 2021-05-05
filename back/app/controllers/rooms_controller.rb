@@ -27,13 +27,14 @@ class RoomsController < ApplicationController
         end
       end
     end
-    
-    @room = Room.create(name: room_params[:name])
 
+    @room = Room.create(name: room_params[:name])
     room_params[:user_ids].each do |user_id|
       RoomUser.create(user_id: user_id, room: @room)
+      UnreadCount.create(user_id: user_id, room: @room)
     end
-    render json: { room: @room }
+    @name = room_params[:user_ids].length == 2 ? User.find_by(id: room_params[:user_ids][1]).name : room_params[:name]
+    render json: { room: @room, room_name: @name }
   end
 
   def show
