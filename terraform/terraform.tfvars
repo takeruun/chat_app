@@ -1,0 +1,5 @@
+domain = "take-h.tk"
+db_name = "chat"
+db_username = "root"
+db_password = "password"
+master_key = "2188e582b2633774effd340ad93b46e3"

@@ -5,12 +5,13 @@ export const ADD_ROOM = 'ADD_ROOM';
 export const SET_ROOM_NAMES = 'SET_ROOM_NAMES';
 export const ADD_ROOM_NAME = 'ADD_ROOM_NAME';
 export const API_FAILUER = 'API_FAILUER';
+const baseUrl = 'https://api.take-h'
 
 export function apiGetRooms(id) {
   var names = {};
   return (dispatch) => {
     request
-      .get('/api/v1/rooms')
+      .get(baseUrl + '/api/v1/rooms')
       .query({ current_user_id: id })
       .end((err, res) => {
         if (!err && res.body.msg) {
@@ -35,7 +36,7 @@ export function apiGetRooms(id) {
 export function apiCreateRoom(ids, name = '') {
   return (dispatch) => {
     request
-      .post('/api/v1/rooms')
+      .post(baseUrl + '/api/v1/rooms')
       .send({ room: { user_ids: ids, name: name } })
       .end((err, res) => {
         if (!err && res.body.msg) {

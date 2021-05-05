@@ -4,7 +4,7 @@ FROM nginx:1.18-alpine
 RUN rm -f /etc/nginx/conf.d/*
 
 # Nginxの設定ファイルをコンテナにコピー
-#ADD nginx.conf /etc/nginx/conf.d/default.conf
+ADD nginx_pro.conf /etc/nginx/conf.d/default.conf
 
 # ビルド完了後にNginxを起動
 CMD /usr/sbin/nginx -g 'daemon off;' -c /etc/nginx/nginx.conf

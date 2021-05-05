@@ -9,12 +9,13 @@ export const SET_LOGOUT = 'SET_LOGOUT';
 export const SET_APPEAR_USERS = 'SET_APPEAR_USERS';
 export const SET_USER = 'SET_USER';
 export const SET_APPEAR_SOCKET = 'SET_APPEAR_SOCKET';
+const baseUrl = 'https://api.take-h'
 
 export function apiCreateSocketAppear(id) {
   return (dispatch) => {
     var Cable = require('actioncable');
     let appearcable = Cable.createConsumer(
-      'wss:' + window.location.host + '/api/v1/cable'
+      'wss:' + baseUrl + '/api/v1/cable'
     );
 
     let appear = appearcable.subscriptions.create(
@@ -38,7 +39,7 @@ export function signUp(data) {
   return (dispatch) => {
     dispatch(apiRequest());
     request
-      .post('/api/v1/signup')
+      .post(baseUrl + '/api/v1/signup')
       .send({
         email: data.email,
         password: data.password,
@@ -59,7 +60,7 @@ export function login(data) {
   return (dispatch) => {
     dispatch(apiRequest());
     request
-      .get('/api/v1/login')
+      .get(baseUrl + '/api/v1/login')
       .query({ user: { email: data.email, password: data.password } })
       .end((err, res) => {
         if (!err && res.body.user) {
@@ -78,7 +79,7 @@ export function login(data) {
 export function logout(appear) {
   return (dispatch) => {
     dispatch(apiRequest());
-    request.post('/api/v1/logout').end((err, res) => {
+    request.post(baseUrl + '/api/v1/logout').end((err, res) => {
       if (!err && res.body.msg) {
         appear.unsubscribe();
         dispatch(setLogout(res.body.msg));
@@ -95,7 +96,7 @@ export function apiGetCurrentUser() {
   return (dispatch) => {
     dispatch(apiRequest());
     request
-      .get('/api/v1/user')
+      .get(baseUrl + '/api/v1/user')
       .query({ token: localStorage.getItem('token') })
       //.set('Authorization', localStorage.getItem('token'))
       .end((err, res) => {
@@ -114,7 +115,7 @@ export function apiGetCurrentUser() {
 export function apiGetUsers() {
   return (dispatch) => {
     dispatch(apiRequest());
-    request.get('/api/v1/users').end((err, res) => {
+    request.get(baseUrl + '/api/v1/users').end((err, res) => {
       if (!err && res.body) {
         dispatch(setUsers(res.body));
       } else {
@@ -127,7 +128,7 @@ export function apiGetUsers() {
 export function getUser(id) {
   return (dispacth) => {
     dispacth(apiRequest());
-    request.get('/api/v1/users/' + id).end((err, res) => {
+    request.get(baseUrl + '/api/v1/users/' + id).end((err, res) => {
       if (!err && res.status === 200) {
         dispacth(setUser(res.body.user));
       } else {

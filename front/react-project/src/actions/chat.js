@@ -9,11 +9,12 @@ export const SET_UNREAD_COUNTS = 'SET_UNREAD_COUNTS';
 export const CHANGE_MESSAGE = 'CHANGE_MESSAGE';
 export const CHANGE_UNREAD_COUNT = 'CHANGE_UNREAD_COUNT';
 export const RESET_UNREAD_COUNT = 'RESET_UNREAD_COUNT';
+const baseUrl = 'https://api.take-h'
 
 export function apiCreateRoom(ids, rooms, name = '') {
   return (dispatch) => {
     request
-      .post('/api/v1/rooms')
+      .post(baseUrl + '/api/v1/rooms')
       .send({ room: { user_ids: ids, name: name } })
       .end((err, res) => {
         if (!err && res.body.msg) {
@@ -32,7 +33,7 @@ export function apiCreateRoom(ids, rooms, name = '') {
 
 export function apiChangeChatRoom(roomId, chatSocketLists, userId) {
   return (dispatch) => {
-    request.get('/api/v1/rooms/' + roomId).end((err, res) => {
+    request.get(baseUrl + '/api/v1/rooms/' + roomId).end((err, res) => {
       if (!err && res.status === 200) {
         dispatch(setMessage(roomId));
         dispatch(apiResetUnreadCount(roomId, userId));
@@ -52,7 +53,7 @@ export function apiChangeChatRoom(roomId, chatSocketLists, userId) {
 export const apiCreateSocketChat = (roomId, userId) => async (dispatch) => {
   var Cable = require('actioncable');
   let cable = Cable.createConsumer(
-    'wss:' + window.location.host + '/api/v1/cable'
+    'wss:' + baseUrl + '/api/v1/cable'
   );
   let chats = cable.subscriptions.create(
     {
@@ -98,7 +99,7 @@ export const apiCreateSocketChat = (roomId, userId) => async (dispatch) => {
 
 function apiGetChatData(roomId) {
   return (dispatch) => {
-    request.get('/api/v1/rooms/' + roomId).end((err, res) => {
+    request.get(baseUrl + '/api/v1/rooms/' + roomId).end((err, res) => {
       if (!err && res.status === 200) {
         dispatch(setMessageLists(res.body.messages, roomId));
       } else {
@@ -111,7 +112,7 @@ function apiGetChatData(roomId) {
 export function apiGetUnreadCount(roomId, userId) {
   return (dispatch) => {
     request
-      .get('/api/v1/unread_counts')
+      .get(baseUrl + '/api/v1/unread_counts')
       .query({ unread_count: { room_id: roomId, user_id: userId } })
       .end((err, res) => {
         if (!err && res.status === 200) {
@@ -124,7 +125,7 @@ export function apiGetUnreadCount(roomId, userId) {
 function apiUpdateUnreadCounts(flag, message, userId) {
   return (dispatch) => {
     request
-      .put('/api/v1/unread_counts/' + message.unread_count_id)
+      .put(baseUrl + '/api/v1/unread_counts/' + message.unread_count_id)
       .send({
         unread_count: {
           flag: flag,
@@ -144,7 +145,7 @@ function apiUpdateUnreadCounts(flag, message, userId) {
 function apiResetUnreadCount(roomId, userId) {
   return (dispatch) => {
     request
-      .get('/api/v1/unread_counts/reset')
+      .get(baseUrl + '/api/v1/unread_counts/reset')
       .query({ unread_count: { room_id: roomId, user_id: userId } })
       .end((err, res) => {
         if (!err && res.status === 200) {

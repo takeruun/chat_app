@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
-class MessageController < ApplicationController
+class MessagesController < ApplicationController
 end

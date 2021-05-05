@@ -2,11 +2,12 @@ import request from 'superagent';
 export const SET_MENTION_THREAD_LIST = 'SET_MENTION_THREAD_LIST';
 export const ADD_MENTION_THREAD_LIST = 'ADD_MENTION_THREAD_LIST';
 export const DELETE_MENTION_THREAD_LIST = 'DELETE_MENTION_THREAD_LIST';
+const baseUrl = 'https://api.take-h'
 
 export function apiCreateMentionThread(userId, toUserIds, content, roomId) {
   return (dispatch) => {
     request
-      .post('/api/v1/mention_threads')
+      .post(baseUrl + '/api/v1/mention_threads')
       .send({
         thread: {
           current_user_id: userId,
@@ -27,7 +28,7 @@ export function apiCreateMentionThread(userId, toUserIds, content, roomId) {
 export function apiGetMentionThread(userId) {
   return (dispacth) => {
     request
-      .get('/api/v1/mention_threads')
+      .get(baseUrl + '/api/v1/mention_threads')
       .query({ current_user_id: userId })
       .end((err, res) => {
         if (!err && res.body.msg) {
