@@ -3,6 +3,15 @@ import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { apiChangeChatRoom } from '../actions/chat';
 import { withRouter } from 'react-router-dom';
+import {
+  ChatList,
+  ChatListItem,
+  Avatar,
+  Column,
+  Row,
+  Title,
+  Subtitle,
+} from '@livechat/ui-kit';
 
 class RoomLists extends Component {
   constructor(props) {
@@ -54,6 +63,35 @@ class RoomLists extends Component {
     });
   }
 
+  renderRoomList() {
+    return (
+      <ChatList>
+        <ChatListItem>
+          <Avatar letter='K' />
+          <Column fill>
+            <Row justify>
+              <Title ellipsis>{'Konrad'}</Title>
+              <Subtitle nowrap>{'14:31 PM'}</Subtitle>
+            </Row>
+            <Subtitle ellipsis>
+              {'Hello, how can I help you? We have a lot to talk about'}
+            </Subtitle>
+          </Column>
+        </ChatListItem>
+        <ChatListItem>
+          <Avatar letter='K' />
+          <Column fill>
+            <Row justify>
+              <Title ellipsis>{'Konrad'}</Title>
+              <Subtitle nowrap>{'14:31 PM'}</Subtitle>
+            </Row>
+            <Subtitle ellipsis>{'Hello, how can '}</Subtitle>
+          </Column>
+        </ChatListItem>
+      </ChatList>
+    );
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -62,7 +100,7 @@ class RoomLists extends Component {
         </div>
         <div className='room_lists_body'>
           {(() => {
-            if (this.props.rooms) return <ul>{this.renderRoomLists()}</ul>;
+            if (this.props.rooms) return this.renderRoomLists();
           })()}
         </div>
       </React.Fragment>

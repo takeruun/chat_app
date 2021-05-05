@@ -16,6 +16,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import reducer from './reducers';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { ThemeProvider } from '@livechat/ui-kit';
 
 const enhancer =
   process.env.NODE_ENV === 'development'
@@ -29,27 +30,29 @@ ReactDOM.render(
     <Provider store={store}>
       <BrowserRouter>
         <Switch>
-          <Route exact path='/'>
-            <Home component={ChatRoom} />
-          </Route>
-          <Route exact path='/mention'>
-            <Home component={MentionList} />
-          </Route>
-          <Route exact path='/login'>
-            <Login />
-          </Route>
-          <Route exact path='/signup'>
-            <SignUp />
-          </Route>
-          <Route exact path='/friends'>
-            <Home component={Friends} />
-          </Route>
-          <Route exact path='/user/:id'>
-            <Home component={MyUserInfo} />
-          </Route>
-          <Route exact path='/users/:id'>
-            <Home component={User} />
-          </Route>
+          <ThemeProvider>
+            <Route exact path='/'>
+              <Home component={ChatRoom} />
+            </Route>
+            <Route exact path='/mention'>
+              <Home component={MentionList} />
+            </Route>
+            <Route exact path='/login'>
+              <Login />
+            </Route>
+            <Route exact path='/signup'>
+              <SignUp />
+            </Route>
+            <Route exact path='/friends'>
+              <Home component={Friends} />
+            </Route>
+            <Route exact path='/user/:id'>
+              <Home component={MyUserInfo} />
+            </Route>
+            <Route exact path='/users/:id'>
+              <Home component={User} />
+            </Route>
+          </ThemeProvider>
         </Switch>
       </BrowserRouter>
     </Provider>
