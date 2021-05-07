@@ -9,13 +9,13 @@ export const SET_LOGOUT = 'SET_LOGOUT';
 export const SET_APPEAR_USERS = 'SET_APPEAR_USERS';
 export const SET_USER = 'SET_USER';
 export const SET_APPEAR_SOCKET = 'SET_APPEAR_SOCKET';
-const baseUrl = 'https://api.take-h'
+const baseUrl = 'https://api.take-h.tk'
 
 export function apiCreateSocketAppear(id) {
   return (dispatch) => {
     var Cable = require('actioncable');
     let appearcable = Cable.createConsumer(
-      'wss:' + baseUrl + '/api/v1/cable'
+      'wss:' + 'api.take-h.tk' + '/api/v1/cable'
     );
 
     let appear = appearcable.subscriptions.create(
@@ -40,10 +40,13 @@ export function signUp(data) {
     dispatch(apiRequest());
     request
       .post(baseUrl + '/api/v1/signup')
-      .send({
-        email: data.email,
-        password: data.password,
-        username: data.name,
+      .send({ 
+        user: {
+          email: data.email,
+          password: data.password,
+          password_confirmation: data.password,
+          name: data.name,
+        } 
       })
       .end((err, res) => {
         if (!err && res.body.user) {

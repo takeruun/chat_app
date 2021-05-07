@@ -35,6 +35,10 @@
       "command": ["bundle","exec","puma","-C","config/puma.rb"],
       "environment": [
         {
+          "name": "RAILS_ENV",
+          "value": "production"
+        },
+        {
           "name": "RDS_HOST",
           "value": "${db_host}"
         },

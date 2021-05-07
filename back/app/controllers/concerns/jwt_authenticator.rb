@@ -3,7 +3,7 @@
 module JwtAuthenticator
   require 'jwt'
 
-  SECRET_KEY_BASE = Rails.application.secrets.secret_key_base
+  SECRET_KEY_BASE = Rails.application.credentials.config[:secret_key_base]
 
   # 暗号化処理
   def encode(user_id)

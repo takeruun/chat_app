@@ -5,7 +5,7 @@ export const ADD_ROOM = 'ADD_ROOM';
 export const SET_ROOM_NAMES = 'SET_ROOM_NAMES';
 export const ADD_ROOM_NAME = 'ADD_ROOM_NAME';
 export const API_FAILUER = 'API_FAILUER';
-const baseUrl = 'https://api.take-h'
+const baseUrl = 'https://api.take-h.tk'
 
 export function apiGetRooms(id) {
   var names = {};

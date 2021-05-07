@@ -9,7 +9,7 @@ export const SET_UNREAD_COUNTS = 'SET_UNREAD_COUNTS';
 export const CHANGE_MESSAGE = 'CHANGE_MESSAGE';
 export const CHANGE_UNREAD_COUNT = 'CHANGE_UNREAD_COUNT';
 export const RESET_UNREAD_COUNT = 'RESET_UNREAD_COUNT';
-const baseUrl = 'https://api.take-h'
+const baseUrl = 'https://api.take-h.tk'
 
 export function apiCreateRoom(ids, rooms, name = '') {
   return (dispatch) => {
@@ -53,7 +53,7 @@ export function apiChangeChatRoom(roomId, chatSocketLists, userId) {
 export const apiCreateSocketChat = (roomId, userId) => async (dispatch) => {
   var Cable = require('actioncable');
   let cable = Cable.createConsumer(
-    'wss:' + baseUrl + '/api/v1/cable'
+    'wss:' + 'api.take-h.tk' + '/api/v1/cable'
   );
   let chats = cable.subscriptions.create(
     {

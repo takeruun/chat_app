@@ -40,7 +40,7 @@ resource "aws_lb_target_group" "target_group" {
   # コンテナへの死活監視設定
   health_check {
     port = 80
-    path = "/"
+    path = "/health"
   }
 }
 resource "aws_lb_listener_rule" "http_rule" {

@@ -2,7 +2,7 @@ import request from 'superagent';
 export const SET_MENTION_THREAD_LIST = 'SET_MENTION_THREAD_LIST';
 export const ADD_MENTION_THREAD_LIST = 'ADD_MENTION_THREAD_LIST';
 export const DELETE_MENTION_THREAD_LIST = 'DELETE_MENTION_THREAD_LIST';
-const baseUrl = 'https://api.take-h'
+const baseUrl = 'https://api.take-h.tk'
 
 export function apiCreateMentionThread(userId, toUserIds, content, roomId) {
   return (dispatch) => {
