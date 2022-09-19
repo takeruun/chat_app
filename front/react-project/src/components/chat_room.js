@@ -72,20 +72,20 @@ class ChatRoom extends Component {
   handleWorkingTime(flag) {
     flag === 0
       ? request
-          .post('/api/v1/works/')
-          .send({
-            work: { status: 'work', user_id: this.props.userId },
-          })
-          .end((err, res) => {
-            if (!err && res.status === 200) {
-              this.setState({ workId: res.body.work.id });
-            }
-          })
-      : request.put('/api/v1/works/' + this.state.workId).end((err, res) => {
+        .post('/api/v1/works/')
+        .send({
+          work: { status: 'work', user_id: this.props.userId },
+        })
+        .end((err, res) => {
           if (!err && res.status === 200) {
-            this.setState({ workId: '' });
+            this.setState({ workId: res.body.work.id });
           }
-        });
+        })
+      : request.put('/api/v1/works/' + this.state.workId).end((err, res) => {
+        if (!err && res.status === 200) {
+          this.setState({ workId: '' });
+        }
+      });
     this.setState({ currentChatMessage: '' });
   }
 
