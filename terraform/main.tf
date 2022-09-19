@@ -1,5 +1,5 @@
 module "network" {
-  source = "./network"
+  source   = "./network"
   app_name = var.app_name
 }
 
@@ -43,7 +43,7 @@ module "rds" {
 }
 
 module "ecs_cluster" {
-  source = "./ecs_cluster"
+  source   = "./ecs_cluster"
   app_name = var.app_name
 }
 
